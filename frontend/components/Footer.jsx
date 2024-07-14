@@ -29,7 +29,7 @@ const Footer = () => {
         <h6 className="font-semibold">Subscribe To Our Newsletter:</h6>
         <form className="relative flex items-center w-full h-8 my-4">
           <input type="email" name="email" placeholder="Your Email" className="rounded-sm w-full h-full placeholder:text-[12px] bg-white pl-4 placeholder:text-lightGray text-black pr-10" />
-          <button type="submit" className="absolute top-0 right-0 h-full aspect-square bg-navy rounded-e-sm flex justify-center items-center text-white">
+          <button type="submit" className="absolute top-0 right-0 h-full aspect-square bg-navy hover:bg-navyHover transition-colors duration-75 rounded-e-sm flex justify-center items-center text-white">
             <MdDone className="mb-[2px]" />
           </button>
         </form>

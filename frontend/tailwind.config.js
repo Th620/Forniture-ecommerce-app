@@ -7,9 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "hero-bg": "url('/assets/hero.png')",
-      },
+      backgroundImage: (theme) => ({
+        "hero-bg": "url('../assets/Hero.jpg')",
+      }),
       spacing: {
         150: "150px",
       },
@@ -19,6 +19,7 @@ module.exports = {
       },
       colors: {
         navy: "#3F497F",
+        navyHover: "#37406F",
         yellow: "#F7C04A",
         black: "#282828",
         white: "#F9FAFB",
