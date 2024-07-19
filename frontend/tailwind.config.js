@@ -9,9 +9,20 @@ module.exports = {
     extend: {
       backgroundImage: (theme) => ({
         "hero-bg": "url('../assets/Hero.jpg')",
+        sofa: "url('../assets/sofa.png')",
+        lamp: "url('../assets/Lamp.png')",
+        cups: "url('../assets/cups.png')",
+        banner: "url('../assets/banner.png')",
       }),
       spacing: {
         150: "150px",
+        75: "75px",
+      },
+      screens: {
+        lg: "940px",
+        xl: "1140px",
+        md: "880px",
+        sm: "520px",
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
@@ -25,8 +36,9 @@ module.exports = {
         white: "#F9FAFB",
         bg: "#F4F5F7",
         blueBg: "#C8D1DA",
-        gray: "#868484",
+        gray: "#BBBCBE",
         lightGray: "#DEE1EC",
+        beige: "#F3F3F3",
       },
     },
   },
