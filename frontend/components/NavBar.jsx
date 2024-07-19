@@ -6,10 +6,17 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import Menu from "./Menu";
+import { usePathname } from "next/navigation";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [openMenu, setOpenMenu] = useState(true);
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const pathName = usePathname();
+
+  useEffect(() => {
+    console.log(pathName);
+  }, [pathName]);
 
   useEffect(() => {
     const handelScroll = () => {
@@ -29,7 +36,7 @@ const NavBar = () => {
   return (
     <nav
       className={`font-montserrat fixed top-0 left-0 flex justify-between items-center w-full px-10 md:px-75 lg:px-150 py-5 text-black z-20 ${
-        scrolled ? "bg-white" : "bg-transparent"
+        scrolled ? "bg-white" : pathName === "/" ? "bg-transparent" : "bg-white"
       }`}
     >
       <div className="w-full flex justify-between items-center">

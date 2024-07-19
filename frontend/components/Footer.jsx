@@ -26,7 +26,7 @@ const Footer = () => {
         </form>
         <Link
           href="/"
-          className="text-gray text-[12px] underline hidden sm:block"
+          className="text-slate-500 text-[12px] underline hidden sm:block"
         >
           Terms & Privacy Policy
         </Link>
@@ -51,7 +51,7 @@ const Footer = () => {
 
       <Link
         href="/"
-        className=" text-slate-600 text-[12px] underline col-span-12 sm:hidden block"
+        className=" text-slate-500 text-[12px] underline col-span-12 sm:hidden block"
       >
         Terms & Privacy Policy
       </Link>

@@ -68,6 +68,46 @@ const categories = [
   {
     id: "lamps",
     title: "lamps",
+  },{ id: "all categories", title: "all categories" },
+  {
+    id: "sofas",
+    title: "sofas",
+  },
+  {
+    id: "chairs",
+    title: "chairs",
+  },
+  {
+    id: "untensils",
+    title: "untensils",
+  },
+  {
+    id: "lamps",
+    title: "lamps",
+  },{ id: "all categories", title: "all categories" },
+  {
+    id: "sofas",
+    title: "sofas",
+  },
+  {
+    id: "chairs",
+    title: "chairs",
+  },
+  {
+    id: "untensils",
+    title: "untensils",
+  },
+  {
+    id: "lamps",
+    title: "lamps",
+  },{ id: "all categories", title: "all categories" },
+  {
+    id: "sofas",
+    title: "sofas",
+  },
+  {
+    id: "chairs",
+    title: "chairs",
   },
 ];
 
