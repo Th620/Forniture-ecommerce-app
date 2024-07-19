@@ -32,7 +32,7 @@ const CategoriesSection = () => {
 
   return (
     <section className="flex flex-col justify-center gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
-      <h2 className="max-md:text-center text-[32px] font-semibold">
+      <h2 className="text-[32px] font-semibold">
         Categories
       </h2>
       <button

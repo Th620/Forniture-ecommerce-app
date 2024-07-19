@@ -14,6 +14,7 @@ export default function Home() {
       <BestSellerSection />
       <Banner />
       <CategoriesSection />
+      <ServicesSection/>
     </main>
   );
 }

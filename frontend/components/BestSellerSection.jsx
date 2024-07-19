@@ -95,7 +95,7 @@ const BestSellerSection = () => {
 
   return (
     <section className="flex flex-col justify-center px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14">
-      <h2 className="max-md:text-center text-[32px] font-semibold pb-14">
+      <h2 className="text-center text-[32px] font-semibold pb-14">
         Best Seller
       </h2>
       <form>
