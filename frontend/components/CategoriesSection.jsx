@@ -36,7 +36,7 @@ const CategoriesSection = () => {
 
   return (
     <section className="flex flex-col px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
-      <h2 className="text-[32px] font-semibold pb-14">Categories</h2>
+      <h2 className="text-center text-[32px] font-semibold">Categories</h2>
       <button
         type="button"
         onClick={() => router.push("/categories")}

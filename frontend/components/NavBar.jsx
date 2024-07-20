@@ -15,10 +15,6 @@ const NavBar = () => {
   const pathName = usePathname();
 
   useEffect(() => {
-    console.log(pathName);
-  }, [pathName]);
-
-  useEffect(() => {
     const handelScroll = () => {
       const scrollTop = window.scrollY;
       if (scrollTop >= 150) {
@@ -43,24 +39,24 @@ const NavBar = () => {
         <Link href={"/"}>
           <Image src={Logo} width={65} height={39} alt="logo" />
         </Link>
-        <ul className="hidden lg:flex justify-center items-center gap-x-6">
-          {navLinks.map((navLink) => (
-            <Link href={""}>
-              <li className="hover:text-navy" key={navLink.id}>
-                {navLink.title}
-              </li>
-            </Link>
-          ))}
-        </ul>
-        <ul className="hidden lg:flex justify-center items-center gap-x-5">
-          {navBtns.map((navBtn) => (
-            <Link href={""}>
-              <li className="text-xl" key={navBtn.id}>
-                {navBtn.icon}
-              </li>
-            </Link>
-          ))}
-        </ul>
+        {!openMenu && (
+          <>
+            <ul className="hidden lg:flex justify-center items-center gap-x-6">
+              {navLinks.map((navLink) => (
+                <Link href={navLink.link} key={navLink.id}>
+                  <li className="hover:text-navy">{navLink.title}</li>
+                </Link>
+              ))}
+            </ul>
+            <ul className="hidden lg:flex justify-center items-center gap-x-5">
+              {navBtns.map((navBtn) => (
+                <Link href={navBtn.link} key={navBtn.id}>
+                  <li className="text-xl">{navBtn.icon}</li>
+                </Link>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
       <button
         onClick={() => {
