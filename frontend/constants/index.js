@@ -7,7 +7,7 @@ const navLinks = [
   {
     id: "home",
     title: "Home",
-    link: "home",
+    link: "",
   },
   {
     id: "categories",

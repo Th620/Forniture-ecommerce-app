@@ -38,13 +38,13 @@ const Footer = () => {
         <ul key={item.id} className="sm:col-span-2 col-span-6">
           <li className="font-semibold pb-2">{item.title}</li>
           <Link href={"/"}>
-            <li className="text-sm py-1">{item.links[0]}</li>
+            <li className="text-sm py-1 font-medium">{item.links[0]}</li>
           </Link>
           <Link href={"/"}>
-            <li className="text-sm py-1">{item.links[1]}</li>
+            <li className="text-sm py-1 font-medium">{item.links[1]}</li>
           </Link>
           <Link href={"/"}>
-            <li className="text-sm py-1">{item.links[2]}</li>
+            <li className="text-sm py-1 font-medium">{item.links[2]}</li>
           </Link>
         </ul>
       ))}

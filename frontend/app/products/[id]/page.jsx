@@ -54,7 +54,7 @@ const products = [
   },
 ];
 
-const page = () => {
+export default function Product() {
   return (
     <main className="relative flex flex-col gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14 pt-150 min-h-screen">
       <div className="flex flex-col md:grid md:grid-cols-18 gap-4 grid-flow-col-dense">
@@ -87,12 +87,14 @@ const page = () => {
           </div>
         </div>
         <div className="md:col-start-10 md:col-span-9 flex flex-col gap-5">
-        <h3 className="hidden md:block font-semibold text-xl sm:text-3xl capitalize">
-          Desk Lamp
-        </h3>
+          <h3 className="hidden md:block font-semibold text-xl sm:text-3xl capitalize">
+            Desk Lamp
+          </h3>
           <p className="font-semibold text-sm text-[#787676]">$45.99</p>
           <div>
-            <h6 className="max-md:text-sm font-semibold mb-3">Choose a Color</h6>
+            <h6 className="max-md:text-sm font-semibold mb-3">
+              Choose a Color
+            </h6>
             <div className="flex gap-2 flex-wrap">
               {colors.map((color) => (
                 <ColorCircle
@@ -112,20 +114,22 @@ const page = () => {
             </div>
           </div>
           <div>
-            <h6 className="max-md:text-sm font-semibold mb-3">Choose a Quantity</h6>
+            <h6 className="max-md:text-sm font-semibold mb-3">
+              Choose a Quantity
+            </h6>
             <div className="h-8 bg-gray flex justify-center items-center w-fit text-white">
               <button
                 type="button"
-                className="h-full aspect-square flex justify-center items-center hover:bg-grayHover transition-colors duration-100"
+                className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
               >
                 -
               </button>
-              <div className="h-full px-4 min-h-8 flex justify-center items-center">
+              <div className="h-full px-4 min-h-8 flex justify-center items-center font-semibold">
                 1
               </div>
               <button
                 type="button"
-                className="h-full aspect-square flex justify-center items-center hover:bg-grayHover transition-colors duration-100"
+                className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
               >
                 +
               </button>
@@ -133,7 +137,7 @@ const page = () => {
           </div>
           <button
             type="button"
-            className="capitalize rounded-full px-10 py-3 text-white bg-navy hover:bg-navyHover w-fit my-14"
+            className="capitalize rounded-full px-10 py-3 text-white bg-navy hover:bg-navyHover w-fit my-14 font-medium"
           >
             Add to card
           </button>
@@ -142,7 +146,10 @@ const page = () => {
               <button type="button" className="font-semibold md:text-lg">
                 Product Info
               </button>
-              <button type="button" className="font-semibold text-[#D0CECE] md:text-lg">
+              <button
+                type="button"
+                className="font-semibold text-[#D0CECE] md:text-lg"
+              >
                 Reviews
               </button>
             </div>
@@ -176,5 +183,3 @@ const page = () => {
     </main>
   );
 };
-
-export default page;

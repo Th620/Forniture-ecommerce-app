@@ -19,7 +19,16 @@ export default function Products() {
 
   return (
     <main className="relative flex flex-col justify-center sm:justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14 pt-150 min-h-screen ">
-      <h2 className="text-[32px] font-semibold capitalize">{active}</h2>
+      <h2
+        className="text-[32px] font-semibold capitalize"
+        onClick={() => {
+          setOpenSizeSelect(false);
+          setOpenColorSelect(false);
+          setOpenSortSelect(false);
+        }}
+      >
+        {active}
+      </h2>
       <div className="grid grid-cols-12 gap-x-4 w-full">
         <div className="w-full hidden md:grid grid-cols-12 gap-4 col-span-12">
           <div className="relative col-start-4 col-span-2">
@@ -30,13 +39,13 @@ export default function Products() {
                 setOpenColorSelect(false);
                 setOpenSortSelect(false);
               }}
-              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize"
+              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
             >
               {size && size !== "all" ? size : "Size"}
               <MdKeyboardArrowDown />
             </button>
             {openSizeSelect && (
-              <ul className="absolute top-full z-30 min-w-28 bg-[#EEEFF1]">
+              <ul className="absolute top-full z-10 min-w-28 bg-[#EEEFF1]">
                 {filter.size.map((size) => (
                   <li key={size}>
                     <button
@@ -62,13 +71,13 @@ export default function Products() {
                 setOpenSizeSelect(false);
                 setOpenSortSelect(false);
               }}
-              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize"
+              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
             >
               {color && color !== "all" ? color : "Color"}
               <MdKeyboardArrowDown />
             </button>
             {openColorSelect && (
-              <ul className="absolute top-full z-30 min-w-28 bg-[#EEEFF1]">
+              <ul className="absolute top-full z-10 min-w-28 bg-[#EEEFF1]">
                 {filter.color.map((color) => (
                   <li key={color}>
                     {" "}
@@ -95,13 +104,13 @@ export default function Products() {
                 setOpenColorSelect(false);
                 setOpenSizeSelect(false);
               }}
-              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize"
+              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
             >
               {sort && sort !== "no sort" ? sort : "Sort"}
               <MdKeyboardArrowDown />
             </button>
             {openSortSelect && (
-              <ul className="absolute top-full z-30 min-w-28 bg-[#EEEFF1]">
+              <ul className="absolute top-full z-10 min-w-28 bg-[#EEEFF1]">
                 {filter.sort.map((sort) => (
                   <li key={sort}>
                     <button
@@ -126,7 +135,7 @@ export default function Products() {
             onClick={() => {
               setOpenCategorySelect((prev) => !prev);
             }}
-            className="flex md:hidden justify-center items-center gap-x-1 text-sm py-1"
+            className="flex md:hidden justify-center items-center gap-x-1 text-sm py-1 font-medium"
           >
             Categories
             <MdKeyboardArrowDown />
@@ -134,7 +143,7 @@ export default function Products() {
           <div
             className={`${
               openCategorySelect ? "flex" : "hidden"
-            } md:flex flex-col items-start max-md:absolute top-full z-30 min-w-28 max-md:bg-[#EEEFF1]`}
+            } md:flex flex-col items-start max-md:absolute top-full z-10 min-w-28 max-md:bg-[#EEEFF1]`}
           >
             {categories.map((category) => (
               <button
@@ -150,7 +159,7 @@ export default function Products() {
                 className={`${
                   active === category.id
                     ? "md:text-yellow md:font-semibold md:text-[18px] md:py-1"
-                    : "md:text-black md:font-normal md:text-[16px]"
+                    : "md:text-black md:font-medium md:text-[16px]"
                 } capitalize px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left text-[12px] w-full`}
               >
                 {category.title}
@@ -160,7 +169,7 @@ export default function Products() {
           <button
             type="button"
             onClick={() => setOpenFilter(true)}
-            className="md:hidden text-sm py-1 self-end"
+            className="md:hidden text-sm py-1 self-end font-medium"
           >
             Filter
           </button>

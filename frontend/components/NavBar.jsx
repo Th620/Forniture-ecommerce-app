@@ -41,16 +41,33 @@ const NavBar = () => {
         </Link>
         {!openMenu && (
           <>
-            <ul className="hidden lg:flex justify-center items-center gap-x-6">
+            <ul className="hidden lg:flex text-sm font-semibold justify-center items-center gap-x-6">
               {navLinks.map((navLink) => (
-                <Link href={navLink.link} key={navLink.id}>
-                  <li className="hover:text-navy">{navLink.title}</li>
+                <Link
+                  href={{ pathname: `/${navLink.link}` }}
+                  key={navLink.id}
+                  replace
+                >
+                  <li
+                    className={`hover:text-navy ${
+                      `/${navLink.link}` === pathName
+                        ? "font-semibold text-navy"
+                        : "text-black font-medium"
+                    }`}
+                  >
+                    {navLink.title}
+                  </li>
                 </Link>
               ))}
             </ul>
             <ul className="hidden lg:flex justify-center items-center gap-x-5">
               {navBtns.map((navBtn) => (
-                <Link href={navBtn.link} key={navBtn.id}>
+                <Link
+                  href={{
+                    pathname: `/${navBtn.link}`,
+                  }}
+                  key={navBtn.id}
+                >
                   <li className="text-xl">{navBtn.icon}</li>
                 </Link>
               ))}

@@ -5,7 +5,7 @@ import { CgClose } from "react-icons/cg";
 
 const Menu = ({ setOpenMenu }) => {
   return (
-    <div className="flex justify-center items-center flex-col gap-y-14 lg:hidden fixed top-0 left-0 w-full h-screen bg-white text-black transition-all duration-200 z-10">
+    <div className="flex justify-center items-center flex-col gap-y-14 lg:hidden fixed top-0 left-0 w-full h-screen bg-white text-black transition-all duration-200 z-50">
       <ul className="flex flex-col justify-center items-center gap-y-6">
         {navLinks.map((navLink) => (
           <Link
@@ -13,7 +13,7 @@ const Menu = ({ setOpenMenu }) => {
             key={navLink.id}
             onClick={() => setOpenMenu(false)}
           >
-            <li className="hover:text-navy text-xl">{navLink.title}</li>
+            <li className="hover:text-navy text-xl font-medium">{navLink.title}</li>
           </Link>
         ))}
       </ul>

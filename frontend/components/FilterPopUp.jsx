@@ -28,7 +28,7 @@ const FilterPopUp = ({
               setOpenColorSelect(false);
               setOpenSortSelect(false);
             }}
-            className="flex items-center gap-x-1 text-sm py-2 px-3 capitalize w-full hover:bg-bg"
+            className="flex items-center gap-x-1 text-sm py-2 px-3 capitalize w-full hover:bg-bg font-medium"
           >
             {size && size !== "all" ? size : "Size"}
             <MdKeyboardArrowDown />
@@ -60,7 +60,7 @@ const FilterPopUp = ({
               setOpenSizeSelect(false);
               setOpenSortSelect(false);
             }}
-            className="flex items-center gap-x-1 text-sm py-2 px-3 capitalize w-full hover:bg-bg"
+            className="flex items-center gap-x-1 text-sm py-2 px-3 capitalize w-full hover:bg-bg font-medium"
           >
             {color && color !== "all" ? color : "Color"}
             <MdKeyboardArrowDown />
@@ -93,7 +93,7 @@ const FilterPopUp = ({
               setOpenColorSelect(false);
               setOpenSizeSelect(false);
             }}
-            className="flex items-center gap-x-1 text-sm py-2 px-3 capitalize w-full hover:bg-bg"
+            className="flex items-center gap-x-1 text-sm py-2 px-3 capitalize w-full hover:bg-bg font-medium"
           >
             {sort && sort !== "no sort" ? sort : "Sort"}
             <MdKeyboardArrowDown />
@@ -120,7 +120,7 @@ const FilterPopUp = ({
         <button
           type="button"
           onClick={() => setOpenFilter(false)}
-          className="py-2 px-8 rounded-sm self-center sm:self-end bg-navy hover:bg-navyHover font-lato text-white w-fit"
+          className="py-2 px-8 rounded-sm self-center sm:self-end bg-navy hover:bg-navyHover font-lato text-white w-fit font-medium text-sm"
         >
           Apply
         </button>

@@ -35,12 +35,12 @@ const CategoriesSection = () => {
   const router = useRouter();
 
   return (
-    <section className="flex flex-col px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
+    <section className="flex flex-col gap-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
       <h2 className="text-center text-[32px] font-semibold">Categories</h2>
       <button
         type="button"
         onClick={() => router.push("/categories")}
-        className="md:self-end capitalize md:text-[12px] text-gray md:underline md:font-normal md:p-0 md:border-none font-semibold border border-gray self-center px-8 rounded-sm py-2 max-md:order-last mt-14"
+        className="md:self-end capitalize md:text-xs text-gray md:underline md:font-medium md:p-0 md:border-none font-semibold border border-gray self-center px-8 rounded-sm py-2 max-md:order-last mt-14"
       >
         show all
       </button>

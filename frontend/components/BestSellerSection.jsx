@@ -101,17 +101,17 @@ const BestSellerSection = () => {
       <form>
         <select
           name="category"
-          className="capitalize block md:hidden bg-white pr-6 py-2 border-none"
+          className="capitalize block md:hidden bg-white pr-6 py-2 border-none text-sm font-medium"
         >
           {categories.map((category) => (
-            <option value={category} key={category.id} className="bg-yellow">
+            <option value={category} key={category.id} className="font-montserrat">
               {category.title}
             </option>
           ))}
         </select>
       </form>
       <div className="hidden md:flex justify-between w-full items-center">
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-4 text-sm">
           {categories.map((category) => (
             <button
               type="button"
@@ -122,7 +122,7 @@ const BestSellerSection = () => {
               className={`${
                 active === category.id
                   ? "text-yellow font-semibold"
-                  : "text-black font-normal"
+                  : "text-black font-medium"
               } capitalize text-sm`}
             >
               {category.title}

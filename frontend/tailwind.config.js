@@ -25,8 +25,8 @@ module.exports = {
         sm: "520px",
       },
       fontFamily: {
-        montserrat: ["Montserrat", "sans-serif"],
-        lato: ["Lato", "sans-serif"],
+        montserrat: "var(--font-mont)",
+        lato: "var(--font-lato)",
       },
       colors: {
         navy: "#3F497F",
@@ -40,6 +40,7 @@ module.exports = {
         grayHover: "#B6B7B9",
         lightGray: "#DEE1EC",
         beige: "#F3F3F3",
+        input: "#ECEDEF",
       },
       gridTemplateColumns: {
         18: "repeat(18, minmax(0, 1fr))",
