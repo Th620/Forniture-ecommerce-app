@@ -10,12 +10,6 @@ export default function signIn() {
         </h2>
         <form className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col items-center">
           <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            className="h-10 bg-input w-full placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
-          />
-          <input
             type="email"
             name="email"
             placeholder="Email"
@@ -38,7 +32,7 @@ export default function signIn() {
           </button>
         </form>
         <p className="col-span-4 text-center text-xs">
-          You don't have an account? <Link href={""} className="text-navy font-semibold capitalize">Sign up</Link>
+          You don't have an account? <Link href={"/sign-up"} className="text-navy font-semibold capitalize">Sign up</Link>
         </p>
       </div>
     </main>

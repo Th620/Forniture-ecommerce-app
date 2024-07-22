@@ -7,7 +7,7 @@ import { MdDone } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <footer className="grid grid-cols-12 gap-y-10 w-full py-10 px-10 md:px-75 lx:px-150 bg-blueBg text-black font-montserrat mt-14">
+    <footer className="grid grid-cols-12 gap-y-10 w-full py-10 px-10 md:px-75 lx:px-150 bg-blueBg text-black font-montserrat">
       <div className="sm:col-span-4 col-span-12 sm:order-last">
         <h6 className="font-semibold">Subscribe To Our Newsletter:</h6>
         <form className="relative flex items-center w-full h-8 my-4">
