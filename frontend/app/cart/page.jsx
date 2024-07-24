@@ -156,7 +156,7 @@ export default function Cart() {
             </tbody>
           </table>
         </form>
-        <PricingBox btnLabel={"checkout"} />
+        <PricingBox btnLabel={"checkout"} className={"mt-9"} />
       </div>
     </main>
   );

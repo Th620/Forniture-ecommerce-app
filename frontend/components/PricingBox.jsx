@@ -1,9 +1,9 @@
 import React from "react";
 
-const PricingBox = ({ btnLabel }) => {
+const PricingBox = ({ btnLabel, className }) => {
   return (
-    <div>
-      <div className="md:w-[30vw] lg:w-[25vw] w-full border-2 border-[#E8E9EB] mt-9 h-fit capitalize">
+    <div className="md:w-[30vw] lg:w-[25vw] w-full">
+      <div className={`w-full border-2 border-[#E8E9EB] h-fit capitalize ${className}`}>
         <h4 className="px-5 font-semibold text-lg py-3">Your order</h4>
         <hr className="border-[1.5px] border-[#E8E9EB] mx-5" />
         <div className="flex items-center justify-between px-5 py-3 text-sm font-medium">
