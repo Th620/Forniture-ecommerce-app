@@ -3,7 +3,7 @@
 import { categories, filter, products } from "@/constants";
 import ProductCard from "@/components/ProductCard";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterPopUp from "@/components/FilterPopUp";
 
 export default function Products() {
@@ -17,18 +17,20 @@ export default function Products() {
   const [color, setColor] = useState("");
   const [sort, setSort] = useState("");
 
+  useEffect(() => {
+    document.body.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("btn")) {
+        setOpenColorSelect(false);
+        setOpenCategorySelect(false);
+        setOpenSizeSelect(false);
+        setOpenSortSelect(false);
+      }
+    });
+  }, []);
+
   return (
     <main className="relative flex flex-col justify-center sm:justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white mt-150 min-h-screen mb-28">
-      <h2
-        className="text-[32px] font-semibold capitalize"
-        onClick={() => {
-          setOpenSizeSelect(false);
-          setOpenColorSelect(false);
-          setOpenSortSelect(false);
-        }}
-      >
-        {active}
-      </h2>
+      <h2 className="text-[32px] font-semibold capitalize">{active}</h2>
       <div className="grid grid-cols-12 gap-x-4 w-full">
         <div className="w-full hidden md:grid grid-cols-12 gap-4 col-span-12">
           <div className="relative col-start-4 col-span-2">
@@ -39,7 +41,7 @@ export default function Products() {
                 setOpenColorSelect(false);
                 setOpenSortSelect(false);
               }}
-              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
+              className="btn flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
             >
               {size && size !== "all" ? size : "Size"}
               <MdKeyboardArrowDown />
@@ -54,7 +56,7 @@ export default function Products() {
                         setSize(size);
                         setOpenSizeSelect(false);
                       }}
-                      className="px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
+                      className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
                     >
                       {size}
                     </button>
@@ -71,7 +73,7 @@ export default function Products() {
                 setOpenSizeSelect(false);
                 setOpenSortSelect(false);
               }}
-              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
+              className="btn flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
             >
               {color && color !== "all" ? color : "Color"}
               <MdKeyboardArrowDown />
@@ -80,14 +82,13 @@ export default function Products() {
               <ul className="absolute top-full z-10 min-w-28 bg-[#EEEFF1]">
                 {filter.color.map((color) => (
                   <li key={color}>
-                    {" "}
                     <button
                       type="button"
                       onClick={() => {
                         setColor(color);
                         setOpenColorSelect(false);
                       }}
-                      className="px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
+                      className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
                     >
                       {color}
                     </button>
@@ -104,7 +105,7 @@ export default function Products() {
                 setOpenColorSelect(false);
                 setOpenSizeSelect(false);
               }}
-              className="flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
+              className="btn flex justify-center items-center gap-x-1 text-sm py-1 capitalize font-medium"
             >
               {sort && sort !== "no sort" ? sort : "Sort"}
               <MdKeyboardArrowDown />
@@ -119,7 +120,7 @@ export default function Products() {
                         setSort(sort);
                         setOpenSortSelect(false);
                       }}
-                      className="px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
+                      className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
                     >
                       {sort}
                     </button>
@@ -135,7 +136,7 @@ export default function Products() {
             onClick={() => {
               setOpenCategorySelect((prev) => !prev);
             }}
-            className="flex md:hidden justify-center items-center gap-x-1 text-sm py-1 font-medium"
+            className="btn flex md:hidden justify-center items-center gap-x-1 text-sm py-1 font-medium"
           >
             Categories
             <MdKeyboardArrowDown />
@@ -151,16 +152,13 @@ export default function Products() {
                 key={category.id}
                 onClick={() => {
                   setActive(category.id);
-                  setOpenColorSelect(false);
-                  setOpenSizeSelect(false);
-                  setOpenSortSelect(false);
                   setOpenCategorySelect(false);
                 }}
                 className={`${
                   active === category.id
                     ? "md:text-yellow md:font-semibold md:text-[18px] md:py-1"
                     : "md:text-black md:font-medium md:text-[16px]"
-                } capitalize px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left text-[12px] w-full`}
+                } btn capitalize px-2 py-1 max-md:hover:bg-[#E2E3E5] transition-colors duration-100 text-left text-[12px] w-full`}
               >
                 {category.title}
               </button>

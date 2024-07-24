@@ -1,7 +1,7 @@
 "use client";
 
 import { filter } from "@/constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
@@ -12,6 +12,16 @@ export default function Profile() {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
+
+  useEffect(() => {
+    document.body.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("btn")) {
+        setOpenCountrySelect(false);
+        setOpenStateSelect(false);
+        setOpenCitySelect(false);
+      }
+    });
+  }, []);
 
   return (
     <main className="flex flex-col justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14">
@@ -86,7 +96,7 @@ export default function Profile() {
                       setCountry(size);
                       setOpenCountrySelect(false);
                     }}
-                    className="px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
+                    className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
                   >
                     {size}
                   </button>
@@ -119,7 +129,7 @@ export default function Profile() {
                       setState(color);
                       setOpenStateSelect(false);
                     }}
-                    className="px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
+                    className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
                   >
                     {color}
                   </button>
@@ -151,7 +161,7 @@ export default function Profile() {
                       setCity(sort);
                       setOpenCitySelect(false);
                     }}
-                    className="px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
+                    className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
                   >
                     {sort}
                   </button>
