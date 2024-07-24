@@ -17,7 +17,7 @@ export default function signUp() {
             name="FirstName"
             id="firstName"
             placeholder="First Name"
-            className="h-10 bg-input w-full placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
+            className="h-10 bg-input w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
           />
           <label htmlFor="lastName" className="sr-only">
             Last Name:
@@ -27,7 +27,7 @@ export default function signUp() {
             name="LastName"
             id="lastName"
             placeholder="Last Name"
-            className="h-10 bg-input w-full placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
+            className="h-10 bg-input w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
           />
           <label htmlFor="email" className="sr-only">
             Email:
@@ -37,7 +37,7 @@ export default function signUp() {
             name="email"
             id="email"
             placeholder="Email"
-            className="h-10 bg-input w-full placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
+            className="h-10 bg-input w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
           />
           <label htmlFor="firstName" className="sr-only">
             Password:
@@ -47,7 +47,7 @@ export default function signUp() {
             name="password"
             id="password"
             placeholder="Password"
-            className="h-10 bg-input w-full placeholder:text-gray placeholder:text-sm px-4 rounded-sm"
+            className="h-10 bg-input w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 rounded-sm"
           />
           <button
             type="submit"
