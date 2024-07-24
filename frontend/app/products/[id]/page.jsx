@@ -56,7 +56,7 @@ const products = [
 
 export default function Product() {
   return (
-    <main className="relative flex flex-col gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14 pt-150 min-h-screen mb-14">
+    <main className="relative flex flex-col gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white mt-150 min-h-screen mb-28">
       <div className="flex flex-col md:grid md:grid-cols-18 gap-4 grid-flow-col-dense">
         <h3 className="font-semibold text-xl sm:text-3xl capitalize md:hidden">
           Desk Lamp

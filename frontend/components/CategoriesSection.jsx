@@ -35,7 +35,7 @@ const CategoriesSection = () => {
   const router = useRouter();
 
   return (
-    <section className="flex flex-col gap-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
+    <section className="flex flex-col px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
       <h2 className="text-center text-[32px] font-semibold">Categories</h2>
       <button
         type="button"
