@@ -9,3 +9,5 @@ const StoreSchema = new Schema(
 );
 
 const Store = models("Store", StoreSchema);
+
+module.exports = Store;
