@@ -202,14 +202,12 @@ const resetPassword = async (req, res, next) => {
   try {
     const { id, token } = req.params;
 
-    if (!typeof id === String) throw new Error("Wrong ID");
-
     let user = await User.findById(id);
 
     if (!user) {
       const error = Error("User not found");
       error.statusCode = 404;
-      next(error);
+      return next(error);
     }
 
     const secret = process.env.JWT_SECRET2 + user.password;

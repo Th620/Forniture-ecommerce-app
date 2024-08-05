@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
+const cors = require("cors");
+
 const connectDB = require("./db/db");
 const {
   errorResposerHandler,
@@ -11,17 +13,25 @@ const app = express();
 
 dotenv.config();
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Routers
 const userRoute = require("./routes/userRoute");
+const productRoute = require("./routes/productRoute");
 
 //connectDB
 connectDB();
 
 //Routes
 app.use("/api/users", userRoute);
+app.use("/api/products", productRoute);
 
 //errorHandlers
 app.use(invalidPathHandler);

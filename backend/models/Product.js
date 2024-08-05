@@ -1,15 +1,19 @@
-const { Schema, models } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const ProductSchema = new Schema(
   {
     title: { type: String, required: true },
+    slug: { type: String, required: true },
     price: { type: Number, required: true },
     salePrice: { type: Number },
     category: { type: String },
     productInfo: { type: Object },
     onSale: { type: Boolean },
-    stock: { type: Number },
-    stockInfo: { type: Object },
+    stock: { type: Number, required: true },
+    sizes: { type: [String] },
+    colors: { type: [String] },
+    variations: { type: [Object] },
+    sizes: { type: [String] },
     image: { type: String },
   },
   {
@@ -17,6 +21,6 @@ const ProductSchema = new Schema(
   }
 );
 
-const Product = models("Product", ProductSchema);
+const Product = model("Product", ProductSchema);
 
 module.exports = Product;
