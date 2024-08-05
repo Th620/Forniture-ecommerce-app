@@ -5,6 +5,7 @@ const {
   deleteProduct,
   getProducts,
   getProduct,
+  searchProduct,
 } = require("../controllers/productControllers");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 const { upload } = require("../middelware/uploadPictureMiddelware");

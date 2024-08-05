@@ -121,10 +121,14 @@ const deleteProduct = async (req, res, next) => {
 
 const getProducts = async (req, res, next) => {
   try {
-    const { category, sort, size, color } = req.query;
+    const { category, sort, size, color, searchKeyword } = req.query;
 
     let categoryFilter = {};
     let variationsFilter = [];
+    let where = {};
+    if (searchKeyword) {
+      where.title = { $regex: "desk", $options: "i" };
+    }
 
     let sorting;
 
@@ -147,7 +151,7 @@ const getProducts = async (req, res, next) => {
     }
 
     const products = await Product.aggregate([
-      { $match: categoryFilter },
+      { $match: { $and: [categoryFilter, where] } },
       {
         $project: {
           variations: {
@@ -159,6 +163,17 @@ const getProducts = async (req, res, next) => {
               },
             },
           },
+          title: 1,
+          slug: 1,
+          price: 1,
+          salePrice: 1,
+          category: 1,
+          productInfo: 1,
+          onSale: 1,
+          stock: 1,
+          colors: 1,
+          sizes: 1,
+          image: 1,
         },
       },
     ]);
@@ -195,6 +210,29 @@ const getProduct = async (req, res, next) => {
   }
 };
 
+const searchProduct = async (req, res, next) => {
+  try {
+    const filter = req.query.searchKeyword;
+    let where = {};
+    if (filter) {
+      where.title = { $regex: "desk", $options: "i" };
+    }
+
+    console.log(filter);
+
+    const products = await Product.find(where);
+
+    if (!products) {
+      const error = new Error("Product not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    res.json(products);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   createProduct,
@@ -202,4 +240,5 @@ module.exports = {
   deleteProduct,
   getProducts,
   getProduct,
+  searchProduct,
 };
