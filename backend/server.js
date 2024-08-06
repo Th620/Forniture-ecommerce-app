@@ -27,6 +27,7 @@ const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
 const orderRoute = require("./routes/orderRoute");
 const reviewRoute = require("./routes/reviewRoute");
+const storeRoute = require("./routes/storeRoute");
 
 //connectDB
 connectDB();
@@ -36,6 +37,7 @@ app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);
+app.use("/api/store", storeRoute);
 
 //errorHandlers
 app.use(invalidPathHandler);
