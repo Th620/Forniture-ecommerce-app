@@ -17,14 +17,11 @@ const createProduct = async (req, res, next) => {
       variations,
     } = req.body;
 
-    console.log(typeof title);
-
-    if (!title || !(typeof title === "string"))
-      throw new Error("product title is required");
+    if (!title) throw new Error("product title is required");
     if (!price) throw new Error("product price is required");
     if (!stock) throw new Error("product stock is required");
 
-    const product = await Product.findOne({ title });
+    const product = await Product.findOne({ slug: title.replace(/\s/g, "-") });
 
     if (product) throw new Error("product exist");
 
@@ -78,6 +75,10 @@ const editProduct = async (req, res, next) => {
       variations,
     } = req.body;
 
+    if (!title) throw new Error("product title is required");
+    if (!price) throw new Error("product price is required");
+    if (!stock) throw new Error("product stock is required");
+
     if (product.image) fileRemover(product.image);
 
     product.title = title?.trim() || product.title;
@@ -112,7 +113,7 @@ const deleteProduct = async (req, res, next) => {
     }
 
     res.json({
-      product,
+      message: "product deleted",
     });
   } catch (error) {
     next(error);
@@ -174,6 +175,8 @@ const getProducts = async (req, res, next) => {
           colors: 1,
           sizes: 1,
           image: 1,
+          createdAt: 1,
+          updatedAt: 1,
         },
       },
     ]);
@@ -217,8 +220,6 @@ const searchProduct = async (req, res, next) => {
     if (filter) {
       where.title = { $regex: "desk", $options: "i" };
     }
-
-    console.log(filter);
 
     const products = await Product.find(where);
 

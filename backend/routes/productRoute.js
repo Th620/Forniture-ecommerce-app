@@ -18,14 +18,14 @@ router.post(
   "/create",
   authGuard,
   adminGuard,
-  upload.single("product"),
+  upload.array("product", 4),
   createProduct
 );
 router.put(
   "/edit/:slug",
   authGuard,
   adminGuard,
-  upload.single("product"),
+  upload.array("product", 4),
   editProduct
 );
 router.delete("/delete/:slug", authGuard, adminGuard, deleteProduct);

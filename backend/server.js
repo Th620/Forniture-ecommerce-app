@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Routers
 const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
+const orderRoute = require("./routes/orderRoute");
 
 //connectDB
 connectDB();
@@ -32,6 +33,7 @@ connectDB();
 //Routes
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
+app.use("/api/orders", orderRoute);
 
 //errorHandlers
 app.use(invalidPathHandler);
