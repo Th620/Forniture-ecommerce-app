@@ -2,6 +2,18 @@ const Store = require("../models/Store");
 
 const getCategories = async (req, res, next) => {
   try {
+    await Store.create({
+      countries: {
+        country: "country",
+        states: [
+          {
+            state: "state",
+            shippingFee: 10,
+          },
+        ],
+      },
+      categories: ["sofas", "lamps", "chairs"],
+    });
     const store = await Store.findOne();
 
     if (store.length === 0) {
@@ -71,15 +83,27 @@ const addCountry = async (req, res, next) => {
 
     const { country, states } = req.body;
 
-    if (!country || !states || states.length === 0)
+    if (!country || states.length === 0 || !states)
       throw new Error("no country to add");
 
-    const exist = store.countries.filter((item) => {
+    states.map((item) => {
+      if (!item.state) throw new Error("you must add the name of every state");
+      if (!item.shippingFee)
+        throw new Error("you must add the shipping fee of every state");
+    });
+
+    const existCountry = store.countries.filter((item) => {
       return item.country === country;
     });
-    console.log(exist);
 
-    if (!(exist.length == 0)) throw new Error("country already exists");
+    if (!(existCountry.length == 0)) throw new Error("country already exists");
+
+    for (let j = 0; j < states.length - 1; j++) {
+      for (let i = j + 1; i < states.length; i++) {
+        if (states[i].state === states[j].state)
+          throw new Error("there is a duplicated state");
+      }
+    }
 
     store.countries.push({ country, states });
 

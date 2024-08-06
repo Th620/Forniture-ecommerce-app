@@ -6,7 +6,12 @@ const StoreSchema = new Schema(
     countries: [
       {
         country: { type: String, required: true },
-        states: { type: [String], required: true },
+        states: [
+          {
+            state: { type: String, required: true },
+            shippingFee: { type: String, required: true },
+          },
+        ],
       },
     ],
   },
