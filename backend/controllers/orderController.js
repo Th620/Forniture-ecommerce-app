@@ -104,7 +104,7 @@ const cancelOrder = async (req, res, next) => {
     await order.save();
 
     res.json({
-      message: "order canceled",
+      message: "order canceled successfully",
     });
   } catch (error) {
     next(error);
@@ -162,7 +162,7 @@ const confirmOrder = async (req, res, next) => {
 
     await order.save();
 
-    res.json({ message: "order confirmed" });
+    res.json({ message: "order confirmed successfully" });
   } catch (error) {
     next(error);
   }

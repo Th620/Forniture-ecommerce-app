@@ -1,5 +1,6 @@
 const { uploadPicture } = require("../middelware/uploadPictureMiddelware");
 const Product = require("../models/Product");
+const Review = require("../models/Review");
 const { fileRemover } = require("../utils/fileRemover");
 
 const createProduct = async (req, res, next) => {
@@ -102,9 +103,9 @@ const editProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   try {
-    const { slug } = req.params;
+    const { id } = req.params;
 
-    const product = await Product.findOneAndDelete({ slug });
+    const product = await Product.findOneAndDelete({ _id: id });
 
     if (!product) {
       const error = Error("Product not found");
@@ -113,7 +114,7 @@ const deleteProduct = async (req, res, next) => {
     }
 
     res.json({
-      message: "product deleted",
+      message: "product deleted successfully",
     });
   } catch (error) {
     next(error);
@@ -181,12 +182,6 @@ const getProducts = async (req, res, next) => {
       },
     ]);
 
-    if (!products) {
-      const error = Error("Product not found");
-      error.statusCode = 404;
-      return next(error);
-    }
-
     const finalProducts = products.sort((a, b) => sorting * (a - b));
 
     res.json(finalProducts);
@@ -235,6 +230,50 @@ const searchProduct = async (req, res, next) => {
   }
 };
 
+const reviewProduct = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    const product = await Product.findOne({ slug });
+
+    if (!product) {
+      const error = new Error("Product not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const { content } = req.body;
+
+    const review = await Review.create({
+      user: req.user,
+      product: product.id,
+      content,
+    });
+
+    res.json({ massage: "review added successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getProductReviews = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      const error = new Error("Product not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const reviews = await Review.find({ product: product._id });
+
+    res.json(reviews);
+  } catch (error) {}
+};
+
 module.exports = {
   createProduct,
   editProduct,
@@ -242,4 +281,6 @@ module.exports = {
   getProducts,
   getProduct,
   searchProduct,
+  reviewProduct,
+  getProductReviews,
 };

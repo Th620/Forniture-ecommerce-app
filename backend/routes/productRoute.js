@@ -6,6 +6,8 @@ const {
   getProducts,
   getProduct,
   searchProduct,
+  reviewProduct,
+  getProductReviews,
 } = require("../controllers/productControllers");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 const { upload } = require("../middelware/uploadPictureMiddelware");
@@ -28,6 +30,8 @@ router.put(
   upload.array("product", 4),
   editProduct
 );
-router.delete("/delete/:slug", authGuard, adminGuard, deleteProduct);
+router.delete("/delete/:id", authGuard, adminGuard, deleteProduct);
+router.post("/:slug/review", authGuard, reviewProduct);
+router.get("/:id/reviews",  getProductReviews);
 
 module.exports = router;
