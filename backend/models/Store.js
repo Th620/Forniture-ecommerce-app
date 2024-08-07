@@ -4,7 +4,7 @@ const StoreSchema = new Schema(
   {
     admins: [Schema.Types.ObjectId],
     categories: { type: [String], required: true },
-    countries: [
+    countriesDetails: [
       {
         country: { type: String, required: true },
         states: [
@@ -15,6 +15,7 @@ const StoreSchema = new Schema(
         ],
       },
     ],
+    countries: { type: [String], required: true },
   },
   { timestamps: true }
 );

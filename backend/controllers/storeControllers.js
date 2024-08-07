@@ -8,7 +8,7 @@ const createStore = async (req, res, next) => {
   try {
     const store = await Store.find();
     if (store.length >= 1) throw new Error("store already available");
-    const { categories, countries } = req.body;
+    const { categories, countriesDetails } = req.body;
 
     if (!categories || typeof categories !== "array")
       throw new Error("categories are required");
@@ -16,22 +16,29 @@ const createStore = async (req, res, next) => {
     if (hasDuplicatesArrayOfStings(categories))
       throw new Error("you can't set two similar categories");
 
-    if (!countries || typeof countries !== "object")
-      throw new Error("countries are required");
+    if (!countriesDetails || typeof countriesDetails !== "object")
+      throw new Error("countriesDetails are required");
 
-    if (hasDuplicatesArrayOfObjects(countries, "country"))
-      throw new Error("you can't set two similar countries");
+    if (hasDuplicatesArrayOfObjects(countriesDetails, "country"))
+      throw new Error("you can't set two similar countriesDetails");
 
-    for (let i = 0; i < countries.length; i++) {
-      if (hasDuplicatesArrayOfObjects(countries[i].state, "state")) {
+    for (let i = 0; i < countriesDetails.length; i++) {
+      if (hasDuplicatesArrayOfObjects(countriesDetails[i].state, "state")) {
         throw new Error("you can't set two similar states i the same country");
       }
     }
+
+    let countries = [];
+
+    countriesDetails.map((country) => {
+      countries.push(country.country);
+    });
 
     const admins = await User.find({ admin: true });
     const newStore = await Store.create({
       admins,
       categories,
+      countriesDetails,
       countries,
     });
 
@@ -44,7 +51,7 @@ const createStore = async (req, res, next) => {
 const getCategories = async (req, res, next) => {
   try {
     await Store.create({
-      countries: {
+      countriesDetails: {
         country: "country",
         states: [
           {
@@ -69,7 +76,7 @@ const getCategories = async (req, res, next) => {
   }
 };
 
-const getCountries = async (req, res, next) => {
+const getCountriesDetails = async (req, res, next) => {
   try {
     const store = await Store.findOne();
 
@@ -79,7 +86,7 @@ const getCountries = async (req, res, next) => {
       return next(error);
     }
 
-    res.json(store.countries);
+    res.json(store.countriesDetails);
   } catch (error) {
     next(error);
   }
@@ -133,7 +140,7 @@ const addCountry = async (req, res, next) => {
         throw new Error("you must add the shipping fee of every state");
     });
 
-    const existCountry = store.countries.filter((item) => {
+    const existCountry = store.countriesDetails.filter((item) => {
       return item.country === country;
     });
 
@@ -142,11 +149,13 @@ const addCountry = async (req, res, next) => {
     if (hasDuplicatesArrayOfObjects(states, "state"))
       throw new Error("there is duplicated state");
 
-    store.countries.push({ country, states });
+    store.countriesDetails.push({ country, states });
+
+    store.countries.push(country);
 
     const updatedStore = await store.save();
 
-    res.json(updatedStore.countries);
+    res.json(updatedStore.countriesDetails);
   } catch (error) {
     next(error);
   }
@@ -155,7 +164,7 @@ const addCountry = async (req, res, next) => {
 module.exports = {
   createStore,
   getCategories,
-  getCountries,
+  getCountriesDetails,
   addCategory,
   addCountry,
 };

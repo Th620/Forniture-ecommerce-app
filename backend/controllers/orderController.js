@@ -25,7 +25,7 @@ const shippingFeesgFeesCount = async (shipping) => {
   let countryIndex = null;
   let stateIndex = null;
 
-  store.countries.map((item, index) => {
+  store.countriesDetails.map((item, index) => {
     if (item.country === shipping.country) {
       countryIndex = index;
     }
@@ -34,7 +34,7 @@ const shippingFeesgFeesCount = async (shipping) => {
   if (countryIndex === null)
     throw new Error("we don't provide shipping service to your adress");
 
-  store.countries[countryIndex].states.map((item, index) => {
+  store.countriesDetails[countryIndex].states.map((item, index) => {
     if (item.state === shipping.state) {
       stateIndex = index;
     }
@@ -44,7 +44,7 @@ const shippingFeesgFeesCount = async (shipping) => {
     throw new Error("we don't provide shipping service to your adress");
 
   let shippingFees =
-    store.countries[countryIndex].states[stateIndex].shippingFee;
+    store.countriesDetails[countryIndex].states[stateIndex].shippingFee;
 
   return shippingFees;
 };
@@ -55,6 +55,20 @@ const newOrder = async (req, res, next) => {
 
     if (!products || products == []) throw new Error("can place a empty order");
     if (!shipping) throw new Error("shipping info are required");
+
+    const store = await store.findOne({ admins: { $in: [req.user] } });
+
+    const { countries, countriesDetails } = store;
+
+    if (!countries.includes(shipping.country))
+      throw new Error("there is no shipping service to this country");
+
+    const states = countriesDetails.find(
+      (country) => country.country === shipping.country
+    );
+
+    if (!states.includes(shipping.state))
+      throw new Error("there is no shipping service to this state");
 
     var total = 0;
 

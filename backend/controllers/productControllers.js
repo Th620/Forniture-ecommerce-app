@@ -27,12 +27,6 @@ const createProduct = async (req, res, next) => {
       throw new Error("product exist");
     }
 
-    if (!categories.includes(category)) {
-      const error = new Error("category not fount");
-      error.statusCode = 404;
-      return next(error);
-    }
-
     var images = [];
 
     if (req.files) {
@@ -53,7 +47,7 @@ const createProduct = async (req, res, next) => {
       throw new Error("product stock is required");
     }
 
-    const store = await Store.findOne();
+    const store = await Store.findOne({ admins: { $in: [req.user] } });
 
     if (store) {
       const error = new Error("no store configured");
@@ -62,6 +56,12 @@ const createProduct = async (req, res, next) => {
     }
 
     const { categories } = store;
+
+    if (!categories.includes(category)) {
+      const error = new Error("category not fount");
+      error.statusCode = 404;
+      return next(error);
+    }
 
     if (hasDuplicatesArrayOfObjectsTwoProprties(variations, "size", "color"))
       throw new Error("you can't add similar variation");
@@ -116,6 +116,21 @@ const editProduct = async (req, res, next) => {
 
     if (!product) {
       const error = new Error("product not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    const store = await Store.findOne({ admins: { $in: [req.user] } });
+
+    if (store) {
+      const error = new Error("no store configured");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const { categories } = store;
+
+    if (!categories.includes(category)) {
+      const error = new Error("category not fount");
       error.statusCode = 404;
       return next(error);
     }
