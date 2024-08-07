@@ -110,6 +110,20 @@ const editOrder = async (req, res, next) => {
     if (shipping?.city == "") throw new Error("shipping info are required");
     if (shipping?.adress == "") throw new Error("shipping info are required");
 
+    const store = await store.findOne({ admins: { $in: [req.user] } });
+
+    const { countries, countriesDetails } = store;
+
+    if (!countries.includes(shipping.country))
+      throw new Error("there is no shipping service to this country");
+
+    const states = countriesDetails.find(
+      (country) => country.country === shipping.country
+    );
+
+    if (!states.includes(shipping.state))
+      throw new Error("there is no shipping service to this state");
+
     let shippingFees = 10;
     let total = 0;
 

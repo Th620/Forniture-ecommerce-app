@@ -24,7 +24,7 @@ const createStore = async (req, res, next) => {
 
     for (let i = 0; i < countriesDetails.length; i++) {
       if (hasDuplicatesArrayOfObjects(countriesDetails[i].state, "state")) {
-        throw new Error("you can't set two similar states i the same country");
+        throw new Error("you can't set two similar states in the same country");
       }
     }
 
