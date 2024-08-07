@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const Store = require("../models/Store");
 const { isObjectEmpty } = require("../utils/isObjectEmpty");
 
 const subtotalCount = async (items, total) => {
@@ -18,6 +19,36 @@ const subtotalCount = async (items, total) => {
   }
 };
 
+const shippingFeesgFeesCount = async (shipping) => {
+  const store = await Store.findOne();
+
+  let countryIndex = null;
+  let stateIndex = null;
+
+  store.countries.map((item, index) => {
+    if (item.country === shipping.country) {
+      countryIndex = index;
+    }
+  });
+
+  if (countryIndex === null)
+    throw new Error("we don't provide shipping service to your adress");
+
+  store.countries[countryIndex].states.map((item, index) => {
+    if (item.state === shipping.state) {
+      stateIndex = index;
+    }
+  });
+
+  if (stateIndex === null)
+    throw new Error("we don't provide shipping service to your adress");
+
+  let shippingFees =
+    store.countries[countryIndex].states[stateIndex].shippingFee;
+
+  return shippingFees;
+};
+
 const newOrder = async (req, res, next) => {
   try {
     const { products, shipping } = req.body;
@@ -25,7 +56,6 @@ const newOrder = async (req, res, next) => {
     if (!products || products == []) throw new Error("can place a empty order");
     if (!shipping) throw new Error("shipping info are required");
 
-    let shippingFees = 10;
     var total = 0;
 
     const newOrder = await Order.create({
@@ -33,7 +63,7 @@ const newOrder = async (req, res, next) => {
       products,
       shipping,
       subTotal: await subtotalCount(products, total),
-      shippingFees,
+      shippingFees: await shippingFeesgFeesCount(shipping),
     });
     res.status(201).json(newOrder);
   } catch (error) {

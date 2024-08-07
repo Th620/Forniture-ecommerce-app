@@ -12,9 +12,15 @@ const ProductSchema = new Schema(
     stock: { type: Number, required: true },
     sizes: { type: [String] },
     colors: { type: [String] },
-    variations: { type: [Object] },
+    variations: [
+      {
+        size: { type: String },
+        color: { type: String },
+        stock: { type: Number },
+      },
+    ],
     sizes: { type: [String] },
-    image: { type: String },
+    images: { type: [String] },
   },
   {
     timestamps: true,

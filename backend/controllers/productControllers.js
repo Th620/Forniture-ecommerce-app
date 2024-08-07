@@ -1,7 +1,10 @@
-const { uploadPicture } = require("../middelware/uploadPictureMiddelware");
 const Product = require("../models/Product");
 const Review = require("../models/Review");
+const Store = require("../models/Store");
 const { fileRemover } = require("../utils/fileRemover");
+const {
+  hasDuplicatesArrayOfObjectsTwoProprties,
+} = require("../utils/hasDuplicates");
 
 const createProduct = async (req, res, next) => {
   try {
@@ -18,19 +21,58 @@ const createProduct = async (req, res, next) => {
       variations,
     } = req.body;
 
-    if (!title) throw new Error("product title is required");
-    if (!price) throw new Error("product price is required");
-    if (!stock) throw new Error("product stock is required");
-
     const product = await Product.findOne({ slug: title.replace(/\s/g, "-") });
 
-    if (product) throw new Error("product exist");
-
-    if (req.file) {
-      var image = req.file.filename;
-    } else {
-      image = "";
+    if (product) {
+      throw new Error("product exist");
     }
+
+    if (!categories.includes(category)) {
+      const error = new Error("category not fount");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    var images = [];
+
+    if (req.files) {
+      const { files } = req;
+
+      files.map((file) => {
+        images.push(file.filename);
+      });
+    }
+
+    if (!title) {
+      throw new Error("product title is required");
+    }
+    if (!price) {
+      throw new Error("product price is required");
+    }
+    if (!stock) {
+      throw new Error("product stock is required");
+    }
+
+    const store = await Store.findOne();
+
+    if (store) {
+      const error = new Error("no store configured");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const { categories } = store;
+
+    if (hasDuplicatesArrayOfObjectsTwoProprties(variations, "size", "color"))
+      throw new Error("you can't add similar variation");
+
+    const notAvailableVariation = variations.some((variation) => {
+      return (
+        !sizes.includes(variation.size) || !colors.includes(variation.color)
+      );
+    });
+
+    if (notAvailableVariation) throw new Error("not available variation");
 
     const newProduct = await Product.create({
       title,
@@ -44,13 +86,14 @@ const createProduct = async (req, res, next) => {
       colors,
       sizes,
       variations,
-      image,
+      images,
     });
 
     res.status(201).json({
       newProduct,
     });
   } catch (error) {
+    if (req.files) fileRemover(images);
     next(error);
   }
 };
@@ -61,7 +104,23 @@ const editProduct = async (req, res, next) => {
 
     const product = await Product.findOne({ slug });
 
-    if (!product) throw new Error("product not found");
+    var images = [];
+
+    if (req.files) {
+      const { files } = req;
+
+      files.map((file) => {
+        images.push(file.filename);
+      });
+    }
+
+    if (!product) {
+      const error = new Error("product not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    let previousImages = product.images;
 
     const {
       title,
@@ -76,11 +135,23 @@ const editProduct = async (req, res, next) => {
       variations,
     } = req.body;
 
-    if (!title) throw new Error("product title is required");
-    if (!price) throw new Error("product price is required");
-    if (!stock) throw new Error("product stock is required");
+    if (title === "") {
+      throw new Error("product title is required");
+    }
+    if (price === 0) {
+      throw new Error("product price is required");
+    }
 
-    if (product.image) fileRemover(product.image);
+    if (hasDuplicatesArrayOfObjectsTwoProprties(variations, "size", "color"))
+      throw new Error("you can't add similar variation");
+
+    const notAvailableVariation = variations.some((variation) => {
+      return (
+        !sizes.includes(variation.size) || !colors.includes(variation.color)
+      );
+    });
+
+    if (notAvailableVariation) throw new Error("not available variation");
 
     product.title = title?.trim() || product.title;
     product.price = price || product.price;
@@ -92,11 +163,14 @@ const editProduct = async (req, res, next) => {
     product.colors = colors || product.colors;
     product.sizes = sizes || product.sizes;
     product.variations = variations || product.variations;
-    product.image = req?.file?.filename || "";
+
+    product.images = images;
 
     const editedProduct = await product.save();
-    res.json({ editedProduct });
+    fileRemover(previousImages);
+    res.json(editedProduct);
   } catch (error) {
+    if (req.files) fileRemover(images);
     next(error);
   }
 };
@@ -175,7 +249,7 @@ const getProducts = async (req, res, next) => {
           stock: 1,
           colors: 1,
           sizes: 1,
-          image: 1,
+          images: 1,
           createdAt: 1,
           updatedAt: 1,
         },

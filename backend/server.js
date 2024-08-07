@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path");
 
 const connectDB = require("./db/db");
 const {
@@ -39,9 +40,14 @@ app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/store", storeRoute);
 
+//static assets
+app.use("/uploads",express.static(path.join(__dirname, "/uploads")));
+
 //errorHandlers
 app.use(invalidPathHandler);
 app.use(errorResposerHandler);
+
+
 
 const PORT = process.env.PORT;
 

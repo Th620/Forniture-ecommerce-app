@@ -2,6 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const StoreSchema = new Schema(
   {
+    admins: [Schema.Types.ObjectId],
     categories: { type: [String], required: true },
     countries: [
       {

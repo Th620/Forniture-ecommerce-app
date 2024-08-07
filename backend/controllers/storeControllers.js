@@ -1,4 +1,45 @@
 const Store = require("../models/Store");
+const {
+  hasDuplicatesArrayOfStings,
+  hasDuplicatesArrayOfObjects,
+} = require("../utils/hasDuplicates");
+
+const createStore = async (req, res, next) => {
+  try {
+    const store = await Store.find();
+    if (store.length >= 1) throw new Error("store already available");
+    const { categories, countries } = req.body;
+
+    if (!categories || typeof categories !== "array")
+      throw new Error("categories are required");
+
+    if (hasDuplicatesArrayOfStings(categories))
+      throw new Error("you can't set two similar categories");
+
+    if (!countries || typeof countries !== "object")
+      throw new Error("countries are required");
+
+    if (hasDuplicatesArrayOfObjects(countries, "country"))
+      throw new Error("you can't set two similar countries");
+
+    for (let i = 0; i < countries.length; i++) {
+      if (hasDuplicatesArrayOfObjects(countries[i].state, "state")) {
+        throw new Error("you can't set two similar states i the same country");
+      }
+    }
+
+    const admins = await User.find({ admin: true });
+    const newStore = await Store.create({
+      admins,
+      categories,
+      countries,
+    });
+
+    res.json(newStore);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getCategories = async (req, res, next) => {
   try {
@@ -98,12 +139,8 @@ const addCountry = async (req, res, next) => {
 
     if (!(existCountry.length == 0)) throw new Error("country already exists");
 
-    for (let j = 0; j < states.length - 1; j++) {
-      for (let i = j + 1; i < states.length; i++) {
-        if (states[i].state === states[j].state)
-          throw new Error("there is a duplicated state");
-      }
-    }
+    if (hasDuplicatesArrayOfObjects(states, "state"))
+      throw new Error("there is duplicated state");
 
     store.countries.push({ country, states });
 
@@ -115,4 +152,10 @@ const addCountry = async (req, res, next) => {
   }
 };
 
-module.exports = { getCategories, getCountries, addCategory, addCountry };
+module.exports = {
+  createStore,
+  getCategories,
+  getCountries,
+  addCategory,
+  addCountry,
+};

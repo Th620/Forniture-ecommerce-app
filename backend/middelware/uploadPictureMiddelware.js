@@ -12,13 +12,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  // fileFilter: (req, file, cd) => {
-  //   const ext = path.extname(file.originalname);
-  //   if (ext !== "jpg" || ext !== "png" || ext !== "jpeg" || ext !== "svg") {
-  //     return cd(new Error("only images are allowed"));
-  //   }
-  //   cd(null, true);
-  // },
+  fileFilter: (req, file, cd) => {
+    const ext = path.extname(file.originalname);
+    if (ext !== ".jpg" && ext !== ".png" && ext !== ".jpeg" && ext !== ".svg") {
+      return cd(new Error("only images are allowed"));
+    }
+    cd(null, true);
+  },
 });
 
 module.exports = { upload };
