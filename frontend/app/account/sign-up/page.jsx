@@ -1,14 +1,93 @@
+"use client";
+
+import { setUserInfo } from "@/lib/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hook";
+import { register } from "@/services/user";
 import Link from "next/link";
-import React from "react";
+import { useState } from "react";
+import isEmail from "validator/lib/isEmail";
+import { MdErrorOutline } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 export default function signUp() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState({});
+
+  const dispatch = useAppDispatch();
+
+  const router = useRouter();
+
+  const handelSubmit = async (e) => {
+    e.preventDefault();
+    if (!firstName) {
+      setError({ firstName: true, Error: "please enter a last name" });
+      return;
+    }
+
+    if (!lastName) {
+      setError({ lastName: true, Error: "please enter a last name" });
+      return;
+    }
+
+    if (!isEmail(email)) {
+      setError({ email: true, Error: "please enter a valid email" });
+      return;
+    }
+
+    if (!password) {
+      setError({ password: true, Error: "please enter a password" });
+      return;
+    }
+
+    if (password.length < 8) {
+      setError({
+        password: true,
+        Error: "password must be 8 caracters or less",
+      });
+      return;
+    }
+
+    setError({});
+
+    try {
+      setIsLoading(true);
+      const data = await register({ email, password, firstName, lastName });
+
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setError({});
+      setPassword("");
+
+      if (data) {
+        dispatch(setUserInfo(data));
+      }
+
+      router.push("/");
+    } catch (error) {
+      setError({ form: true, Error: error.message });
+    }
+  };
   return (
     <main className="flex justify-center w-full px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pt-150 min-h-screen">
       <div className="grid grid-cols-4 w-full h-fit">
         <h2 className="text-[32px] font-semibold capitalize col-span-4 text-center mb-14">
           Sign up
         </h2>
-        <form className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col items-center">
+        {error.form && (
+          <div className="col-span-4 md:col-span-2 md:col-start-2 bg-red-200 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2 mb-4">
+            <MdErrorOutline className="size-4" />
+            {error.Error}
+          </div>
+        )}
+        <form
+          onSubmit={handelSubmit}
+          className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col"
+        >
           <label htmlFor="firstName" className="sr-only">
             First Name:
           </label>
@@ -16,9 +95,19 @@ export default function signUp() {
             type="text"
             name="FirstName"
             id="firstName"
+            value={firstName}
             placeholder="First Name"
-            className="h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
+            onChange={(e) => {
+              setFirstName(e.target.value);
+            }}
+            className={`h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 rounded-sm ${
+              error.firstName ? "outline-red-400 " : ""
+            }`}
           />
+          {error.firstName && (
+            <p className="text-red-400 text-[10px] mt-1">{error.Error}</p>
+          )}
+
           <label htmlFor="lastName" className="sr-only">
             Last Name:
           </label>
@@ -26,9 +115,19 @@ export default function signUp() {
             type="text"
             name="LastName"
             id="lastName"
+            value={lastName}
             placeholder="Last Name"
-            className="h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
+            onChange={(e) => {
+              setLastName(e.target.value);
+            }}
+            className={`h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mt-4 rounded-sm ${
+              error.lastName ? "outline-red-400 " : ""
+            }`}
           />
+          {error.lastName && (
+            <p className="text-red-400 text-[10px] mt-1">{error.Error}</p>
+          )}
+
           <label htmlFor="email" className="sr-only">
             Email:
           </label>
@@ -36,9 +135,19 @@ export default function signUp() {
             type="email"
             name="email"
             id="email"
+            value={email}
             placeholder="Email"
-            className="h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mb-4 rounded-sm"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            className={`h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mt-4 rounded-sm ${
+              error.email ? "outline-red-400 " : ""
+            }`}
           />
+          {error.email && (
+            <p className="text-red-400 text-[10px] mt-1">{error.Error}</p>
+          )}
+
           <label htmlFor="firstName" className="sr-only">
             Password:
           </label>
@@ -46,12 +155,22 @@ export default function signUp() {
             type="password"
             name="password"
             id="password"
+            value={password}
             placeholder="Password"
-            className="h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 rounded-sm"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            className={`h-10 bg-input outline-none w-full text-sm font-medium placeholder:text-gray placeholder:text-sm px-4 mt-4 rounded-sm ${
+              error.password ? "outline-red-400 " : ""
+            }`}
           />
+          {error.password && (
+            <p className="text-red-400 text-[10px] mt-1">{error.Error}</p>
+          )}
           <button
             type="submit"
-            className="bg-navy py-2 px-14 text-white font-lato my-7 font-medium text-sm"
+            disabled={isLoading}
+            className="bg-navy py-2 px-14 text-white font-lato my-7 font-medium text-sm self-center disabled:opacity-50"
           >
             Sign up
           </button>
@@ -59,7 +178,7 @@ export default function signUp() {
         <p className="col-span-4 text-center text-xs">
           You already have an account?{" "}
           <Link
-            href={"/sign-in"}
+            href={"/account/sign-in"}
             className="text-navy font-semibold capitalize"
           >
             Sign in

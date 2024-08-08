@@ -2,9 +2,10 @@ import { Montserrat, Lato } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import { StoreProvider } from "./StoreProvider";
 
 export const metadata = {
-  title: "DECO",
+  title: "DECO: Modern Forniture",
   description:
     "Elevate your living space with our handpicked furniture collection",
 };
@@ -24,9 +25,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${montserrat.className} bg-white`}>
-        <NavBar />
-        {children}
-        <Footer />
+        <StoreProvider>
+          <NavBar />
+          {children}
+          <Footer />
+        </StoreProvider>
       </body>
     </html>
   );

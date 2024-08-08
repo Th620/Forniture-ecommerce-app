@@ -17,6 +17,7 @@ dotenv.config();
 app.use(
   cors({
     origin: "http://localhost:3000",
+    credentials: true,
   })
 );
 
@@ -40,14 +41,12 @@ app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/store", storeRoute);
 
-//static assets
-app.use("/uploads",express.static(path.join(__dirname, "/uploads")));
+// //static assets
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
-//errorHandlers
+// //errorHandlers
 app.use(invalidPathHandler);
 app.use(errorResposerHandler);
-
-
 
 const PORT = process.env.PORT;
 
