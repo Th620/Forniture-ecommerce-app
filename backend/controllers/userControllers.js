@@ -31,12 +31,19 @@ const register = async (req, res, next) => {
 
     user = await User.create({ firstName, lastName, email, password });
 
+    const token = user.generateJWT();
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+      secure: false,
+      httpOnly: true,
+    });
+
     res.status(201).json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      token: user.generateJWT(),
     });
   } catch (error) {
     next(error);
@@ -57,12 +64,19 @@ const login = async (req, res, next) => {
       throw new Error("Wrong email and password combination");
     }
 
+    const token = user.generateJWT();
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+      secure: false,
+      httpOnly: true,
+    });
+
     res.json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      token: user.generateJWT(),
     });
   } catch (error) {
     next(error);

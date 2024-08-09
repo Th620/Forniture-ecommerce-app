@@ -21,6 +21,7 @@ export default function signIn() {
 
   const handelSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!isEmail(email)) {
       setError({ email: true, Error: "please enter a valid email" });
@@ -43,7 +44,6 @@ export default function signIn() {
     setError({});
 
     try {
-      setIsLoading(true);
       const data = await login({ email, password });
 
       setEmail("");
@@ -52,11 +52,20 @@ export default function signIn() {
 
       if (data) {
         dispatch(setUserInfo(data));
+        localStorage.setItem(
+          "account",
+          JSON.stringify({ data, expiresAt: Date.now() + 24 * 60 * 60 * 1000 })
+        );
       }
 
       router.push("/");
     } catch (error) {
+      setEmail("");
+      setPassword("");
+      setIsLoading(false);
       setError({ form: true, Error: error.message });
+      setTimeout(() => setError({}), 3000);
+      return;
     }
   };
 

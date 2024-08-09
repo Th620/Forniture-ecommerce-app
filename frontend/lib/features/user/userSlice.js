@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  userInfo: null,
+  userInfo:
+    localStorage.getItem("account") &&
+    JSON.parse(localStorage.getItem("account")).expiresAt > Date.now()
+      ? JSON.parse(localStorage.getItem("account")).data
+      : null,
 };
 
 export const userSlice = createSlice({

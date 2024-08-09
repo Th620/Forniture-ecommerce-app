@@ -4,13 +4,29 @@ import { Logo, navBtns, navLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiUser } from "react-icons/fi";
 import Menu from "./Menu";
 import { usePathname } from "next/navigation";
+import { useAppSelector } from "@/lib/hook";
+import { IoIosSearch } from "react-icons/io";
+import { IoBagOutline } from "react-icons/io5";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+
+  let user = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("account") &&
+      JSON.parse(localStorage.getItem("account")).expiresAt < Date.now()
+    ) {
+      localStorage.removeItem("account");
+    }
+  }, []);
+
+  console.log(user);
 
   const pathName = usePathname();
 
@@ -61,16 +77,30 @@ const NavBar = () => {
               ))}
             </ul>
             <ul className="hidden lg:flex justify-center items-center gap-x-5">
-              {navBtns.map((navBtn) => (
-                <Link
-                  href={{
-                    pathname: `/${navBtn.link}`,
-                  }}
-                  key={navBtn.id}
-                >
-                  <li className="text-xl">{navBtn.icon}</li>
-                </Link>
-              ))}
+              <li className="text-xl">
+                <IoIosSearch />
+              </li>
+              <Link
+                href={{
+                  pathname: `/${
+                    !user.userInfo ? "account/sign-in" : "profile"
+                  }`,
+                }}
+              >
+                <li className="">
+                  {user.userInfo ? (
+                    <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-xs border-[1.5px] border-black font-lato">
+                      {user.userInfo.firstName[0]}
+                    </div>
+                  ) : (
+                    <FiUser />
+                  )}
+                </li>
+              </Link>
+
+              <li className="text-xl">
+                <IoBagOutline />
+              </li>
             </ul>
           </>
         )}

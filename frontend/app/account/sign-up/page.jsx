@@ -23,6 +23,7 @@ export default function signUp() {
 
   const handelSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!firstName) {
       setError({ firstName: true, Error: "please enter a last name" });
       return;
@@ -54,7 +55,6 @@ export default function signUp() {
     setError({});
 
     try {
-      setIsLoading(true);
       const data = await register({ email, password, firstName, lastName });
 
       setFirstName("");
@@ -65,11 +65,19 @@ export default function signUp() {
 
       if (data) {
         dispatch(setUserInfo(data));
+        localStorage.setItem("account", JSON.stringify(data));
       }
 
       router.push("/");
     } catch (error) {
+      setEmail("");
+      setPassword("");
+      setFirstName("");
+      setLastName("");
+      setIsLoading(false);
       setError({ form: true, Error: error.message });
+      setTimeout(() => setError({}), 3000);
+      return;
     }
   };
   return (

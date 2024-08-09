@@ -4,7 +4,7 @@ import React from "react";
 const ServiceCard = ({ className, service }) => {
   return (
     <div
-      className={`${className} w-full aspect-square font-montserrat text-[#828385] border rounded-sm border-[#828385] py-6 lg:py-14 flex flex-col justify-center items-center`}
+      className={`${className} w-full aspect-square font-montserrat text-[#828385] rounded-sm bg-bg py-6 lg:py-14 flex flex-col justify-center items-center`}
     >
       <Link
         href={"/"}
