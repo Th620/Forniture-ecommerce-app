@@ -1,5 +1,6 @@
 const { default: isEmail } = require("validator/lib/isEmail");
 const User = require("../models/User");
+const Store = require("../models/Store");
 const { sign, verify } = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
@@ -87,6 +88,11 @@ const login = async (req, res, next) => {
   }
 };
 
+const logout = async (req, res, next) => {
+  res.clearCookie("token");
+  res.json({ message: "logged out successfully" });
+};
+
 const profile = async (req, res, next) => {
   try {
     const user = await User.findById(req?.user?._id);
@@ -144,6 +150,8 @@ const updateProfile = async (req, res, next) => {
       user.password = password;
     }
 
+    if (phone && (typeof +phone !== "number" || parseInt(phone) !== +phone))
+      throw new Error("wrong phone number");
     user.phone = phone;
     user.state = state;
     user.country = country;
@@ -255,4 +263,5 @@ module.exports = {
   updateProfile,
   forgotPassword,
   resetPassword,
+  logout,
 };

@@ -25,9 +25,6 @@ const User = require("../models/User");
 
 const authGuard = async (req, res, next) => {
   const { token } = req.cookies;
-  console.log(req.cookies);
-
-  console.log(token);
 
   if (token) {
     try {
