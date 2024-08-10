@@ -34,9 +34,9 @@ const register = async (req, res, next) => {
     const token = user.generateJWT();
 
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 15 * 60 * 1000),
-      secure: false,
+      maxAge: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
       httpOnly: true,
+      secure: false,
     });
 
     res.status(201).json({
@@ -66,11 +66,15 @@ const login = async (req, res, next) => {
 
     const token = user.generateJWT();
 
+    console.log(token);
+
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 15 * 60 * 1000),
-      secure: false,
+      maxAge: new Date(Date.now() + 15 * 60 * 1000),
       httpOnly: true,
+      secure: false,
     });
+
+    console.log(req.cookies);
 
     res.json({
       _id: user._id,

@@ -3,6 +3,7 @@ import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { StoreProvider } from "./StoreProvider";
+import Providers from "./Providers";
 
 export const metadata = {
   title: "DECO: Modern Forniture",
@@ -24,12 +25,15 @@ const lato = Lato({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${montserrat.className} bg-white`}>
-        <StoreProvider>
-          <NavBar />
-          {children}
-          <Footer />
-        </StoreProvider>
+      <body className={`${montserrat.className} ${lato.className} bg-white`}>
+        <Providers>
+          {" "}
+          <StoreProvider>
+            <NavBar />
+            {children}
+            <Footer />
+          </StoreProvider>
+        </Providers>
       </body>
     </html>
   );

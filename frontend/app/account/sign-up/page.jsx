@@ -26,21 +26,25 @@ export default function signUp() {
     setIsLoading(true);
     if (!firstName) {
       setError({ firstName: true, Error: "please enter a last name" });
+      setIsLoading(false);
       return;
     }
 
     if (!lastName) {
       setError({ lastName: true, Error: "please enter a last name" });
+      setIsLoading(false);
       return;
     }
 
     if (!isEmail(email)) {
       setError({ email: true, Error: "please enter a valid email" });
+      setIsLoading(false);
       return;
     }
 
     if (!password) {
       setError({ password: true, Error: "please enter a password" });
+      setIsLoading(false);
       return;
     }
 
@@ -49,6 +53,7 @@ export default function signUp() {
         password: true,
         Error: "password must be 8 caracters or less",
       });
+      setIsLoading(false);
       return;
     }
 

@@ -25,11 +25,13 @@ export default function signIn() {
 
     if (!isEmail(email)) {
       setError({ email: true, Error: "please enter a valid email" });
+      setIsLoading(false);
       return;
     }
 
     if (!password) {
       setError({ password: true, Error: "please enter a password" });
+      setIsLoading(false);
       return;
     }
 
@@ -38,6 +40,7 @@ export default function signIn() {
         password: true,
         Error: "password must be 8 caracters or less",
       });
+      setIsLoading(false);
       return;
     }
 

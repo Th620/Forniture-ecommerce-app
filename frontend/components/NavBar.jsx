@@ -7,9 +7,10 @@ import React, { useEffect, useState } from "react";
 import { FiMenu, FiUser } from "react-icons/fi";
 import Menu from "./Menu";
 import { usePathname } from "next/navigation";
-import { useAppSelector } from "@/lib/hook";
+import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
+import { resetUserInfo } from "@/lib/features/user/userSlice";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -17,16 +18,16 @@ const NavBar = () => {
 
   let user = useAppSelector((state) => state.user);
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (
       localStorage.getItem("account") &&
       JSON.parse(localStorage.getItem("account")).expiresAt < Date.now()
     ) {
-      localStorage.removeItem("account");
+      dispatch(resetUserInfo());
     }
   }, []);
-
-  console.log(user);
 
   const pathName = usePathname();
 

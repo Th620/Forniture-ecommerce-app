@@ -24,7 +24,11 @@ const User = require("../models/User");
 // };
 
 const authGuard = async (req, res, next) => {
-  const token = req.cookies.token;
+  const { token } = req.cookies;
+  console.log(req.cookies);
+
+  console.log(token);
+
   if (token) {
     try {
       const { id } = verify(token, process.env.JWT_SECRET);
