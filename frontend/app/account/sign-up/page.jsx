@@ -1,7 +1,7 @@
 "use client";
 
 import { setUserInfo } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hook";
+import { useAppDispatch } from "@/lib/hook";
 import { register } from "@/services/user";
 import Link from "next/link";
 import { useState } from "react";
@@ -91,16 +91,17 @@ export default function signUp() {
         <h2 className="text-[32px] font-semibold capitalize col-span-4 text-center mb-14">
           Sign up
         </h2>
-        {error.form && (
-          <div className="col-span-4 md:col-span-2 md:col-start-2 bg-red-200 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2 mb-4">
-            <MdErrorOutline className="size-4" />
-            {error.Error}
-          </div>
-        )}
+
         <form
           onSubmit={handelSubmit}
           className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col"
         >
+          {error.form && (
+            <div className="col-span-4 md:col-span-2 md:col-start-2 bg-red-200 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2 mb-4">
+              <MdErrorOutline className="size-4" />
+              {error.Error}
+            </div>
+          )}
           <label htmlFor="firstName" className="sr-only">
             First Name:
           </label>
@@ -183,12 +184,12 @@ export default function signUp() {
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-navy py-2 px-14 text-white font-lato my-7 font-medium text-sm self-center disabled:opacity-50"
+            className="bg-navy disabled:cursor-not-allowed hover:bg-navyHover py-2 px-14 text-white font-lato my-7 font-medium self-center disabled:opacity-50"
           >
             Sign up
           </button>
         </form>
-        <p className="col-span-4 text-center text-xs">
+        <p className="col-span-4 text-center text-sm">
           You already have an account?{" "}
           <Link
             href={"/account/sign-in"}

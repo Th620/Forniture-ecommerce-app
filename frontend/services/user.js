@@ -41,11 +41,55 @@ export const login = async ({ email, password }) => {
   }
 };
 
+export const logout = async () => {
+  try {
+    const { data } = await axios.post("http://localhost:8080/api/users/logout");
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
 export const profile = async () => {
   try {
     const { data } = await axios.get("http://localhost:8080/api/users/profile");
 
-    console.log(data);
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(
+        JSON.stringify({
+          status: error.response.status,
+          message: error.response.data.message,
+        })
+      );
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const updateProfile = async ({
+  firstName,
+  lastName,
+  email,
+  phone,
+  country,
+  state,
+  city,
+  adress,
+}) => {
+  try {
+    const { data } = await axios.put(
+      "http://localhost:8080/api/users/updateProfile",
+      { firstName, lastName, email, phone, country, state, city, adress }
+    );
+
     return data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
