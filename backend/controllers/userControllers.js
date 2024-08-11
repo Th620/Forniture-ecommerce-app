@@ -279,6 +279,15 @@ const updateUserRole = async (req, res, next) => {
   }
 };
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -287,5 +296,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   logout,
-  updateUserRole
+  updateUserRole,
+  getAllUsers,
 };

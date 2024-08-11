@@ -8,6 +8,7 @@ const {
   resetPassword,
   logout,
   updateUserRole,
+  getAllUsers,
 } = require("../controllers/userControllers");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 
@@ -21,5 +22,6 @@ router.put("/updateProfile", authGuard, updateProfile);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:id/:token", resetPassword);
 router.put("/updateUser/:id", authGuard, adminGuard, updateUserRole);
+router.get("/", authGuard, adminGuard, getAllUsers);
 
 module.exports = router;
