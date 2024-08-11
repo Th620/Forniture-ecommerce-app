@@ -10,6 +10,7 @@ const {
   updateUserRole,
   getAllUsers,
   getUser,
+  deleteUser,
 } = require("../controllers/userControllers");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 
@@ -25,5 +26,6 @@ router.post("/reset-password/:id/:token", resetPassword);
 router.put("/updateUser/:id", authGuard, adminGuard, updateUserRole);
 router.get("/", authGuard, adminGuard, getAllUsers);
 router.get("/:id", authGuard, adminGuard, getUser);
+router.delete("/delete/:id", authGuard, adminGuard, deleteUser);
 
 module.exports = router;

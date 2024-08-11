@@ -202,6 +202,8 @@ const deleteProduct = async (req, res, next) => {
       return next(error);
     }
 
+    fileRemover(product.images);
+
     res.json({
       message: "product deleted successfully",
     });

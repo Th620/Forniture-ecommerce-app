@@ -306,6 +306,24 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByIdAndDelete({ _id: id });
+
+    if (!user) {
+      const error = Error("User not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    res.json({ message: "user deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -317,4 +335,5 @@ module.exports = {
   updateUserRole,
   getAllUsers,
   getUser,
+  deleteUser,
 };
