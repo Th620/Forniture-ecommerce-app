@@ -288,6 +288,24 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      const error = Error("User not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -298,4 +316,5 @@ module.exports = {
   logout,
   updateUserRole,
   getAllUsers,
+  getUser,
 };
