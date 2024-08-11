@@ -1,6 +1,5 @@
 const { default: isEmail } = require("validator/lib/isEmail");
 const User = require("../models/User");
-const Store = require("../models/Store");
 const { sign, verify } = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
@@ -194,31 +193,35 @@ const forgotPassword = async (req, res, next) => {
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
+      tls: { rejectUnauthorized: false },
       auth: {
         user: process.env.USER_EMAIL,
-        pass: process.USER_PASS,
+        pass: process.env.USER_PASS,
       },
     });
+
+    const link = `http://localhost:3000/account/reset-password/${user._id}/${token}`;
 
     const mailOptions = {
       from: process.env.USER_EMAIL,
       to: user.email,
       subject: "Reset Password",
-      html: "",
+      html: `<div>
+      <h4>Click on the button below to reset your password</h4>
+      <p>${link}</p>
+      <br />
+      <p>if you didn't request to reset your password just ignore this email</p>
+    </div>`,
     };
 
     transporter.sendMail(mailOptions, function (error, seccess) {
       if (error) {
-        next(error);
+        console.log(error);
       } else {
         console.log(seccess);
       }
     });
-
-    res.json({
-      id: user._id,
-      token,
-    });
+    res.json({ message: "email sent" });
   } catch (error) {
     next(error);
   }
@@ -256,6 +259,26 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
+const updateUserRole = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    let user = await User.findById(id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    user.admin = !user.admin;
+
+    const updatedUser = await user.save({ isNew: false });
+
+    res.json({ message: "user updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -264,4 +287,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   logout,
+  updateUserRole
 };
