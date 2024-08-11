@@ -2,13 +2,12 @@
 
 import { filter } from "@/constants";
 import { resetUserInfo, setUserInfo } from "@/lib/features/user/userSlice";
-import { useAppDispatch } from "@/lib/hook";
+import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { logout, profile, updateProfile } from "@/services/user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { MdErrorOutline, MdKeyboardArrowDown } from "react-icons/md";
-import { useSelector } from "react-redux";
 
 export default function Profile() {
   const [openCountrySelect, setOpenCountrySelect] = useState(false);
@@ -27,7 +26,7 @@ export default function Profile() {
 
   const dispatch = useAppDispatch();
 
-  let user = useSelector((state) => state.user);
+  let user = useAppSelector((state) => state.user);
 
   const router = useRouter();
 
@@ -144,9 +143,11 @@ export default function Profile() {
           >
             <div className=" grid grid-cols-4 w-full gap-4">
               {error && (
-                <div className="col-span-4 md:col-span-2 bg-red-200 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
-                  <MdErrorOutline className="size-4" />
-                  {error}
+                <div className="col-span-4">
+                  <div className="max-md:w-full error bg-red-200 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
+                    <MdErrorOutline className="size-4" />
+                    {error}
+                  </div>
                 </div>
               )}
               {user.userInfo && (

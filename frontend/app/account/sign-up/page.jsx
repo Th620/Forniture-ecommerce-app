@@ -5,7 +5,6 @@ import { useAppDispatch } from "@/lib/hook";
 import { register } from "@/services/user";
 import Link from "next/link";
 import { useState } from "react";
-import isEmail from "validator/lib/isEmail";
 import { MdErrorOutline } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
@@ -25,13 +24,13 @@ export default function signUp() {
     e.preventDefault();
     setIsLoading(true);
     if (!firstName) {
-      setError({ firstName: true, Error: "please enter a last name" });
+      setError({ firstName: true, Error: "first name is required" });
       setIsLoading(false);
       return;
     }
 
     if (!lastName) {
-      setError({ lastName: true, Error: "please enter a last name" });
+      setError({ lastName: true, Error: "last name is required" });
       setIsLoading(false);
       return;
     }
@@ -43,7 +42,7 @@ export default function signUp() {
     }
 
     if (!password) {
-      setError({ password: true, Error: "please enter a password" });
+      setError({ password: true, Error: "password is required" });
       setIsLoading(false);
       return;
     }

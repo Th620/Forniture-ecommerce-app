@@ -18,3 +18,7 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.error {
+  width: calc(50% - theme(spacing.2));
+}

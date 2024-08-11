@@ -99,3 +99,34 @@ export const updateProfile = async ({
     }
   }
 };
+
+export const forgotPassword = async ({ email }) => {
+  try {
+    await axios.post("http://localhost:8080/api/users/forgot-password", {
+      email,
+    });
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const resetPassword = async ({ id, token, password }) => {
+  try {
+    await axios.post(
+      `http://localhost:8080/api/users/reset-password/${id}/${token}`,
+      {
+        password,
+      }
+    );
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};

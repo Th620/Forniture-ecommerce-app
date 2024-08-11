@@ -23,6 +23,8 @@ export default function signIn() {
     e.preventDefault();
     setIsLoading(true);
 
+    console.log(isEmail(email));
+
     if (!isEmail(email)) {
       setError({ email: true, Error: "please enter a valid email" });
       setIsLoading(false);
@@ -30,7 +32,7 @@ export default function signIn() {
     }
 
     if (!password) {
-      setError({ password: true, Error: "please enter a password" });
+      setError({ password: true, Error: "password is required" });
       setIsLoading(false);
       return;
     }
