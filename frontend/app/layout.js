@@ -24,15 +24,10 @@ const lato = Lato({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="">
       <body className={`${montserrat.className} ${lato.className} bg-white`}>
         <Providers>
-          {" "}
-          <StoreProvider>
-            <NavBar />
-            {children}
-            <Footer />
-          </StoreProvider>
+          <StoreProvider>{children}</StoreProvider>
         </Providers>
       </body>
     </html>

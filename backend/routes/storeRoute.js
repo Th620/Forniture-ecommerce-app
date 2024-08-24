@@ -5,11 +5,12 @@ const {
   addCategory,
   addCountry,
   getCountriesDetails,
+  createStore,
 } = require("../controllers/storeControllers");
 
 const router = express.Router();
 
-router.get("/", authGuard, adminGuard, getCategories);
+router.get("/", authGuard, adminGuard, createStore);
 router.get("/categories", getCategories);
 router.get("/countries", getCountriesDetails);
 router.put("/categories/add", authGuard, adminGuard, addCategory);

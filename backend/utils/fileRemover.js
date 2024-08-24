@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const fileRemover = (filesNames) => {
+const fileRemover = (filesNames = []) => {
   filesNames.forEach((fileName) => {
     fs.unlink(path.join(__dirname, "../uploads", fileName), function (err) {
       if (err && err.code === "ENOENT") {
@@ -16,4 +16,11 @@ const fileRemover = (filesNames) => {
   });
 };
 
-module.exports = { fileRemover };
+const fileterImagesToRemove = (previousImages, images = []) => {
+  let imagesToRemove = previousImages.filter((image) => {
+    return !images.includes(image);
+  });
+  return imagesToRemove;
+};
+
+module.exports = { fileRemover, fileterImagesToRemove };

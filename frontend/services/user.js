@@ -69,7 +69,11 @@ export const profile = async () => {
         })
       );
     } else {
-      throw new Error("An unexpected error occured. Please try again");
+      throw new Error(
+        JSON.stringify({
+          message: "An unexpected error occured. Please try again",
+        })
+      );
     }
   }
 };

@@ -1,3 +1,4 @@
+const Category = require("../models/Category");
 const Store = require("../models/Store");
 const {
   hasDuplicatesArrayOfStings,
@@ -50,27 +51,21 @@ const createStore = async (req, res, next) => {
 
 const getCategories = async (req, res, next) => {
   try {
-    await Store.create({
-      countriesDetails: {
-        country: "country",
-        states: [
-          {
-            state: "state",
-            shippingFee: 10,
-          },
-        ],
-      },
-      categories: ["sofas", "lamps", "chairs"],
-    });
-    const store = await Store.findOne();
+    const categories = await Category.find();
 
-    if (store.length === 0) {
-      const error = Error("store not found");
+    if (categories.length === 0) {
+      const error = Error("Categories not found");
       error.statusCode = 404;
       return next(error);
     }
 
-    res.json(store.categories);
+    var array = [];
+
+    categories.forEach((category) => {
+      array.push(category.name);
+    });
+
+    res.json(array);
   } catch (error) {
     next(error);
   }
@@ -94,26 +89,27 @@ const getCountriesDetails = async (req, res, next) => {
 
 const addCategory = async (req, res, next) => {
   try {
-    const store = await Store.findOne();
-
-    if (!store) {
-      const error = Error("store not found");
-      error.statusCode = 404;
-      return next(error);
-    }
-
     const { category } = req.body;
 
-    if (!category) throw new Error("no category to add");
+    if (!category || typeof category !== "string")
+      throw new Error("no category to add");
 
-    if (store.categories.includes(category))
+    const categories = await Category.find();
+
+    var array = [];
+
+    categories.forEach((category) => {
+      array.push(category.name.toLowerCase());
+    });
+
+    if (array.includes(category.toLowerCase()))
       throw new Error("category already exists");
 
-    store.categories.push(category);
+    const newCategory = await Category.create({
+      name: category,
+    });
 
-    const updatedStore = await store.save();
-
-    res.json(updatedStore.categories);
+    res.status(201).json(newCategory);
   } catch (error) {
     next(error);
   }

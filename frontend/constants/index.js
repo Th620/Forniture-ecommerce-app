@@ -1,7 +1,10 @@
 import Logo from "../assets/DECO.svg";
+import LogoDark from "../assets/DECO-2.svg";
 import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
+
+const BASE_URL = "http://localhost:8080/uploads/";
 
 const navLinks = [
   {
@@ -169,5 +172,13 @@ const filter = {
 
 // const categories = ["all categories", "sofas", "chairs", "untensils", "lamps"];
 
-export { Logo };
-export { navLinks, navBtns, footerSections, categories, products, filter };
+export { Logo, LogoDark };
+export {
+  navLinks,
+  navBtns,
+  footerSections,
+  categories,
+  products,
+  filter,
+  BASE_URL,
+};

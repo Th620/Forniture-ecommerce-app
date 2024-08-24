@@ -32,7 +32,7 @@ module.exports = {
       colors: {
         navy: "#3F497F",
         navyHover: "#37406F",
-        yellow: "#F7C04A",
+        yellow: "#f1bc48",
         black: "#282828",
         white: "#F9FAFB",
         bg: "#F4F5F7",
@@ -42,11 +42,15 @@ module.exports = {
         lightGray: "#DEE1EC",
         beige: "#F3F3F3",
         input: "#ECEDEF",
+        darkBg: "#27272A",
+        darkBody: "#2E2E31",
+        darkHover: "#242427",
       },
       gridTemplateColumns: {
         18: "repeat(18, minmax(0, 1fr))",
       },
     },
   },
+  darkMode: "selector",
   plugins: [],
 };

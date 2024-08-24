@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: (req, file, cd) => {
-    const ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== ".jpg" && ext !== ".png" && ext !== ".jpeg" && ext !== ".svg") {
       return cd(new Error("only images are allowed"));
     }

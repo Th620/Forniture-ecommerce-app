@@ -22,3 +22,11 @@ input[type="number"] {
 .error {
   width: calc(50% - theme(spacing.2));
 }
+
+.sidebar {
+  height: calc(100% - 60px);
+}
+
+/* .stock {
+  width: calc(100% - theme(spacing.10));
+} */

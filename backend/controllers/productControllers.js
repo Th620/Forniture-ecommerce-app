@@ -1,9 +1,10 @@
 const Product = require("../models/Product");
 const Review = require("../models/Review");
-const Store = require("../models/Store");
-const { fileRemover } = require("../utils/fileRemover");
+const Category = require("../models/Category");
+const { fileRemover, fileterImagesToRemove } = require("../utils/fileRemover");
 const {
   hasDuplicatesArrayOfObjectsTwoProprties,
+  hasDuplicatesArrayOfStings,
 } = require("../utils/hasDuplicates");
 
 const createProduct = async (req, res, next) => {
@@ -19,7 +20,11 @@ const createProduct = async (req, res, next) => {
       colors,
       sizes,
       variations,
-    } = req.body;
+    } = JSON.parse(req.body.document);
+
+    if (!title) {
+      throw new Error("product title is required");
+    }
 
     const product = await Product.findOne({ slug: title.replace(/\s/g, "-") });
 
@@ -37,9 +42,6 @@ const createProduct = async (req, res, next) => {
       });
     }
 
-    if (!title) {
-      throw new Error("product title is required");
-    }
     if (!price) {
       throw new Error("product price is required");
     }
@@ -47,17 +49,21 @@ const createProduct = async (req, res, next) => {
       throw new Error("product stock is required");
     }
 
-    const store = await Store.findOne({ admins: { $in: [req.user] } });
+    const categories = await Category.find();
 
-    if (store) {
-      const error = new Error("no store configured");
+    var arrayOfCategories = [];
+
+    categories.forEach((category) => {
+      arrayOfCategories.push(category.name);
+    });
+
+    if (categories.length === 0) {
+      const error = new Error("no category");
       error.statusCode = 404;
       return next(error);
     }
 
-    const { categories } = store;
-
-    if (!categories.includes(category)) {
+    if (!arrayOfCategories.includes(category)) {
       const error = new Error("category not fount");
       error.statusCode = 404;
       return next(error);
@@ -102,41 +108,6 @@ const editProduct = async (req, res, next) => {
   try {
     const { slug } = req.params;
 
-    const product = await Product.findOne({ slug });
-
-    var images = [];
-
-    if (req.files) {
-      const { files } = req;
-
-      files.map((file) => {
-        images.push(file.filename);
-      });
-    }
-
-    if (!product) {
-      const error = new Error("product not found");
-      error.statusCode = 404;
-      return next(error);
-    }
-    const store = await Store.findOne({ admins: { $in: [req.user] } });
-
-    if (store) {
-      const error = new Error("no store configured");
-      error.statusCode = 404;
-      return next(error);
-    }
-
-    const { categories } = store;
-
-    if (!categories.includes(category)) {
-      const error = new Error("category not fount");
-      error.statusCode = 404;
-      return next(error);
-    }
-
-    let previousImages = product.images;
-
     const {
       title,
       price,
@@ -148,14 +119,72 @@ const editProduct = async (req, res, next) => {
       colors,
       sizes,
       variations,
-    } = req.body;
+      images,
+    } = JSON.parse(req.body.document);
+
+    const product = await Product.findOne({ slug });
+
+    var newImages = [...images];
+    var addedImage = [];
+
+    if (req.files) {
+      const { files } = req;
+
+      files.map((file) => {
+        addedImage.push(file.filename);
+        newImages.push(file.filename);
+      });
+    }
+
+    if (!product) {
+      const error = new Error("product not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (newImages.length > 4)
+      throw new Error("you can't have more than 4 images for each product");
+
+    const categories = await Category.find();
+
+    var arrayOfCategories = [];
+
+    categories.forEach((category) => {
+      arrayOfCategories.push(category.name);
+    });
+
+    if (categories.length === 0) {
+      const error = new Error("no category");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (!arrayOfCategories.includes(category)) {
+      const error = new Error("category not fount");
+      error.statusCode = 404;
+      return next(error);
+    }
 
     if (title === "") {
       throw new Error("product title is required");
     }
-    if (price === 0) {
+    if (price <= 0) {
       throw new Error("product price is required");
     }
+
+    if (stock && stock <= 0) {
+      throw new Error("product stock is required");
+    }
+
+    if (
+      productInfo &&
+      ((productInfo.desc && typeof productInfo.desc !== "string") ||
+        (productInfo.features && !Array.isArray(productInfo.features)))
+    )
+      throw new Error("wrong product info structure");
+
+    if (variations && !Array.isArray(variations))
+      throw new Error("wrong structure");
 
     if (hasDuplicatesArrayOfObjectsTwoProprties(variations, "size", "color"))
       throw new Error("you can't add similar variation");
@@ -168,9 +197,20 @@ const editProduct = async (req, res, next) => {
 
     if (notAvailableVariation) throw new Error("not available variation");
 
+    if (
+      colors &&
+      (!Array.isArray(colors) || hasDuplicatesArrayOfStings(colors))
+    )
+      throw new Error("set correct colors");
+
+    if (sizes && (!Array.isArray(sizes) || hasDuplicatesArrayOfStings(sizes)))
+      throw new Error("set correct sizes");
+
+    let previousImages = product.images;
+
     product.title = title?.trim() || product.title;
     product.price = price || product.price;
-    product.salePrice = salePrice || product.salePrice;
+    if (salePrice) product.salePrice = salePrice;
     product.category = category || product.category;
     product.productInfo = productInfo || product.productInfo;
     product.onSale = onSale || product.onSale;
@@ -179,13 +219,14 @@ const editProduct = async (req, res, next) => {
     product.sizes = sizes || product.sizes;
     product.variations = variations || product.variations;
 
-    product.images = images;
+    product.images = newImages;
 
     const editedProduct = await product.save();
-    fileRemover(previousImages);
+    let remove = fileterImagesToRemove(previousImages, images);
+    fileRemover(remove);
     res.json(editedProduct);
   } catch (error) {
-    if (req.files) fileRemover(images);
+    if (req.files) fileRemover(addedImage);
     next(error);
   }
 };
@@ -220,16 +261,10 @@ const getProducts = async (req, res, next) => {
     let variationsFilter = [];
     let where = {};
     if (searchKeyword) {
-      where.title = { $regex: "desk", $options: "i" };
+      where.title = { $regex: searchKeyword, $options: "i" };
     }
 
     let sorting;
-
-    if (sort === "low to hight") {
-      sorting = -1;
-    } else {
-      sorting = 1;
-    }
 
     if (category) {
       categoryFilter.category = category;
@@ -242,6 +277,9 @@ const getProducts = async (req, res, next) => {
     if (size) {
       variationsFilter.push({ $eq: ["$$item.size", size] });
     }
+
+    if (sort && parseInt(sort) !== 1 && parseInt(sort) !== -1)
+      throw new Error("wrong sorting query");
 
     const products = await Product.aggregate([
       { $match: { $and: [categoryFilter, where] } },
@@ -256,6 +294,7 @@ const getProducts = async (req, res, next) => {
               },
             },
           },
+          _id: 1,
           title: 1,
           slug: 1,
           price: 1,
@@ -273,9 +312,19 @@ const getProducts = async (req, res, next) => {
       },
     ]);
 
-    const finalProducts = products.sort((a, b) => sorting * (a - b));
+    const finalProducts = products.sort(
+      (a, b) => (b.price - a.price) * parseInt(sort)
+    );
 
-    res.json(finalProducts);
+    const result = finalProducts.filter((product) => {
+      if (variationsFilter.length > 0) {
+        return product.variations.length !== 0;
+      } else {
+        return true;
+      }
+    });
+
+    res.json(result);
   } catch (error) {
     next(error);
   }
