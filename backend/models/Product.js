@@ -24,8 +24,15 @@ const ProductSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+ProductSchema.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "product",
+});
 
 const Product = model("Product", ProductSchema);
 

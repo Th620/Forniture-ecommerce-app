@@ -82,7 +82,7 @@ const createProduct = async (req, res, next) => {
 
     const newProduct = await Product.create({
       title,
-      slug: title.replace(/\s/g, "-"),
+      slug: title.toLowerCase().replace(/\s/g, "-"),
       price,
       salePrice,
       category,
@@ -209,6 +209,7 @@ const editProduct = async (req, res, next) => {
     let previousImages = product.images;
 
     product.title = title?.trim() || product.title;
+    product.slug = title?.toLowerCase().replace(/\s/g, "-") || product.slug;
     product.price = price || product.price;
     if (salePrice) product.salePrice = salePrice;
     product.category = category || product.category;
@@ -334,7 +335,13 @@ const getProduct = async (req, res, next) => {
   try {
     const { slug } = req.params;
 
-    const product = await Product.findOne({ slug });
+    const product = await Product.findOne({ slug }).populate([
+      {
+        path: "reviews",
+        match: { check: true },
+        populate: [{ path: "user", select: ["firstName", "lastName"] }],
+      },
+    ]);
 
     if (!product) {
       const error = new Error("Product not found");
@@ -386,11 +393,11 @@ const reviewProduct = async (req, res, next) => {
 
     const review = await Review.create({
       user: req.user,
-      product: product.id,
+      product: product._id,
       content,
     });
 
-    res.json({ massage: "review added successfully" });
+    res.json(review);
   } catch (error) {
     next(error);
   }

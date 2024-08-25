@@ -34,7 +34,7 @@ const register = async (req, res, next) => {
     const token = user.generateJWT();
 
     res.cookie("token", token, {
-      maxAge: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+      maxAge: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: false,
     });
@@ -69,7 +69,7 @@ const login = async (req, res, next) => {
     console.log(token);
 
     res.cookie("token", token, {
-      maxAge: new Date(Date.now() + 15 * 60 * 1000),
+      maxAge: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: false,
     });
