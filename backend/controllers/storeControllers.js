@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Store = require("../models/Store");
+const { fileRemover } = require("../utils/fileRemover");
 const {
   hasDuplicatesArrayOfStings,
   hasDuplicatesArrayOfObjects,
@@ -105,12 +106,65 @@ const addCategory = async (req, res, next) => {
     if (array.includes(category.toLowerCase()))
       throw new Error("category already exists");
 
+    if (req.file) {
+      var image = req.file.filename;
+    }
+
     const newCategory = await Category.create({
       name: category,
+      image,
     });
 
     res.status(201).json(newCategory);
   } catch (error) {
+    if (image) {
+      fileRemover(image);
+    }
+    next(error);
+  }
+};
+const editCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const categoryToEdit = await Category.findById(id);
+
+    if (!categoryToEdit) {
+      const error = Error("Categories not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const { category } = req.body;
+
+    if (!category || typeof category !== "string")
+      throw new Error("that not a right category");
+
+    const categories = await Category.find();
+
+    var array = [];
+
+    categories.forEach((category) => {
+      array.push(category.name.toLowerCase());
+    });
+
+    if (array.includes(category.toLowerCase()))
+      throw new Error("category already exists");
+
+    if (req.file) {
+      var image = req.file.filename;
+    }
+
+    categoryToEdit.name = category;
+    categoryToEdit.image = image || categoryToEdit.image;
+
+    const editedCategory = await categoryToEdit.save();
+
+    res.status(201).json(editedCategory);
+  } catch (error) {
+    if (image) {
+      fileRemover(image);
+    }
     next(error);
   }
 };
@@ -162,5 +216,6 @@ module.exports = {
   getCategories,
   getCountriesDetails,
   addCategory,
+  editCategory,
   addCountry,
 };
