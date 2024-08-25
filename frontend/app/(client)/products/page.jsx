@@ -33,7 +33,9 @@ export default function Products() {
   const [sort, setSort] = useState(
     searchParams.get("sort") === "-1"
       ? "price low to hight"
-      : "price hight to low"
+      : searchParams.get("sort") === "1"
+      ? "price hight to low"
+      : ""
   );
   const [sizes, setSizes] = useState([]);
   const [colors, setColors] = useState([]);
@@ -228,6 +230,7 @@ export default function Products() {
                     if (fetchProducts.length === 0) {
                       setNoProducts(true);
                     }
+                    setNoProducts(false);
                     setProducts([...fetchProducts]);
                   } else {
                     setNoProducts(true);
@@ -274,6 +277,7 @@ export default function Products() {
                     if (fetchProducts.length === 0) {
                       setNoProducts(true);
                     }
+                    setNoProducts(false);
                     setProducts([...fetchProducts]);
                   } else {
                     setNoProducts(true);
@@ -343,6 +347,7 @@ export default function Products() {
                     if (fetchProducts.length === 0) {
                       setNoProducts(true);
                     }
+                    setNoProducts(false);
                     setProducts([...fetchProducts]);
                   } else {
                     setNoProducts(true);
@@ -440,6 +445,11 @@ export default function Products() {
                 className={"col-span-12 sm:col-span-6 md:col-span-3"}
               />
             ))}
+            {noProducts && (
+              <div className="col-span-12 h-20 flex justify-center items-center">
+                No products
+              </div>
+            )}
           </div>
         </div>
         {openFilter && (

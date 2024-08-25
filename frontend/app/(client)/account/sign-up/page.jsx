@@ -71,7 +71,10 @@ export default function signUp() {
         dispatch(setUserInfo(data));
         localStorage.setItem(
           "account",
-          JSON.stringify({ data, expiresAt: Date.now() + 10 * 24 * 60 * 60 * 1000 })
+          JSON.stringify({
+            data,
+            expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          })
         );
       }
 

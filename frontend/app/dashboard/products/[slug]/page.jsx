@@ -14,6 +14,8 @@ export default function Product() {
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
   const [selectedImg, setSelectedImg] = useState("");
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
 
   const { slug } = useParams();
 

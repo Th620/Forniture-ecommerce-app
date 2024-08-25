@@ -1,13 +1,30 @@
 "use client";
 
-import ColorCircle from "@/components/ColorCircle";
 import SizeButton from "@/components/SizeButton";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import ProductCard from "@/components/ProductCard";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getProduct } from "@/services/products";
-import { BASE_URL, products } from "@/constants";
+import { BASE_URL } from "@/constants";
+import Link from "next/link";
+
+const unavailableSize = (variations = [], color, size) => {
+  return variations.every((variation) => {
+    return (
+      color &&
+      size &&
+      (variation.color !== color ||
+        variation.size !== size ||
+        variation.stock <= 0)
+    );
+  });
+};
+
+const unavailableColor = (variations = [], color) => {
+  return variations.every((variation) => {
+    return color && variation.color !== color;
+  });
+};
 
 export default function Product() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +32,19 @@ export default function Product() {
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
   const [selectedImg, setSelectedImg] = useState("");
+  const [qt, setQt] = useState(1);
+  const [variations, setVariations] = useState([]);
+  const [showReviews, setShowReviews] = useState(false);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [selectedColor, setSelectedColor] = useState(
+    searchParams.get("color") || ""
+  );
+  const [selectedSize, setSelectedSize] = useState(
+    searchParams.get("size") || ""
+  );
 
   const { slug } = useParams();
 
@@ -23,10 +53,11 @@ export default function Product() {
       setIsLoading(true);
       const product = await getProduct({ slug });
       if (product) {
-        console.log(product);
         setProduct(product);
         setImages(product?.images);
         setSelectedImg(product?.images[0]);
+        !searchParams.get("color") && setSelectedColor(product?.colors[0]);
+        setVariations(product?.variations);
       }
       setIsLoading(false);
     } catch (error) {
@@ -39,7 +70,6 @@ export default function Product() {
   useEffect(() => {
     return async () => {
       try {
-        console.log(slug);
         await handelGetProduct(slug);
       } catch (error) {
         console.log(error);
@@ -82,49 +112,90 @@ export default function Product() {
             ))}
           </div>
         </div>
-        <div className="md:col-start-10 md:col-span-9 flex flex-col gap-5">
+        <div className="md:col-start-10 md:col-span-9 flex flex-col">
           <h3 className="hidden md:block font-semibold text-xl sm:text-3xl capitalize">
             {product?.title}
           </h3>
-          <p className="font-semibold text-sm text-[#787676]">
+          <Link className="" href={`/products?category=${product.category}`}>
+            <p className="text-xs text-blue-800 ml-[2px] capitalize">
+              {product.category}
+            </p>
+          </Link>
+          <p className="font-semibold text-sm text-[#787676] mt-3">
             {product?.price}DZD
           </p>
-          <div>
+          <div className="mt-4">
             <h6 className="max-md:text-sm font-semibold mb-3">
               Choose a Color
             </h6>
             <div className="flex gap-2 flex-wrap">
               {product?.colors &&
                 product?.colors.map((color) => (
-                  <SizeButton
-                    label={color}
-                    unavailable={true}
-                    selected={false}
-                  />
+                  <>
+                    <SizeButton
+                      key={color}
+                      label={color}
+                      unavailable={unavailableColor(variations, color)}
+                      selected={selectedColor === color}
+                      onclick={() => {
+                        router.push(
+                          `/products/${slug}?color=${color}${
+                            !unavailableSize(variations, color, selectedSize) &&
+                            selectedSize
+                              ? `&size=${selectedSize}`
+                              : ""
+                          }`,
+                          { scroll: false }
+                        );
+                        if (unavailableSize(variations, color, selectedSize)) {
+                          setSelectedSize("");
+                        }
+                        setSelectedColor(color);
+                      }}
+                    />
+                  </>
                 ))}
             </div>
           </div>
-          <div className="w-full">
+          <div className="w-full mt-4">
             <h6 className="max-md:text-sm font-semibold mb-3">Choose a Size</h6>
             <div className="flex gap-2 text-navy flex-wrap w-full">
               {product?.sizes &&
                 product?.sizes.map((size) => (
                   <SizeButton
+                    key={size}
                     label={size}
-                    unavailable={false}
-                    selected={false}
+                    unavailable={unavailableSize(
+                      variations,
+                      selectedColor,
+                      size
+                    )}
+                    selected={selectedSize === size}
+                    onclick={() => {
+                      router.push(
+                        `/products/${slug}?color=${selectedColor}&size=${size}`,
+                        { scroll: false }
+                      );
+                      setSelectedSize(size);
+                    }}
                   />
                 ))}
             </div>
           </div>
-          <div>
+          <div className="mt-4">
             <h6 className="max-md:text-sm font-semibold mb-3">
               Choose a Quantity
             </h6>
             <div className="sm:h-8 h-6 bg-gray flex justify-center items-center w-fit text-white">
               <button
                 type="button"
-                className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
+                disabled={qt === 1}
+                onClick={() => {
+                  if (qt > 1) {
+                    setQt(qt - 1);
+                  }
+                }}
+                className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover disabled:hover:bg-gray transition-colors duration-100"
               >
                 -
               </button>
@@ -137,12 +208,15 @@ export default function Product() {
                 min={1}
                 inputMode="numeric"
                 size={2}
-                value={1}
+                value={qt}
                 readOnly
                 className="h-full text-center bg-gray"
               />
               <button
                 type="button"
+                onClick={() => {
+                  setQt(qt + 1);
+                }}
                 className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
               >
                 +
@@ -151,24 +225,79 @@ export default function Product() {
           </div>
           <button
             type="button"
-            className="capitalize rounded-full px-10 py-3 text-white bg-navy hover:bg-navyHover w-fit my-8 font-medium"
+            className="capitalize rounded-full px-10 py-2 text-white bg-yellow bg-opacity-95 hover:bg-opacity-100 w-fit my-8 font-medium"
           >
             Add to card
           </button>
-          <div>
-            <div className="flex flex-col justify-start">
-              <div className="flex gap-x-4 mb-4">
-                <button type="button" className="font-semibold md:text-lg">
-                  Product Info
-                </button>
-                <button
-                  type="button"
-                  className="font-semibold text-[#D0CECE] md:text-lg"
+          <div className="flex w-full flex-col justify-start">
+            <div className="flex gap-x-4 mb-4">
+              <button
+                type="button"
+                onClick={() => setShowReviews(false)}
+                className={`font-semibold md:text-lg transition-colors duration-150 ${
+                  !showReviews ? "text-black" : "text-[#D0CECE]"
+                }`}
+              >
+                Product Info
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowReviews(true)}
+                className={`font-semibold md:text-lg  transition-colors duration-150 ${
+                  showReviews ? "text-black" : "text-[#D0CECE]"
+                }`}
+              >
+                Reviews
+              </button>
+            </div>
+            {showReviews ? (
+              <div
+                className={`w-full relative bg-white z-10 overflow-hidden ${
+                  product?.reviews?.length > 2 ? "h-56" : "h-14"
+                }`}
+              >
+                <div
+                  className={`reviews absolute top-0 left-0 overflow-y-scroll overflow-x-hidden z-0 flex flex-col items-center justify-center gap-y-1 bg-bg px-2 py-2 border-b border-gray border-opacity-30 ${
+                    product?.reviews?.length > 2 ? "h-56" : "h-14"
+                  }`}
                 >
-                  Reviews
-                </button>
+                  {!product?.reviews ||
+                    (product?.reviews?.length === 0 && (
+                      <p className="text-gray">No Reviews</p>
+                    ))}
+                  {product?.reviews &&
+                    product?.reviews.map((review) => (
+                      <div
+                        key={review._id}
+                        className="w-full border border-gray py-2 px-2 border-opacity-50 rounded-md bg-white"
+                      >
+                        <div className="flex justify-center items-center w-fit gap-2">
+                          <div className="w-5 h-5 bg-gray rounded-full flex justify-center items-center text-xs capitalize">
+                            {review.user.firstName[0]}
+                          </div>
+                          <div className="flex flex-col justify-center text-[10px] leading-tight capitalize">
+                            <p>
+                              {review.user.lastName[0]}. {review.user.firstName}
+                            </p>
+                            <p>
+                              {new Date(review.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="py-2 text-sm">{review.content}</div>
+                      </div>
+                    ))}
+                </div>
               </div>
-              <div>
+            ) : (
+              <div className="w-full h-fit">
                 <p className="text-sm text-justify text-gray">
                   {!product?.productInfo?.desc &&
                     ((product?.productInfo?.features &&
@@ -199,11 +328,11 @@ export default function Product() {
                     ))}
                 </ol>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
-      <div className="md:mt-28 md:mb-14">
+      <div className="md:mt-14 md:mb-14">
         <h3 className="font-semibold pb-2 text-lg">You may also like</h3>
         <div className="grid grid-cols-12 gap-x-4 gap-y-4 py-3">
           {/* {products.map((product) => (
