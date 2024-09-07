@@ -28,8 +28,14 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
+      let cat = [];
+      if (categories) {
+        categories.forEach((category) => {
+          cat.push(category.name);
+        });
+      }
       setIsLoading(false);
-      return categories;
+      return cat;
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
@@ -102,10 +108,6 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
       queries.category = category;
     }
     router.push(`?${new URLSearchParams(queries)}`);
-    setColor("");
-    setSize("");
-    setSort("");
-    setCategory("");
     setOpenFilter(false);
   };
 
@@ -134,6 +136,11 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
             btnClassName={
               "dark:bg-darkBg dark:hover:bg-[#242427] transition-colors duration-100"
             }
+            addFn={() => {
+              setOpenColorSelect(false);
+              setOpenSizeSelect(false);
+              setOpenSortSelect(false);
+            }}
           />
           <Select
             setOpenSelect={setOpenColorSelect}
@@ -146,6 +153,11 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
             btnClassName={
               "dark:bg-darkBg dark:hover:bg-[#242427] transition-colors duration-100"
             }
+            addFn={() => {
+              setOpenCategorySelect(false);
+              setOpenSizeSelect(false);
+              setOpenSortSelect(false);
+            }}
           />
           <Select
             setOpenSelect={setOpenSizeSelect}
@@ -158,6 +170,11 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
             btnClassName={
               "dark:bg-darkBg dark:hover:bg-[#242427] transition-colors duration-100"
             }
+            addFn={() => {
+              setOpenColorSelect(false);
+              setOpenCategorySelect(false);
+              setOpenSortSelect(false);
+            }}
           />
           <Select
             setOpenSelect={setOpenSortSelect}
@@ -170,6 +187,11 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
             btnClassName={
               "dark:bg-darkBg dark:hover:bg-[#242427] transition-colors duration-100"
             }
+            addFn={() => {
+              setOpenColorSelect(false);
+              setOpenSizeSelect(false);
+              setOpenCategorySelect(false);
+            }}
           />
           <button
             type="button"

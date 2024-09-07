@@ -1,23 +1,25 @@
 import React from "react";
 
-const PricingBox = ({ btnLabel, className }) => {
+const PricingBox = ({ btnLabel, className, subtotal = 0, shipping = 0 }) => {
   return (
     <div className="md:w-[30vw] lg:w-[25vw] w-full">
-      <div className={`w-full border-2 border-[#E8E9EB] h-fit capitalize ${className}`}>
+      <div
+        className={`w-full border-2 border-[#E8E9EB]  dark:bg-darkBg dark:border-[#8C8C8C] dark:border-opacity-40 h-fit capitalize ${className}`}
+      >
         <h4 className="px-5 font-semibold text-lg py-3">Your order</h4>
-        <hr className="border-[1.5px] border-[#E8E9EB] mx-5" />
+        <hr className="border-[1.5px] border-[#E8E9EB] dark:border-[#8C8C8C] dark:border-opacity-40 mx-5" />
         <div className="flex items-center justify-between px-5 py-3 text-sm font-medium">
           <p>Subtotal</p>
-          <p className="font-semibold">$25.00</p>
+          <p className="font-semibold">{subtotal} DZD</p>
         </div>
-        <hr className="border-[1.5px] border-[#E8E9EB] mx-5" />
+        <hr className="border-[1.5px] border-[#E8E9EB] dark:border-[#8C8C8C] dark:border-opacity-40 mx-5" />
         <div className="flex items-center justify-between px-5 py-3 text-sm font-medium">
           <p>shipping</p>
-          <p className="font-semibold">$5.00</p>
+          <p className="font-semibold">{shipping} DZD</p>
         </div>
-        <div className="flex items-center justify-between px-5 py-3 text-sm font-medium bg-[#E8E9EB]">
+        <div className="flex items-center justify-between px-5 py-3 text-sm font-medium bg-[#E8E9EB] dark:bg-[#8C8C8C]">
           <p>Total</p>
-          <p className="font-semibold">$30.00</p>
+          <p className="font-semibold">{subtotal + shipping} DZD</p>
         </div>
       </div>
       <button

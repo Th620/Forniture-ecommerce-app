@@ -2,6 +2,8 @@ const { default: isEmail } = require("validator/lib/isEmail");
 const User = require("../models/User");
 const { sign, verify } = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const Country = require("../models/Country");
+const { existsArrayOfObjects } = require("../utils/exist");
 
 const register = async (req, res, next) => {
   try {
@@ -110,6 +112,7 @@ const profile = async (req, res, next) => {
       country: user.country,
       state: user.state,
       city: user.city,
+      admin: user.admin,
     });
   } catch (error) {
     next(error);
@@ -151,10 +154,39 @@ const updateProfile = async (req, res, next) => {
 
     if (phone && (typeof +phone !== "number" || parseInt(phone) !== +phone))
       throw new Error("wrong phone number");
-    user.phone = phone;
-    user.state = state;
-    user.country = country;
-    user.city = city;
+
+    if (phone) {
+      user.phone = phone;
+    }
+
+    if (country && typeof country !== "string")
+      throw new Error("wrong country");
+
+    if (state && typeof state !== "string") throw new Error("wrong country");
+
+    if (country) {
+      const countryExist = await Country.findOne({ country });
+
+      if (!countryExist) {
+        const error = Error("country not found");
+        error.statusCode = 404;
+        return next(error);
+      }
+
+      user.country = country;
+
+      if (state) {
+        if (!existsArrayOfObjects(countryExist, "state", state))
+          throw new Error("state not available in our store");
+        user.state = state;
+      }
+    }
+
+    if (city && typeof city !== "string") {
+      throw new Error("wrong city");
+    } else if (city) {
+      user.city = city;
+    }
 
     const updatedUser = await user.save({ isNew: false });
 
@@ -271,7 +303,7 @@ const updateUserRole = async (req, res, next) => {
 
     user.admin = !user.admin;
 
-    const updatedUser = await user.save({ isNew: false });
+    await user.save({ isNew: false });
 
     res.json({ message: "user updated successfully" });
   } catch (error) {
@@ -281,7 +313,12 @@ const updateUserRole = async (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find();
+    const { role } = req.query;
+    var filter = {};
+    if (role?.toLowerCase() === "admin") {
+      filter.admin = true;
+    }
+    const users = await User.find(filter).populate([{ path: "orders" }]);
     res.json(users);
   } catch (error) {
     next(error);

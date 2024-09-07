@@ -20,6 +20,12 @@ const UserSchema = new Schema(
   }
 );
 
+UserSchema.virtual("orders", {
+  ref: "Order",
+  localField: "_id",
+  foreignField: "client",
+});
+
 UserSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await hash(this.password, 10);

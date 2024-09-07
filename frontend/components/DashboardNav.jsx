@@ -7,9 +7,12 @@ import { CiDark } from "react-icons/ci";
 import { FiSun } from "react-icons/fi";
 import { MdNotificationsNone } from "react-icons/md";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
 const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
   const pathname = usePathname();
+
+  let user = useSelector((state) => state.user);
 
   const [active, setActive] = useState("");
 
@@ -67,7 +70,9 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
 
         <MdNotificationsNone className="size-[30px] p-[6px] dark:bg-opacity-10 dark:hover:bg-opacity-15 transition-all duration-75 hover-bg-bg bg-input rounded-full text-[#8C8C8C]" />
 
-        <div className="size-[30px] rounded-full dark:bg-opacity-10 dark:hover:bg-opacity-15 transition-all duration-75 hover-bg-bg bg-input"></div>
+        <div className="size-[30px] rounded-full dark:bg-opacity-10 dark:hover:bg-opacity-15 transition-all duration-75 hover-bg-bg bg-input capitalize flex justify-center items-center text-[#8C8C8C] dark:text-gray">
+          {user?.userInfo?.firstName && user.userInfo.firstName[0]}
+        </div>
       </div>
     </nav>
   );

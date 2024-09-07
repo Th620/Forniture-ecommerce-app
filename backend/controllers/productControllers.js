@@ -49,22 +49,13 @@ const createProduct = async (req, res, next) => {
       throw new Error("product stock is required");
     }
 
-    const categories = await Category.find();
+    if (!category || typeof category !== "string")
+      throw new Error("category is required");
 
-    var arrayOfCategories = [];
+    const categoryExist = await Category.findOne({ name: category });
 
-    categories.forEach((category) => {
-      arrayOfCategories.push(category.name);
-    });
-
-    if (categories.length === 0) {
-      const error = new Error("no category");
-      error.statusCode = 404;
-      return next(error);
-    }
-
-    if (!arrayOfCategories.includes(category)) {
-      const error = new Error("category not fount");
+    if (!categoryExist) {
+      const error = new Error("category not found");
       error.statusCode = 404;
       return next(error);
     }
@@ -85,7 +76,7 @@ const createProduct = async (req, res, next) => {
       slug: title.toLowerCase().replace(/\s/g, "-"),
       price,
       salePrice,
-      category,
+      category: categoryExist._id,
       productInfo,
       onSale,
       stock,
@@ -145,24 +136,17 @@ const editProduct = async (req, res, next) => {
     if (newImages.length > 4)
       throw new Error("you can't have more than 4 images for each product");
 
-    const categories = await Category.find();
+    if (category && typeof category !== "string")
+      throw new Error("wrong category");
 
-    var arrayOfCategories = [];
+    if (category) {
+      var categoryExist = await Category.findOne({ name: category });
 
-    categories.forEach((category) => {
-      arrayOfCategories.push(category.name);
-    });
-
-    if (categories.length === 0) {
-      const error = new Error("no category");
-      error.statusCode = 404;
-      return next(error);
-    }
-
-    if (!arrayOfCategories.includes(category)) {
-      const error = new Error("category not fount");
-      error.statusCode = 404;
-      return next(error);
+      if (!categoryExist) {
+        const error = new Error("category not found");
+        error.statusCode = 404;
+        return next(error);
+      }
     }
 
     if (title === "") {
@@ -212,13 +196,16 @@ const editProduct = async (req, res, next) => {
     product.slug = title?.toLowerCase().replace(/\s/g, "-") || product.slug;
     product.price = price || product.price;
     if (salePrice) product.salePrice = salePrice;
-    product.category = category || product.category;
     product.productInfo = productInfo || product.productInfo;
     product.onSale = onSale || product.onSale;
     product.stock = stock || product.stock;
     product.colors = colors || product.colors;
     product.sizes = sizes || product.sizes;
     product.variations = variations || product.variations;
+
+    if (categoryExist) {
+      product.category = categoryExist._id;
+    }
 
     product.images = newImages;
 
@@ -258,17 +245,10 @@ const getProducts = async (req, res, next) => {
   try {
     const { category, sort, size, color, searchKeyword } = req.query;
 
-    let categoryFilter = {};
     let variationsFilter = [];
     let where = {};
     if (searchKeyword) {
       where.title = { $regex: searchKeyword, $options: "i" };
-    }
-
-    let sorting;
-
-    if (category) {
-      categoryFilter.category = category;
     }
 
     if (color) {
@@ -283,7 +263,16 @@ const getProducts = async (req, res, next) => {
       throw new Error("wrong sorting query");
 
     const products = await Product.aggregate([
-      { $match: { $and: [categoryFilter, where] } },
+      { $match: where },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
       {
         $project: {
           variations: {
@@ -313,7 +302,17 @@ const getProducts = async (req, res, next) => {
       },
     ]);
 
-    const finalProducts = products.sort(
+    var categoryFilter = [];
+
+    if (category) {
+      categoryFilter = products.filter((product) => {
+        return product.category.name === category.toLowerCase();
+      });
+    } else {
+      categoryFilter = products;
+    }
+
+    const finalProducts = categoryFilter.sort(
       (a, b) => (b.price - a.price) * parseInt(sort)
     );
 
@@ -341,6 +340,7 @@ const getProduct = async (req, res, next) => {
         match: { check: true },
         populate: [{ path: "user", select: ["firstName", "lastName"] }],
       },
+      { path: "category", select: ["name"] },
     ]);
 
     if (!product) {

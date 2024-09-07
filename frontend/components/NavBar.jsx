@@ -1,35 +1,30 @@
 "use client";
 
-import { Logo, navBtns, navLinks } from "@/constants";
+import { Logo, navLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FiMenu, FiUser } from "react-icons/fi";
 import Menu from "./Menu";
 import { usePathname } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/lib/hook";
 import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
-import { resetUserInfo } from "@/lib/features/user/userSlice";
+import { useSelector } from "react-redux";
+import { useStateContext } from "@/context/StateContext";
+import CartContainer from "./CartContainer";
+import { useAuth } from "@/context/AuthContext";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
 
-  let user = useAppSelector((state) => state.user);
+  const { user } = useAuth();
 
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (
-      localStorage.getItem("account") &&
-      JSON.parse(localStorage.getItem("account")).expiresAt < Date.now()
-    ) {
-      dispatch(resetUserInfo());
-    }
-  }, []);
+  const cart = useSelector((state) => state.cart);
 
   const pathName = usePathname();
+
+  const { openCart, setOpenCart } = useStateContext();
 
   useEffect(() => {
     const handelScroll = () => {
@@ -48,9 +43,15 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`font-montserrat fixed top-0 left-0 flex justify-between items-center w-full px-10 md:px-75 lg:px-150 py-5 text-black z-20 ${
-        scrolled ? "bg-white" : pathName === "/" ? "bg-transparent" : "bg-white"
-      }`}
+      className={`font-montserrat fixed top-0 left-0 flex justify-between items-center w-full px-10 md:px-75 lg:px-150 py-5 text-black z-20 
+        ${
+          scrolled
+            ? "bg-white"
+            : pathName === "/"
+            ? "bg-transparent"
+            : "bg-white"
+        }
+      `}
     >
       <div className="w-full flex justify-between items-center">
         <Link href={"/"}>
@@ -83,15 +84,13 @@ const NavBar = () => {
               </li>
               <Link
                 href={{
-                  pathname: `/${
-                    !user.userInfo ? "account/sign-in" : "profile"
-                  }`,
+                  pathname: `/${!user ? "account/sign-in" : "profile"}`,
                 }}
               >
                 <li className="">
-                  {user.userInfo ? (
+                  {user?.firstName ? (
                     <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-xs border-[1.5px] border-black font-lato">
-                      {user.userInfo.firstName[0]}
+                      {user.firstName[0]}
                     </div>
                   ) : (
                     <FiUser />
@@ -99,8 +98,18 @@ const NavBar = () => {
                 </li>
               </Link>
 
-              <li className="text-xl">
-                <IoBagOutline />
+              <li className="relative">
+                <Link href={"/cart"}>
+                  <IoBagOutline
+                    className="text-xl cursor-pointer"
+                    onMouseOver={() => {
+                      setOpenCart(true);
+                    }}
+                  />
+                </Link>
+                {openCart && cart?.items?.length > 0 && (
+                  <CartContainer setOpenCart={setOpenCart} />
+                )}
               </li>
             </ul>
           </>

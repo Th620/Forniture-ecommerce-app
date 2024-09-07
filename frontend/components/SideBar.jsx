@@ -13,13 +13,30 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IoLogOutOutline, IoSearch } from "react-icons/io5";
+import { logout } from "@/services/user";
+import { resetUserInfo } from "@/lib/features/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const SideBar = ({ showMenu, setShowMenu }) => {
   const pathname = usePathname();
 
+  const dispatch = useDispatch();
+
+  const [error, setError] = useState("");
+
   const [active, setActive] = useState();
 
   const router = useRouter();
+
+  const handelLogOut = async () => {
+    try {
+      await logout();
+      dispatch(resetUserInfo());
+      router.push("/");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   useEffect(() => {
     const path = pathname.split("/")[2] ? pathname.split("/")[2] : "";
@@ -162,6 +179,8 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
 
           <button
+            type="button"
+            onClick={handelLogOut}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-red-400 rounded-md gap-2 font-meduim  transition-colors duration-75 w-full `}
           >
             <IoLogOutOutline className="text-lg" />
