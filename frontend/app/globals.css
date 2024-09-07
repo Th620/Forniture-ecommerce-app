@@ -30,6 +30,9 @@ input[type="number"] {
 .reviews {
   width: calc(100% + 15px);
 }
+.noReviews {
+  width: calc(100% + 17px);
+}
 
 /* .stock {
   width: calc(100% - theme(spacing.10));

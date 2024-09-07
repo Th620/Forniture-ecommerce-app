@@ -1,9 +1,9 @@
 "use client";
 
-import { useAppSelector } from "@/lib/hook";
 import { forgotPassword } from "@/services/user";
 import React, { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
+import { useSelector } from "react-redux";
 import { isEmail } from "validator";
 
 export default function ForgotPassword() {
@@ -12,7 +12,7 @@ export default function ForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  let user = useAppSelector((state) => state.user);
+  let user = useSelector((state) => state.user);
 
   const handelForgotPassword = async (e) => {
     try {

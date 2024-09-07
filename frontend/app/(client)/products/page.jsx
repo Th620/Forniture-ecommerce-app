@@ -48,8 +48,15 @@ export default function Products() {
   const handelGetCategories = async () => {
     try {
       setIsLoading(true);
-      const categories = await getCategories();
+      const categories = await getCategories()
+      let cat = [];
+      if (categories) {
+        categories.forEach((category) => {
+          cat.push(category.name);
+        });
+      }
       setIsLoading(false);
+      return cat;
       return categories;
     } catch (error) {
       setIsLoading(false);
@@ -184,7 +191,7 @@ export default function Products() {
   //     if (category && category.toLowerCase() !== "all categories") {
   //       queries.category = category;
   //     }
-  //     router.push(`?${new URLSearchParams(queries)}`);
+  //     router.replace(`?${new URLSearchParams(queries)}`);
   //   };
   // }, [queries, size, color, sort, category]);
 
@@ -214,7 +221,7 @@ export default function Products() {
                 } else {
                   delete searchParamsvalues.size;
                 }
-                router.push(
+                router.replace(
                   `/products?${new URLSearchParams(searchParamsvalues)}`
                 );
                 try {
@@ -261,7 +268,7 @@ export default function Products() {
                 } else {
                   delete searchParamsvalues.color;
                 }
-                router.push(
+                router.replace(
                   `/products?${new URLSearchParams(searchParamsvalues)}`
                 );
                 try {
@@ -288,7 +295,7 @@ export default function Products() {
                 }
               }}
               // func={(colorRef, sizeRef, sortRef) => {
-              //   router.push(
+              //   router.replace(
               //     `/products${
               //       colorRef !== "all" ||
               //       (size && size.toLowerCase() !== "all") ||
@@ -328,7 +335,7 @@ export default function Products() {
                 } else {
                   delete searchParamsvalues.sort;
                 }
-                router.push(
+                router.replace(
                   `/products?${new URLSearchParams(searchParamsvalues)}`
                 );
                 try {
@@ -388,7 +395,7 @@ export default function Products() {
                       delete searchParamsvalues.category;
                     }
                     setOpenCategorySelect(false);
-                    router.push(
+                    router.replace(
                       `/products?${new URLSearchParams(searchParamsvalues)}`
                     );
                     try {

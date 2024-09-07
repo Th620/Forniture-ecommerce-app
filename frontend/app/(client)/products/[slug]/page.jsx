@@ -7,6 +7,10 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getProduct } from "@/services/products";
 import { BASE_URL } from "@/constants";
 import Link from "next/link";
+import { useAppDispatch } from "@/lib/hook";
+import { addItem } from "@/lib/features/cart/cartSlice";
+import { useDispatch } from "react-redux";
+import { useStateContext } from "@/context/StateContext";
 
 const unavailableSize = (variations = [], color, size) => {
   return variations.every((variation) => {
@@ -35,6 +39,8 @@ export default function Product() {
   const [qt, setQt] = useState(1);
   const [variations, setVariations] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
+
+  const dispatch = useDispatch();
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -78,14 +84,16 @@ export default function Product() {
     };
   }, []);
 
+  const { setOpenCart } = useStateContext();
+
   return (
-    <main className="relative flex flex-col gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white mt-150 min-h-screen mb-28">
+    <main className="relative flex flex-col gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white mt-[100px] md:mt-150 min-h-screen mb-28">
       <div className="flex flex-col md:grid md:grid-cols-18 gap-4 grid-flow-col-dense">
         <h3 className="font-semibold text-xl sm:text-3xl capitalize md:hidden">
           {product?.title}
         </h3>
         <div className="md:col-span-8 md:col-start-1 w-full flex flex-col gap-y-4 md:order-first">
-          <div className="relative w-full aspect-square">
+          <div className="relative w-full aspect-square bg-bg">
             <Image
               src={BASE_URL + selectedImg}
               layout="fill"
@@ -98,7 +106,7 @@ export default function Product() {
               <div
                 key={image}
                 onClick={() => setSelectedImg(image)}
-                className={`relative col-span-1 w-full aspect-square bg-white cursor-pointer dark:bg-black ${
+                className={`relative col-span-1 w-full aspect-square cursor-pointer dark:bg-black bg-bg ${
                   selectedImg === image ? "opacity-50" : "opacity-100"
                 }`}
               >
@@ -116,9 +124,16 @@ export default function Product() {
           <h3 className="hidden md:block font-semibold text-xl sm:text-3xl capitalize">
             {product?.title}
           </h3>
-          <Link className="" href={`/products?category=${product.category}`}>
+          <Link
+            className=""
+            href={`${
+              product?.category
+                ? `/products?category=${product.category.name}`
+                : ""
+            }`}
+          >
             <p className="text-xs text-blue-800 ml-[2px] capitalize">
-              {product.category}
+              {product?.category ? product.category?.name : "not categorized"}
             </p>
           </Link>
           <p className="font-semibold text-sm text-[#787676] mt-3">
@@ -138,7 +153,7 @@ export default function Product() {
                       unavailable={unavailableColor(variations, color)}
                       selected={selectedColor === color}
                       onclick={() => {
-                        router.push(
+                        router.replace(
                           `/products/${slug}?color=${color}${
                             !unavailableSize(variations, color, selectedSize) &&
                             selectedSize
@@ -172,7 +187,7 @@ export default function Product() {
                     )}
                     selected={selectedSize === size}
                     onclick={() => {
-                      router.push(
+                      router.replace(
                         `/products/${slug}?color=${selectedColor}&size=${size}`,
                         { scroll: false }
                       );
@@ -186,46 +201,101 @@ export default function Product() {
             <h6 className="max-md:text-sm font-semibold mb-3">
               Choose a Quantity
             </h6>
-            <div className="sm:h-8 h-6 bg-gray flex justify-center items-center w-fit text-white">
-              <button
-                type="button"
-                disabled={qt === 1}
-                onClick={() => {
-                  if (qt > 1) {
-                    setQt(qt - 1);
-                  }
-                }}
-                className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover disabled:hover:bg-gray transition-colors duration-100"
-              >
-                -
-              </button>
-              <label htmlFor="Qt" className="sr-only">
-                Quantity
-              </label>
-              <input
-                type="number"
-                id="Qt"
-                min={1}
-                inputMode="numeric"
-                size={2}
-                value={qt}
-                readOnly
-                className="h-full text-center bg-gray"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setQt(qt + 1);
-                }}
-                className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
-              >
-                +
-              </button>
+            <div className="flex justify-center items-center w-fit sm:h-8 h-6 mb-4 gap-2">
+              <div className="h-full bg-gray flex justify-center items-center w-fit text-white">
+                <button
+                  type="button"
+                  disabled={qt === 1}
+                  onClick={() => {
+                    if (qt > 1) {
+                      setQt(qt - 1);
+                    }
+                  }}
+                  className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover disabled:hover:bg-gray transition-colors duration-100"
+                >
+                  -
+                </button>
+                <label htmlFor="Qt" className="sr-only">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  id="Qt"
+                  min={1}
+                  inputMode="numeric"
+                  size={2}
+                  value={qt}
+                  readOnly
+                  className="h-full text-center bg-gray"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQt(qt + 1);
+                  }}
+                  className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
+                >
+                  +
+                </button>
+              </div>
+              {product?.stock <= 10 && (
+                <p className="text-[#353535] font-medium text-[10px]">
+                  Only{" "}
+                  <span className="text-yellow font-semibold ">
+                    {`${product?.stock} item${product?.stock === 1 ? "" : "s"}`}{" "}
+                    left!
+                  </span>
+                  <br />
+                  Don't miss it
+                </p>
+              )}
             </div>
           </div>
+          {error?.addToCart && (
+            <p className="text-xs text-red-400">{error.Error}</p>
+          )}
           <button
             type="button"
-            className="capitalize rounded-full px-10 py-2 text-white bg-yellow bg-opacity-95 hover:bg-opacity-100 w-fit my-8 font-medium"
+            onClick={() => {
+              if (!selectedColor || !selectedSize) {
+                setError({
+                  addToCart: true,
+                  Error: "Please select a size to proceed.",
+                });
+                setTimeout(() => {
+                  setError(null);
+                }, 3000);
+                return;
+              }
+              if (qt > product?.stock) {
+                setError({
+                  addToCart: true,
+                  Error:
+                    "The requested quantity exceeds our current stock. Please adjust your order.",
+                });
+                setTimeout(() => {
+                  setError(null);
+                }, 5000);
+                return;
+              }
+              dispatch(
+                addItem({
+                  _id: product?._id,
+                  title: product?.title,
+                  slug: product?.slug,
+                  price: product?.price,
+                  color: selectedColor,
+                  size: selectedSize,
+                  quantity: qt,
+                  image: product?.images[0],
+                })
+              );
+              setOpenCart(true);
+              setTimeout(() => {
+                setOpenCart(false);
+              }, 1500);
+            }}
+            className="capitalize rounded-full px-10 py-2 text-white bg-yellow bg-opacity-95 hover:bg-opacity-100 w-fit mt-4 mb-8 font-medium"
           >
             Add to card
           </button>
@@ -257,14 +327,17 @@ export default function Product() {
                 }`}
               >
                 <div
-                  className={`reviews absolute top-0 left-0 overflow-y-scroll overflow-x-hidden z-0 flex flex-col items-center justify-center gap-y-1 bg-bg px-2 py-2 border-b border-gray border-opacity-30 ${
-                    product?.reviews?.length > 2 ? "h-56" : "h-14"
-                  }`}
+                  className={`${
+                    product?.reviews?.length === 0 ? "noReviews" : "reviews"
+                  } absolute top-0 left-0 overflow-y-scroll overflow-x-hidden z-0 flex flex-col items-center gap-y-1 bg-bg px-2 py-2 border-b border-gray ${
+                    product?.reviews?.length === 0
+                      ? "border-opacity-0"
+                      : " border-opacity-30"
+                  }  ${product?.reviews?.length > 2 ? "h-56" : "h-14"}`}
                 >
-                  {!product?.reviews ||
-                    (product?.reviews?.length === 0 && (
-                      <p className="text-gray">No Reviews</p>
-                    ))}
+                  {(!product?.reviews || product?.reviews?.length === 0) && (
+                    <p className="text-gray py-2">No Reviews</p>
+                  )}
                   {product?.reviews &&
                     product?.reviews.map((review) => (
                       <div

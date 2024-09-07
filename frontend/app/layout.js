@@ -1,9 +1,8 @@
 import { Montserrat, Lato } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
 import { StoreProvider } from "./StoreProvider";
-import Providers from "./Providers";
+import AuthProvider from "@/context/AuthContext";
+import StateProvider from "@/context/StateContext";
 
 export const metadata = {
   title: "DECO: Modern Forniture",
@@ -26,9 +25,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="">
       <body className={`${montserrat.className} ${lato.className} bg-white`}>
-        <Providers>
-          <StoreProvider>{children}</StoreProvider>
-        </Providers>
+        <StateProvider>
+          <AuthProvider>
+            <StoreProvider>{children}</StoreProvider>
+          </AuthProvider>
+        </StateProvider>
       </body>
     </html>
   );

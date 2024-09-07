@@ -1,13 +1,15 @@
 "use client";
 
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { filter } from "@/constants";
+import AuthProvider from "@/context/AuthContext";
 import { resetUserInfo, setUserInfo } from "@/lib/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hook";
-import { logout, profile, updateProfile } from "@/services/user";
+import { getProfile, logout, updateProfile } from "@/services/user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { MdErrorOutline, MdKeyboardArrowDown } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Profile() {
   const [openCountrySelect, setOpenCountrySelect] = useState(false);
@@ -24,11 +26,11 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useAppDispatch();
-
-  let user = useAppSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const router = useRouter();
+
+  let user = useSelector((state) => state.user);
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
@@ -72,8 +74,6 @@ export default function Profile() {
         data.adress && setAdress(data.adress);
         data.phone && setPhone(data.phone);
       }
-      console.log(data);
-
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -84,7 +84,7 @@ export default function Profile() {
   const getProfileData = async () => {
     try {
       setIsLoading(true);
-      const data = await profile();
+      const data = await getProfile();
       if (data) {
         setFirstName(data.firstName);
         setLastName(data.lastName);
@@ -137,12 +137,8 @@ export default function Profile() {
   }, []);
 
   return (
-    <>
-      {isLoading ? (
-        <div className="min-h-screen flex justify-center items-center">
-          {"Loading..."}
-        </div>
-      ) : (
+    <AuthProvider>
+      <ProtectedRoute>
         <main className="flex flex-col justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14">
           <h2 className="text-[32px] font-semibold capitalize">profile</h2>
           <form
@@ -158,15 +154,13 @@ export default function Profile() {
                   </div>
                 </div>
               )}
-              {user.userInfo && (
-                <button
-                  type="button"
-                  onClick={handelLogout}
-                  className="col-span-4 text-end capitalize underline text-sm font-lato font-medium"
-                >
-                  Log out
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handelLogout}
+                className="col-span-4 text-end capitalize underline text-sm font-lato font-medium"
+              >
+                Log out
+              </button>
 
               <label htmlFor="firstName" className="sr-only">
                 First Name:
@@ -343,7 +337,7 @@ export default function Profile() {
             </div>
           </form>
         </main>
-      )}
-    </>
+      </ProtectedRoute>
+    </AuthProvider>
   );
 }

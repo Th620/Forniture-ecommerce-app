@@ -16,7 +16,7 @@ export default function signUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatc();
 
   const router = useRouter();
 

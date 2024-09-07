@@ -1,12 +1,12 @@
 "use client";
 
 import { setUserInfo } from "@/lib/features/user/userSlice";
-import { useAppDispatch } from "@/lib/hook";
 import { login } from "@/services/user";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
+import { useDispatch } from "react-redux";
 import isEmail from "validator/lib/isEmail";
 
 export default function signIn() {
@@ -15,7 +15,7 @@ export default function signIn() {
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const router = useRouter();
 

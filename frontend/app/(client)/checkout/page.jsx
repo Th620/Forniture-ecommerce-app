@@ -1,25 +1,66 @@
 "use client";
 
 import PricingBox from "@/components/PricingBox";
+import { getProfile } from "@/services/user";
 import { useEffect, useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 export default function Checkout() {
   const [openCountrySelect, setOpenCountrySelect] = useState(false);
   const [openStateSelect, setOpenStateSelect] = useState(false);
-  const [openCitySelect, setOpenCitySelect] = useState(false);
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
-  const [city, setCity] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [adress, setAdress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
       if (!e.target.classList.contains("btn")) {
         setOpenCountrySelect(false);
         setOpenStateSelect(false);
-        setOpenCitySelect(false);
       }
     });
+  }, []);
+  const getProfileData = async () => {
+    try {
+      const data = await getProfile();
+      if (data) {
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setEmail(data.email);
+        data.city && setCity(data.city);
+        data.country && setCountry(data.country);
+        data.state && setState(data.state);
+        data.adress && setAdress(data.adress);
+        data.phone && setPhone(data.phone);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      const err = JSON.parse(error.message);
+      if (err.status === 401) {
+        setError("Unauthorized");
+        setTimeout(() => {
+          router.push("/account/sign-in");
+        }, 2000);
+      } else {
+        setError(err.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    return async () => {
+      await getProfileData();
+    };
   }, []);
 
   return (
@@ -33,6 +74,8 @@ export default function Checkout() {
           <input
             type="text"
             name="FirstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             id="firstName"
             placeholder="First Name"
             className="h-10 bg-input outline-none col-span-4 md:col-span-2 placeholder:text-gray placeholder:text-sm text-sm font-medium px-4 rounded-sm"
@@ -44,6 +87,8 @@ export default function Checkout() {
             type="text"
             name="LastName"
             id="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             placeholder="Last Name"
             className="h-10 bg-input outline-none col-span-4 md:col-span-2 placeholder:text-gray placeholder:text-sm text-sm font-medium px-4 rounded-sm"
           />
@@ -54,6 +99,8 @@ export default function Checkout() {
             type="tel"
             name="Phone"
             id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone"
             className="h-10 bg-input outline-none col-span-4 md:col-span-2 placeholder:text-gray placeholder:text-sm text-sm font-medium px-4 rounded-sm"
           />
@@ -64,16 +111,17 @@ export default function Checkout() {
             type="email"
             name="Email"
             id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             className="h-10 bg-input outline-none col-span-4 md:col-span-2 placeholder:text-gray placeholder:text-sm text-sm font-medium px-4 rounded-sm"
           />
-          <div className="col-span-4 md:col-span-2 relative">
+          <div className="col-span-2 relative">
             <button
               type="button"
               onClick={() => {
                 setOpenCountrySelect((prev) => !prev);
                 setOpenStateSelect(false);
-                setOpenCitySelect(false);
               }}
               className="flex justify-between h-10 items-center px-4 bg-input text-sm py-1 capitalize font-medium w-full"
             >
@@ -99,13 +147,12 @@ export default function Checkout() {
               </ul>
             )}
           </div>
-          <div className="col-span-2 md:col-span-1 relative">
+          <div className="col-span-2 relative">
             <button
               type="button"
               onClick={() => {
                 setOpenStateSelect((prev) => !prev);
                 setOpenCountrySelect(false);
-                setOpenCitySelect(false);
               }}
               className="flex justify-between h-10 items-center px-4 bg-input text-sm py-1 capitalize font-medium w-full"
             >
@@ -132,38 +179,7 @@ export default function Checkout() {
               </ul>
             )}
           </div>
-          <div className="col-span-2 md:col-span-1 relative">
-            <button
-              type="button"
-              onClick={() => {
-                setOpenCitySelect((prev) => !prev);
-                setOpenCountrySelect(false);
-                setOpenStateSelect(false);
-              }}
-              className="flex justify-between h-10 items-center px-4 bg-input text-sm py-1 capitalize font-medium w-full"
-            >
-              {city ? city : "city"}
-              <MdKeyboardArrowDown />
-            </button>
-            {openCitySelect && (
-              <ul className="absolute top-full z-10 min-w-28 bg-[#EEEFF1] w-full">
-                {filter.sort.map((sort) => (
-                  <li key={sort}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCity(sort);
-                        setOpenCitySelect(false);
-                      }}
-                      className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"
-                    >
-                      {sort}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+
           <label htmlFor="adress" className="sr-only">
             Full Adress:
           </label>
@@ -171,17 +187,21 @@ export default function Checkout() {
             type="text"
             name="adress"
             id="adress"
+            value={adress}
+            onChange={(e) => setAdress(e.target.value)}
             placeholder="Full Adress"
             className="h-10 bg-input outline-none col-span-4 placeholder:text-gray placeholder:text-sm text-sm font-medium px-4 rounded-sm"
           />
           <button
-          type="button"
-          className="capitalize col-span-4 w-full md:w-1/3 lg:w-1/4 xl:w-1/5 pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white"
-        >
-          Update Profile
-        </button>
+            type="button"
+            className="capitalize col-span-4 w-full md:w-1/3 lg:w-1/4 xl:w-1/5 pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white"
+          >
+            Update Profile
+          </button>
         </div>
-        <PricingBox btnLabel={"order now"} />
+        <div className="">
+          <PricingBox btnLabel={"place order"} subtotal={cart?.totalPrice} />
+        </div>
       </div>
     </main>
   );

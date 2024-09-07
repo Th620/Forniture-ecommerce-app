@@ -1,45 +1,29 @@
+"use client";
+
 import PricingBox from "@/components/PricingBox";
+import { BASE_URL } from "@/constants";
+import {
+  decreaseQuantity,
+  increaseQuantity,
+  removeItem,
+} from "@/lib/features/cart/cartSlice";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CgClose } from "react-icons/cg";
 import { GoArrowLeft } from "react-icons/go";
-
-const CardProdcuts = [
-  {
-    id: 1,
-    title: "Desk Lamp",
-    img: "/lamp.png",
-    filter: {
-      color: "black",
-    },
-    price: 25.0,
-  },
-  {
-    id: 2,
-    title: "Desk Lamp",
-    img: "/lamp.png",
-    filter: {
-      color: "black",
-    },
-    price: 25.0,
-  },
-  {
-    id: 3,
-    title: "Desk Lamp",
-    img: "/lamp.png",
-    filter: {
-      color: "black",
-    },
-    price: 25.0,
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Cart() {
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
   return (
-    <main className="flex flex-col justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14">
-      <h2 className="text-[32px] font-semibold capitalize">cart</h2>
+    <main className="flex flex-col justify-start px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-[100px] min-h-screen mb-14">
+      <h2 className="text-[32px] font-semibold capitalize mb-6">cart</h2>
       <div className="flex flex-col md:flex-row justify-center gap-x-4 xl:gap-x-6 w-full">
-        <form className="w-full min-w-1/2">
+        <div className="w-full min-w-1/2">
           <table className="w-full text-start table">
             <thead className="w-full">
               <tr className="border-b-2 border-[#E8E9EB]">
@@ -58,9 +42,9 @@ export default function Cart() {
               </tr>
             </thead>
             <tbody>
-              {CardProdcuts.map((product) => (
+              {cart?.items.map((item) => (
                 <tr
-                  key={product.id}
+                  key={item?.id}
                   className="border-b-2 border-[#E8E9EB] h-fit"
                 >
                   <td className="py-2 max-h-[30vw]">
@@ -68,34 +52,58 @@ export default function Cart() {
                       href={"/"}
                       className="flex gap-x-4 h-full items-center"
                     >
-                      <div className="relative aspect-[1/1.2] sm:min-h-[20vh] min-h-[10vh] bg-black">
+                      <div className="relative aspect-[1/1.2] w-[6vw] bg-bg">
                         <Image
-                          src={product.img}
+                          src={
+                            item?.image ? BASE_URL + item.image : "/lamp.png"
+                          }
                           layout="fill"
                           objectFit="cover"
-                          alt={product.title}
+                          alt={item?.title}
                         />
                       </div>
                       <div>
                         <p className="sm:text-sm text-xs font-semibold">
-                          {product.title}
+                          {item?.title}
                         </p>
                         <p className="sm:text-sm text-xs text-gray font-medium capitalize">
-                          {product.filter.color}
+                          {item?.color}
+                        </p>
+                        <p className="sm:text-sm text-xs text-gray font-medium capitalize">
+                          {item?.size}
                         </p>
                         <p className="sm:text-sm text-xs font-semibold block md:hidden">
-                          {/* Qt */}× ${product.price}
+                          {item?.quantity}× {item?.price} DZD
                         </p>
                       </div>
                     </Link>
                   </td>
                   <td className="text-sm font-semibold min-w-16 max-sm:hidden">
-                    ${product.price}
+                    {item?.price} DZD
                   </td>
                   <td>
                     <div className="sm:h-8 h-6 bg-gray flex justify-center items-center w-fit text-white">
                       <button
                         type="button"
+                        onClick={() => {
+                          if (item?.quantity > 1) {
+                            dispatch(
+                              decreaseQuantity({
+                                _id: item?._id,
+                                color: item?.color,
+                                size: item?.size,
+                              })
+                            );
+                          } else {
+                            dispatch(
+                              removeItem({
+                                _id: item?._id,
+                                color: item?.color,
+                                size: item?.size,
+                              })
+                            );
+                          }
+                        }}
                         className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
                       >
                         -
@@ -109,12 +117,21 @@ export default function Cart() {
                         min={1}
                         inputMode="numeric"
                         size={2}
-                        value={1}
+                        value={item?.quantity}
                         readOnly
                         className="h-full text-center bg-gray"
                       />
                       <button
                         type="button"
+                        onClick={() => {
+                          dispatch(
+                            increaseQuantity({
+                              _id: item?._id,
+                              color: item?.color,
+                              size: item?.size,
+                            })
+                          );
+                        }}
                         className="h-full aspect-square flex justify-center items-center font-semibold hover:bg-grayHover transition-colors duration-100"
                       >
                         +
@@ -122,11 +139,20 @@ export default function Cart() {
                     </div>
                   </td>
                   <td className="text-sm font-semibold min-w-16 max-sm:hidden">
-                    ${product.price}
+                    {item?.price * item?.quantity} DZD
                   </td>
                   <td>
                     <button
                       type="button"
+                      onClick={() => {
+                        dispatch(
+                          removeItem({
+                            _id: item?._id,
+                            color: item?.color,
+                            size: item?.size,
+                          })
+                        );
+                      }}
                       className="p-1.5 rounded-full bg-[#E8E9EB] hover:bg-[#DDDEE0] transition-colors duration-100 hidden sm:block"
                     >
                       <CgClose className="size-3 text-[#5E5E5E]" />
@@ -134,18 +160,20 @@ export default function Cart() {
                   </td>
                 </tr>
               ))}
+
               <tr>
                 <td colSpan={5} className="table-cell">
+                  {cart?.totalQuantity === 0 && (
+                    <div className="w-full py-6 text-center text-[#8C8C8C] bg-bg">
+                      Empty
+                    </div>
+                  )}
+
                   <div className="items-center gap-x-4 gap-y-2 flex-wrap w-full pt-7 flex">
                     <button
                       type="button"
-                      className="inline capitalize min-w-56 pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white"
-                    >
-                      Update Cart
-                    </button>
-                    <button
-                      type="button"
-                      className="capitalize min-w-56 pt-2 pb-[11px] font-medium text-black inline-flex justify-center items-center gap-x-2"
+                      onClick={() => router.push("/products")}
+                      className="capitalize pt-2 pb-[11px] font-medium text-black inline-flex justify-center items-center gap-x-2 transition-all duration-500 hover:gap-x-3"
                     >
                       <GoArrowLeft className="text-lg" />
                       Continue Shopping
@@ -155,8 +183,12 @@ export default function Cart() {
               </tr>
             </tbody>
           </table>
-        </form>
-        <PricingBox btnLabel={"checkout"} className={"mt-9"} />
+        </div>
+        <PricingBox
+          btnLabel={"checkout"}
+          className={"mt-9"}
+          subtotal={cart?.totalPrice}
+        />
       </div>
     </main>
   );
