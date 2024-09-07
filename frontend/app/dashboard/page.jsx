@@ -1,23 +1,52 @@
+"use client";
+
 import DashboardCard from "@/components/DashboardCard";
 import EarningsChart from "@/components/EarningsChart";
 import OrdersChart from "@/components/OrdersChart";
+import { productSoldAndProfits } from "@/services/order";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+  const [profits, setprofits] = useState(0);
+  const [profitsPercentage, setprofitsPercentage] = useState(0);
+  const [productsSoldPercentage, setproductsSoldPercentage] = useState(0);
+  const [productSold, setproductSold] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handelGetProductSoldAndProfits = async () => {
+    try {
+      const data = await productSoldAndProfits();
+      if (data) {
+        setprofits(data?.profits);
+        setprofitsPercentage(data?.profitsPercentage);
+        setproductSold(data?.productSold);
+        setproductsSoldPercentage(data?.productSlodPercentage);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    return async () => {
+      await handelGetProductSoldAndProfits();
+      setIsLoading(false);
+    };
+  }, []);
+
   return (
     <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%]">
       <div className="grid grid-cols-12 p-5 gap-4 w-full">
         <DashboardCard
           className={"md:col-span-3 sm:col-span-6 col-span-12"}
           boxTitel={"product sold"}
-          value={1000}
-          percentage={+10}
+          value={productSold}
+          percentage={productsSoldPercentage}
           period={"mounth"}
         />
         <DashboardCard
           className={"md:col-span-3 sm:col-span-6 col-span-12"}
           boxTitel={"total profit"}
-          value={1500}
-          percentage={+16}
+          value={profits}
+          percentage={profitsPercentage}
           period={"mounth"}
           sign="DZD"
         />

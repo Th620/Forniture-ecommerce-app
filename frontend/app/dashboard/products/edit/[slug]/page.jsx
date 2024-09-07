@@ -66,8 +66,14 @@ export default function NewProduct() {
     try {
       setIsLoading(true);
       const categories = await getCategories();
+      let cat = [];
+      if (categories) {
+        categories.forEach((category) => {
+          cat.push(category.name);
+        });
+      }
       setIsLoading(false);
-      return categories;
+      return cat;
     } catch (error) {
       setIsLoading(false);
       setError({ handlers: true, Error: error.message });
@@ -88,7 +94,7 @@ export default function NewProduct() {
         product.colors && setcolors(product.colors);
         product.sizes & setSizes(product.sizes);
         setStock(product.stock);
-        setCategory(product.category);
+        product?.category && setCategory(product.category.name);
         product.images && setImages(product.images);
         product.variations && setVariations(product.variations);
       }
@@ -142,19 +148,19 @@ export default function NewProduct() {
       return;
     }
 
-    if (!desc) {
+    if (!price) {
       setError({
-        desc: true,
-        Error: "Description is required",
+        price: true,
+        Error: "Price is required",
       });
       setTimeout(() => setError(""), 3000);
       return;
     }
 
-    if (!price) {
+    if (!desc) {
       setError({
-        price: true,
-        Error: "Price is required",
+        desc: true,
+        Error: "Description is required",
       });
       setTimeout(() => setError(""), 3000);
       return;
@@ -169,10 +175,19 @@ export default function NewProduct() {
       return;
     }
 
-    if (!category) {
+    // if (!category) {
+    //   setError({
+    //     category: true,
+    //     Error: "Category is required",
+    //   });
+    //   setTimeout(() => setError(""), 3000);
+    //   return;
+    // }
+
+    if (features.length === 0) {
       setError({
-        category: true,
-        Error: "Category is required",
+        features: true,
+        Error: "features are required",
       });
       setTimeout(() => setError(""), 3000);
       return;
@@ -253,7 +268,7 @@ export default function NewProduct() {
       if (response) {
         setDone(true);
         setTimeout(() => {
-          router.back()
+          router.push("/dashboard/products");
         }, 3000);
       }
       setTitle("");
@@ -270,17 +285,6 @@ export default function NewProduct() {
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      setTitle("");
-      setPrice(null);
-      setDesc("");
-      setFeatures([]);
-      setcolors([]);
-      setSizes([]);
-      setStock(null);
-      setCategory("");
-      setVariations([]);
-      setSelectedFiles([]);
-      setImages([]);
       setError({ handlers: true, Error: error.message });
       setTimeout(() => setError(""), 3000);
     }
@@ -639,7 +643,6 @@ export default function NewProduct() {
 
                 <button
                   type="submit"
-                  onkeyDown={(e) => e.preventDefault()}
                   disabled={isLoading}
                   className="bg-yellow capitalize rounded-md disabled:cursor-not-allowed py-2 px-14 text-white font-lato my-7 font-medium self-center disabled:opacity-50"
                 >

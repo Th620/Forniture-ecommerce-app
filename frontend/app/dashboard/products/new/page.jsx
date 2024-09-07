@@ -60,7 +60,14 @@ export default function NewProduct() {
     try {
       setIsLoading(true);
       const categories = await getCategories();
+      let cat = [];
+      if (categories) {
+        categories.forEach((category) => {
+          cat.push(category.name);
+        });
+      }
       setIsLoading(false);
+      return cat;
       return categories;
     } catch (error) {
       setIsLoading(false);
@@ -235,16 +242,6 @@ export default function NewProduct() {
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      setTitle("");
-      setPrice(null);
-      setDesc("");
-      setFeatures([]);
-      setcolors([]);
-      setSizes([]);
-      setStock(null);
-      setCategory("");
-      setVariations([]);
-      setSelectedFiles([]);
       setError({ handlers: true, Error: error.message });
       setTimeout(() => setError(""), 3000);
     }
@@ -257,7 +254,7 @@ export default function NewProduct() {
           {"Loading..."}
         </div>
       ) : done ? (
-        <div className="min-h-screen flex justify-center items-center  w-full bg-white dark:bg-black text-black dark:text-white pt-[60px] md:pl-[20%]">
+        <div className="min-h-screen flex justify-center items-center  w-full bg-white dark:bg-black text-black dark:text-white md:pl-[20%]">
           {"Product Created Successfully"}
         </div>
       ) : (

@@ -1,25 +1,73 @@
-import Link from "next/link";
-import React from "react";
-import { MdOutlineDelete, MdOutlineModeEdit } from "react-icons/md";
+"use client";
 
-const orders = [
-  {
-    id: "00c64832-8fae-492f-a535-5d8f169cc947",
-    date: "20/07/2024",
-    shippingDate: "20/07/2024",
-    price: "$25.00",
-    status: "canceled",
-  },
-  {
-    id: "fb04fb35-590d-4375-8bfc-a84c823cadc9",
-    date: "22/07/2024",
-    shippingDate: "22/07/2024",
-    price: "$25.00",
-    status: "dilevered",
-  },
-];
+import { deleteUser, getUsers, updateUserRole } from "@/services/user";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { MdOutlineDelete, MdOutlineModeEdit } from "react-icons/md";
+import { RiAdminLine } from "react-icons/ri";
 
 export default function Clients() {
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState({});
+  const [isLoading, setIsLoading] = useState({});
+
+  const handelGetUsers = async () => {
+    try {
+      setIsLoading(true);
+      const users = await getUsers();
+
+      setIsLoading(false);
+      return users;
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handelUpdateUserRole = async ({ id }) => {
+    try {
+      setIsLoading(true);
+      await updateUserRole({ id });
+
+      setIsLoading(false);
+      return products;
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handelDeleteUser = async ({ id }) => {
+    try {
+      setIsLoading(true);
+      await deleteUser({ id });
+      setIsLoading(false);
+      return products;
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  useEffect(() => {
+    return async () => {
+      try {
+        const users = await handelGetUsers();
+        if (users) {
+          console.log(users);
+
+          setUsers([...users]);
+        }
+      } catch (error) {
+        setError(error.message);
+        console.log(error);
+      }
+    };
+  }, [users]);
+
   return (
     <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
       <div className="p-5 w-full">
@@ -30,62 +78,77 @@ export default function Clients() {
                 #
               </th>
               <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
-                order
+                user
               </th>
               <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 hidden sm:table-cell">
-                date
+                first name
               </th>
               <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 hidden md:table-cell">
-                shipping date
+                last name
               </th>
               <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 hidden sm:table-cell">
-                price
+                orders
               </th>
               <th className="font-medium text-center w-fit sm:w-40 text-sm text-[#8C8C8C] py-2">
-                status
+                Admin
               </th>
               <th className="font-medium text-center w-fit sm:w-40 text-sm text-[#8C8C8C] py-2"></th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order, index) => (
+            {users.map((user, index) => (
               <tr
-                key={order.id}
+                key={user?._id}
                 className="text-xs h-10 border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40"
               >
                 <td className="font-medium min-w-7 text-center hidden sm:table-cell">
                   {index}
                 </td>
                 <td className="font-semibold pr-4 min-w-10 w-72">
-                  <Link href={""}>{order.id}</Link>
+                  <Link href={`/dashboard/clients/${user?._id}`}>{user?._id}</Link>
                 </td>
                 <td className="font-medium hidden sm:table-cell min-w-fit w-40 ">
-                  {order.date}
+                  {user?.firstName}
                 </td>
                 <td className="font-medium hidden md:table-cell min-w-fit w-44">
-                  {order.shippingDate}
+                  {user?.lastName}
                 </td>
                 <td className="font-semibold hidden sm:table-cell min-w-fit w-44">
-                  {order.price}
+                  {user?.orders?.length}
                 </td>
                 <td className="flex justify-center items-center h-10 w-fit sm:w-40 px-2">
-                  <div
-                    className={`font-semibold py-1.5 w-20 sm:w-24 rounded-full text-[10px] sm:text-xs text-center capitalize ${
-                      order.status === "canceled" &&
-                      "bg-red-200 dark:bg-opacity-90 text-red-500"
-                    } ${
-                      order.status === "dilevered" &&
-                      "bg-green-200 dark:bg-opacity-90 text-green-600"
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (
+                        confirm(
+                          `Are you sure you want to make this user ${
+                            user?.admin ? "a non admin" : "an admin"
+                          }`
+                        )
+                      ) {
+                        await handelUpdateUserRole({ id: user?._id });
+                      }
+                    }}
+                    className={`text-base ${
+                      user?.admin === true ? "text-green-500" : "text-red-400"
                     }`}
                   >
-                    {order.status}
-                  </div>
+                    <RiAdminLine />
+                  </button>
                 </td>
                 <td className="font-semibold table-cell md:w-[8%] min-w-14">
-                  <button type="button" className="px-1">
-                    <MdOutlineModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
-                  </button>
-                  <button type="button" className="px-1">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (
+                        confirm("Are you sure you want to delete this user")
+                      ) {
+                        await handelDeleteUser({ id: user?._id });
+                      }
+                    }}
+                    className="px-1"
+                  >
                     <MdOutlineDelete className="size-[18px] text-red-400" />
                   </button>
                 </td>
