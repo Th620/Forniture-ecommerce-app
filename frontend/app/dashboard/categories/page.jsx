@@ -2,10 +2,10 @@
 
 import { BASE_URL } from "@/constants";
 import { deleteCategory } from "@/services/category";
-import { getCategories } from "@/services/store";
+import { getCategories } from "@/services/category";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   MdOutlineAdd,

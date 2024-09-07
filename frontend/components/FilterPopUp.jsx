@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Select from "./Select";
 import { useRouter } from "next/navigation";
-import { getCategories } from "@/services/store";
+import { getCategories } from "@/services/category";
 import { getProducts } from "@/services/products";
 
 const FilterPopUp = ({ className, setOpenFilter, setError }) => {

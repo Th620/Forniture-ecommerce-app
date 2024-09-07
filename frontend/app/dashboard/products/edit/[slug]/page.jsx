@@ -8,10 +8,9 @@ import SimpleInput from "@/components/simpleInput";
 import AddItemInput from "@/components/AddItemInput";
 import Select from "@/components/Select";
 import VariationInput from "@/components/VariationInput";
-import { getCategories } from "@/services/store";
+import { getCategories } from "@/services/category";
 import { editProduct, getProduct } from "@/services/products";
 import { useParams, useRouter } from "next/navigation";
-import FilterPopUp from "@/components/FilterPopUp";
 
 const removeImage = (file, files, setSelectedFiles) => {
   const array = files.filter((item) => {

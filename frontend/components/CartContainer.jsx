@@ -22,7 +22,7 @@ const CartContainer = ({ setOpenCart }) => {
     >
       <div>
         {cart.items?.map((item) => (
-          <div className="flex items-center border-b-[1.5px] border-gray border-opacity-20 py-2">
+          <div className="flex items-stretch border-b-[1.5px] border-gray border-opacity-20 py-2">
             <Link href={`/products/${item?.slug}`}>
               <div className="relative aspect-[1/1.2] w-[4vw] bg-bg mr-2">
                 <Image
@@ -33,7 +33,7 @@ const CartContainer = ({ setOpenCart }) => {
                 />
               </div>
             </Link>
-            <div className="h-full ">
+            <div className="h-full">
               <Link href={`/products/${item?.slug}`}>
                 <h3 className="text-wrap text-sm text-opacity-50 hover:text-opacity-100">
                   <span className="capitalize">{`${item?.title}`}</span>

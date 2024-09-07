@@ -1,7 +1,37 @@
+"use client";
+
 import CategoryCard from "@/components/CategoryCard";
-import { categories } from "@/constants";
+import { getCategories } from "@/services/category";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Categories() {
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const router = useRouter();
+
+  const handelGetCategories = async () => {
+    try {
+      const data = await getCategories();
+      if (data) {
+        setCategories(data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      setError(error.message);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  useEffect(() => {
+    return async () => {
+      await handelGetCategories();
+    };
+  }, []);
+
   return (
     <main className="flex flex-col justify-center sm:justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white mt-150 min-h-screen mb-28">
       <h2 className="text-[32px] font-semibold">Categories</h2>
@@ -9,7 +39,10 @@ export default function Categories() {
         {categories.map((category) => (
           <CategoryCard
             category={category}
-            key={category.id}
+            key={category?._id}
+            onClick={() =>
+              router.push(`/products?category=${category?.name?.toLowerCase()}`)
+            }
             className={"col-span-12 sm:col-span-6 md:col-span-3"}
           />
         ))}

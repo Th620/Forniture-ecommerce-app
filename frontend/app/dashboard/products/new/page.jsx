@@ -8,7 +8,7 @@ import SimpleInput from "@/components/simpleInput";
 import AddItemInput from "@/components/AddItemInput";
 import Select from "@/components/Select";
 import VariationInput from "@/components/VariationInput";
-import { getCategories } from "@/services/store";
+import { getCategories } from "@/services/category";
 import { createProduct } from "@/services/products";
 import { useRouter } from "next/navigation";
 

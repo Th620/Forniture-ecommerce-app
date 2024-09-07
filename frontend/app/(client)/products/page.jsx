@@ -1,16 +1,13 @@
 "use client";
 
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import FilterPopUp from "@/components/FilterPopUp";
 import { useRouter, useSearchParams } from "next/navigation";
-import ProductsContainer from "@/components/ProductsContainer";
-import { getCategories } from "@/services/store";
-import FilteringBar from "@/components/FilteringBar";
+import { getCategories } from "@/services/category";
 import Select from "@/components/Select";
 import { getProducts } from "@/services/products";
 import ProductCard from "@/components/ProductCard";
-import { all } from "axios";
 
 export default function Products() {
   const [categories, setCategories] = useState([]);
@@ -48,7 +45,7 @@ export default function Products() {
   const handelGetCategories = async () => {
     try {
       setIsLoading(true);
-      const categories = await getCategories()
+      const categories = await getCategories();
       let cat = [];
       if (categories) {
         categories.forEach((category) => {
@@ -57,7 +54,6 @@ export default function Products() {
       }
       setIsLoading(false);
       return cat;
-      return categories;
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
