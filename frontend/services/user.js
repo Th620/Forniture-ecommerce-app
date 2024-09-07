@@ -55,7 +55,7 @@ export const logout = async () => {
   }
 };
 
-export const profile = async () => {
+export const getProfile = async () => {
   try {
     const { data } = await axios.get("http://localhost:8080/api/users/profile");
 
@@ -126,6 +126,82 @@ export const resetPassword = async ({ id, token, password }) => {
         password,
       }
     );
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const { data } = await axios.get("http://localhost:8080/api/users");
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const getAdmins = async () => {
+  try {
+    const { data } = await axios.get("http://localhost:8080/api/users", {
+      params: { role: "admin" },
+    });
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const updateUserRole = async ({ id }) => {
+  try {
+    const { data } = await axios.put(
+      `http://localhost:8080/api/users/updateUser/${id}`
+    );
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const deleteUser = async ({ id }) => {
+  try {
+    const { data } = await axios.delete(
+      `http://localhost:8080/api/users/delete/${id}`
+    );
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const getUser = async ({ id }) => {
+  try {
+    const { data } = await axios.get(`http://localhost:8080/api/users/${id}`);
+
+    return data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
       throw new Error(error.response.data.message);
