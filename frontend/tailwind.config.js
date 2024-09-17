@@ -7,12 +7,24 @@ module.exports = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        loading: {
+          "0%, 50%": { transform: "translate(0px,0px)" },
+          "25%": { transform: "translate(0px,-6px)" },
+        },
+      },
+      animation: {
+        loading1: "loading 2s ease-in-out infinite",
+        loading2: "loading 2s ease-in-out 0.5s infinite",
+        loading3: "loading 2s ease-in-out 1s infinite",
+      },
       backgroundImage: (theme) => ({
         "hero-bg": "url('../assets/Hero.jpg')",
         sofa: "url('../assets/sofa.png')",
         lamp: "url('../assets/Lamp-Collection.png')",
         cups: "url('../assets/cups.png')",
         banner: "url('../assets/banner.png')",
+        'small-hero': "url('../assets/smallHero.jpg')",
       }),
       spacing: {
         150: "150px",
