@@ -24,7 +24,7 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
 
   let queries = {};
 
-  const handelGetCategories = async () => {
+  const handleGetCategories = async () => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
@@ -74,7 +74,7 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
 
   useEffect(() => {
     return async () => {
-      const result = await handelGetCategories();
+      const result = await handleGetCategories();
 
       if (result) {
         setCategories(result);
@@ -187,6 +187,14 @@ const FilterPopUp = ({ className, setOpenFilter, setError }) => {
             btnClassName={
               "dark:bg-darkBg dark:hover:bg-[#242427] transition-colors duration-100"
             }
+            onClick={(option) => {
+              if (option === "price low to hight") {
+                setSort("-1");
+              } else {
+                setSort("1");
+              }
+              setOpenSortSelect(false);
+            }}
             addFn={() => {
               setOpenColorSelect(false);
               setOpenSizeSelect(false);

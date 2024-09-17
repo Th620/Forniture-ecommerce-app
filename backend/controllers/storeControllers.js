@@ -52,10 +52,11 @@ const Product = require("../models/Product");
 
 const getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find().populate([
-      { path: "products", select: ["title"] },
-    ]);
-
+    
+      const categories = await Category.find().populate([
+        { path: "products", select: ["title"] },
+      ]);
+    
     res.json(categories);
   } catch (error) {
     next(error);

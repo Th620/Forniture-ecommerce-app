@@ -1,31 +1,53 @@
 "use client";
 
-import React from "react";
+import { getEarnings } from "@/services/order";
+import React, { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
-  CartesianAxis,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
-const data = [
-  { name: "Sun", lastWeek: 1000, thisWeek: 1500 },
-  { name: "Mon", lastWeek: 900, thisWeek: 1010 },
-  { name: "Tue", lastWeek: 350, thisWeek: 600 },
-  { name: "Wed", lastWeek: 1050, thisWeek: 450 },
-  { name: "Thu", lastWeek: 800, thisWeek: 1200 },
-  { name: "Fri", lastWeek: 950, thisWeek: 560 },
-  { name: "Sat", lastWeek: 400, thisWeek: 1500 },
-];
+// const data = [
+//   { name: "Sun", lastWeek: 1000, thisWeek: 1500 },
+//   { name: "Mon", lastWeek: 900, thisWeek: 1010 },
+//   { name: "Tue", lastWeek: 350, thisWeek: 600 },
+//   { name: "Wed", lastWeek: 1050, thisWeek: 450 },
+//   { name: "Thu", lastWeek: 800, thisWeek: 1200 },
+//   { name: "Fri", lastWeek: 950, thisWeek: 560 },
+//   { name: "Sat", lastWeek: 400, thisWeek: 1500 },
+// ];
 
 const OrdersChart = () => {
+  const [data, setData] = useState([
+    { name: "Sun", lastWeek: 0, thisWeek: 0 },
+    { name: "Mon", lastWeek: 0, thisWeek: 0 },
+    { name: "Tue", lastWeek: 0, thisWeek: 0 },
+    { name: "Wed", lastWeek: 0, thisWeek: 0 },
+    { name: "Thu", lastWeek: 0, thisWeek: 0 },
+    { name: "Fri", lastWeek: 0, thisWeek: 0 },
+    { name: "Sat", lastWeek: 0, thisWeek: 0 },
+  ]);
+
+  const handleGetData = async () => {
+    try {
+      const data = await getEarnings();
+      if (data?.orders) {
+        setData(data.orders);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    return async () => {
+      await handleGetData();
+    };
+  }, []);
   return (
     <ResponsiveContainer width={"100%"} height={"100%"}>
       <BarChart width={1000} height={600} data={data}>
@@ -42,7 +64,7 @@ const OrdersChart = () => {
         />
         <YAxis stroke="#8C8C8C" width={30} />
         <Tooltip
-        //   trigger="click"
+          //   trigger="click"
           animationEasing="ease-in-out"
           animationDuration={400}
         />

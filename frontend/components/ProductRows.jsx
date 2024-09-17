@@ -6,38 +6,68 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdOutlineDelete, MdOutlineModeEdit } from "react-icons/md";
+import {
+  MdDelete,
+  MdModeEdit,
+  MdDiscount,
+  MdOutlineDiscount,
+} from "react-icons/md";
+import Pagination from "./Pagination";
 
 const ProductRows = ({
   searchParams,
   setError,
   setNoProducts,
   setIsLoading,
+  setSlug,
+  setOpenSalePrice,
 }) => {
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(
+    +searchParams.get("page") || 1
+  );
+  const [totalPageCount, setTotalPageCount] = useState(0);
+
   const searchParamsvalues = Object.fromEntries([...searchParams]);
 
   const router = useRouter();
 
-  const handelGetProducts = async ({
+  const handleGetProducts = async ({
     color,
     size,
     sort,
     category,
     searchKeyword,
+    page,
   }) => {
     try {
       setIsLoading(true);
-      const products = await getProducts({
+      const { data, headers } = await getProducts({
         color,
         size,
         sort,
         category,
         searchKeyword,
+        pageSize: 5,
+        page,
       });
 
+      if (data) {
+        if (data?.length === 0) {
+          setNoProducts(true);
+          return;
+        }
+        if (JSON.parse(headers?.get("x-totalpagecount"))) {
+          setTotalPageCount(JSON.parse(headers.get("x-totalpagecount")));
+        }
+        setNoProducts(false);
+        setProducts([...data]);
+      } else {
+        setNoProducts(true);
+      }
+
       setIsLoading(false);
-      return products;
+      return data;
     } catch (error) {
       setIsLoading(false);
       setError(error);
@@ -47,26 +77,11 @@ const ProductRows = ({
 
   useEffect(() => {
     return async () => {
-      try {
-        const fetchProducts = await handelGetProducts(searchParamsvalues);
-        if (fetchProducts) {
-          if (fetchProducts.length === 0) {
-            setNoProducts(true);
-            return;
-          }
-          setNoProducts(false);
-          setProducts([...fetchProducts]);
-        } else {
-          setNoProducts(true);
-        }
-      } catch (error) {
-        setError(error.message);
-        console.log(error);
-      }
+      await handleGetProducts(searchParamsvalues);
     };
   }, [searchParams]);
 
-  const handelDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id) => {
     try {
       if (confirm("Are you sure you want to delete this product")) {
         setIsLoading(true);
@@ -110,18 +125,18 @@ const ProductRows = ({
                   />
                 </div>
                 <div>
-                  <p className="sm:text-sm text-xs font-semibold">
+                  <p className="sm:text-sm text-xs font-semibold capitalize">
                     {product?.title}
                   </p>
 
                   <p className="sm:text-sm text-xs font-semibold block sm:hidden">
-                    {/* Qt */}× {product?.price}DZD
+                    {product?.onSale ? product?.salePrice : product?.price} DZD
                   </p>
                 </div>
               </Link>
             </td>
             <td className="text-sm font-semibold min-w-16 max-sm:hidden">
-              {product?.price}DZD
+              {product?.onSale ? product?.salePrice : product?.price} DZD
             </td>
             <td className="text-sm font-semibold min-w-16">{product?.stock}</td>
             <td className="text-xs font-semibold min-w-16 max-sm:hidden">
@@ -142,7 +157,30 @@ const ProductRows = ({
                 <p className="font-medium">{item}</p>
               ))}
             </td>
-            <td className="font-semibold table-cell md:w-[8%] min-w-14">
+            <td className="font-semibold table-cell md:w-[12%] min-w-14">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!product?.onSale) {
+                    setSlug(product?.slug);
+                    setOpenSalePrice(true);
+                  }
+                }}
+                disabled={product?.onSale}
+                className="px-1"
+              >
+                <abbr title={product?.onSale ? "" : "On Sale"}>
+                  {product?.onSale ? (
+                    <MdDiscount
+                      className={`size-[18px] text-[#8C8C8C] dark:text-bg `}
+                    />
+                  ) : (
+                    <MdOutlineDiscount
+                      className={`size-[18px] text-[#8C8C8C] dark:text-bg `}
+                    />
+                  )}
+                </abbr>
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -150,20 +188,39 @@ const ProductRows = ({
                 }}
                 className="px-1"
               >
-                <MdOutlineModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
+                <MdModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
               </button>
               <button
                 type="button"
                 onClick={async () => {
-                  await handelDeleteProduct(product?._id);
+                  await handleDeleteProduct(product?._id);
                 }}
                 className="px-1"
               >
-                <MdOutlineDelete className="size-[18px] text-red-400" />
+                <MdDelete className="size-[18px] text-red-400" />
               </button>
             </td>
           </tr>
         ))}
+      <tr>
+        <td colSpan={6} className="table-cell">
+          <div className="w-full flex justify-center">
+            <Pagination
+              currentPage={currentPage}
+              totalPageCount={totalPageCount}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                router.replace(
+                  `/dashboard/products?${new URLSearchParams({
+                    ...searchParamsvalues,
+                    page,
+                  })}`
+                );
+              }}
+            />
+          </div>
+        </td>
+      </tr>
     </>
   );
 };

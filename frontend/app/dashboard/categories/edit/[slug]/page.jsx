@@ -22,7 +22,7 @@ export default function EditCategory() {
 
   const { slug } = useParams();
 
-  const handelGetCategory = async (slug) => {
+  const handleGetCategory = async (slug) => {
     try {
       setIsLoading(true);
       const category = await getCategory({ slug });
@@ -40,11 +40,11 @@ export default function EditCategory() {
 
   useEffect(() => {
     return async () => {
-      await handelGetCategory(slug);
+      await handleGetCategory(slug);
     };
   }, []);
 
-  const handelEditCategory = async (e) => {
+  const handleEditCategory = async (e) => {
     e.preventDefault();
 
     if (!selectedFile && !image) {
@@ -108,7 +108,7 @@ export default function EditCategory() {
         <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
           <div className="grid grid-cols-4 w-full h-fit p-5">
             <form
-              onSubmit={handelEditCategory}
+              onSubmit={handleEditCategory}
               className="col-span-4 grid grid-cols-4 gap-4"
             >
               <div className="md:col-span-2 col-span-4 flex flex-col items-center gap-4">
@@ -196,7 +196,7 @@ export default function EditCategory() {
                   placeholder={"Name"}
                   value={name}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setName(e.target.value);
                   }}
                   className={`w-full border ${

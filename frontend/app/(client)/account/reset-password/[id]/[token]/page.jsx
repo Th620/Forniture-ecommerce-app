@@ -13,7 +13,7 @@ export default function ResetPassword() {
 
   const { id, token } = useParams();
 
-  const handelResetPassword = async (e) => {
+  const handleResetPassword = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
@@ -44,7 +44,7 @@ export default function ResetPassword() {
             Reset Password
           </h2>
           <form
-            onSubmit={handelResetPassword}
+            onSubmit={handleResetPassword}
             className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col items-center"
           >
             {error && !error.password && (

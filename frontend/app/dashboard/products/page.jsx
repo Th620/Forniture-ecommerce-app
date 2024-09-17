@@ -2,6 +2,7 @@
 
 import FilterPopUp from "@/components/FilterPopUp";
 import ProductRows from "@/components/productRows";
+import SalePricePopUp from "@/components/SalePricePopUp";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { HiOutlineFilter } from "react-icons/hi";
@@ -16,6 +17,9 @@ export default function Products() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [openSalePrice, setOpenSalePrice] = useState(false);
+  const [salePrice, setSalePrice] = useState();
+  const [slug, setSlug] = useState();
 
   // const [queries, setQueries] = useState({ color, size, sort, category });
 
@@ -32,6 +36,18 @@ export default function Products() {
               setOpenFilter={setOpenFilter}
               setError={setError}
               className={"md:pt-[60px] md:pl-[20%] w-full min-h-screen"}
+            />
+          )}
+          {openSalePrice && (
+            <SalePricePopUp
+              error={error}
+              setError={setError}
+              salePrice={salePrice}
+              setSalePrice={setSalePrice}
+              setOpenSalePrice={setOpenSalePrice}
+              setIsLoading={setIsLoading}
+              slug={slug}
+              label={"Set slale price"}
             />
           )}
           <div className="flex gap-4 pt-5 px-5 items-center justify-end">
@@ -82,6 +98,8 @@ export default function Products() {
                   searchParams={searchParams}
                   setNoProducts={setNoProducts}
                   setIsLoading={setIsLoading}
+                  setSlug={setSlug}
+                  setOpenSalePrice={setOpenSalePrice}
                 />
               </tbody>
             </table>

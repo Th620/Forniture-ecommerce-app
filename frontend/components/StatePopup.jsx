@@ -24,7 +24,7 @@ const StatePopUp = ({
 }) => {
   const inputRef = useRef();
 
-  const handelEditState = async ({ id, state, shippingFees }) => {
+  const handleEditState = async ({ id, state, shippingFees }) => {
     try {
       setIsLoading(true);
       if (!state) {
@@ -61,7 +61,7 @@ const StatePopUp = ({
       }, 3000);
     }
   };
-  const handelAddState = async ({ countryId, state, shippingFees }) => {
+  const handleAddState = async ({ countryId, state, shippingFees }) => {
     try {
       setIsLoading(true);
       if (!state) {
@@ -170,9 +170,9 @@ const StatePopUp = ({
             type="button"
             onClick={async () => {
               if (label.toLowerCase() === "edit state") {
-                await handelEditState({ id: stateId, state, shippingFees });
+                await handleEditState({ id: stateId, state, shippingFees });
               } else {
-                await handelAddState({ countryId, state, shippingFees });
+                await handleAddState({ countryId, state, shippingFees });
               }
             }}
             className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-yellow px-4 h-10 rounded-md text-white cursor-pointer w-fit"

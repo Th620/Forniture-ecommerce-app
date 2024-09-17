@@ -2,7 +2,7 @@ import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
-export const getCountreis = async () => {
+export const getCountries = async () => {
   try {
     const { data } = await axios.get(
       `http://localhost:8080/api/store/countries`

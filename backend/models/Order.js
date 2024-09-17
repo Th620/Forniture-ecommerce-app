@@ -11,23 +11,23 @@ const OrderSchema = new Schema(
       country: { type: Schema.Types.ObjectId, ref: "Country", required: true },
       state: { type: Schema.Types.ObjectId, ref: "State", required: true },
       city: { type: String, required: true },
-      adress: { type: String, required: true },
+      address: { type: String, required: true },
     },
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );
 
-OrderSchema.virtual("totalCost").get(function () {
-  return this.products.reduce(
-    (total, product) => total + product.product.price * product.quantity,
-    0
-  );
-});
-
 OrderSchema.virtual("products", {
   ref: "Item",
   localField: "_id",
   foreignField: "order",
+});
+
+OrderSchema.virtual("totalCost").get(function () {
+  return this.products?.reduce(
+    (total, product) => total + product.product.price * product.quantity,
+    this.shippingFees
+  );
 });
 
 const Order = model("Order", OrderSchema);

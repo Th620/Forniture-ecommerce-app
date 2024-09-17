@@ -14,7 +14,7 @@ export default function ForgotPassword() {
 
   let user = useSelector((state) => state.user);
 
-  const handelForgotPassword = async (e) => {
+  const handleForgotPassword = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
@@ -50,7 +50,7 @@ export default function ForgotPassword() {
             Forgot Password
           </h2>
           <form
-            onSubmit={handelForgotPassword}
+            onSubmit={handleForgotPassword}
             className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col items-center"
           >
             {error && !error.email && (

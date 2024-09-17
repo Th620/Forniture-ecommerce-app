@@ -29,7 +29,7 @@ const Select = ({
         {openSelect ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
       </button>
       {openSelect && (
-        <ul className="absolute top-full z-10 min-w-28 bg-[#EEEFF1] dark:bg-darkBody w-full ul">
+        <ul className="absolute top-full z-50 min-w-28 bg-[#EEEFF1] dark:bg-darkBody w-full ul">
           {options.map((option) => {
             return (
               <li key={option}>

@@ -56,7 +56,7 @@ const CartContainer = ({ setOpenCart }) => {
                   })
                 );
               }}
-              className="p-1.5 rounded-full bg-[#E8E9EB] hover:bg-[#DDDEE0] transition-colors duration-100 ml-auto"
+              className="p-1.5 self-center rounded-full bg-[#E8E9EB] hover:bg-[#DDDEE0] transition-colors duration-100 ml-auto"
             >
               <CgClose className="size-3 text-[#5E5E5E]" />
             </button>
@@ -65,7 +65,7 @@ const CartContainer = ({ setOpenCart }) => {
       </div>
       <div className="flex items-center justify-between capitalize py-2 border-b-[1.5px] border-gray border-opacity-20">
         <p>sunbtotal:</p>
-        <p className="text-sm text-[#8C8C8C]">{cart.totalPrice}</p>
+        <p className="text-sm text-[#8C8C8C]">{cart.totalPrice} DZD</p>
       </div>
       <div className="text-sm">
         <button
@@ -77,7 +77,7 @@ const CartContainer = ({ setOpenCart }) => {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/chackout")}
+          onClick={() => router.push("/checkout")}
           className="w-full py-2 text-white font-lato text-center bg-navy hover:bg-navyHover transition-colors duration-150 uppercase my-2"
         >
           Checkout

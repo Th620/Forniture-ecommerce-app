@@ -4,13 +4,15 @@ import SizeButton from "@/components/SizeButton";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { getProduct } from "@/services/products";
+import { addReview, getProduct } from "@/services/products";
 import { BASE_URL } from "@/constants";
 import Link from "next/link";
-import { useAppDispatch } from "@/lib/hook";
 import { addItem } from "@/lib/features/cart/cartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useStateContext } from "@/context/StateContext";
+import { MdDelete } from "react-icons/md";
+import { useAuth } from "@/context/AuthContext";
+import { deleteReview } from "@/services/review";
 
 const unavailableSize = (variations = [], color, size) => {
   return variations.every((variation) => {
@@ -26,7 +28,11 @@ const unavailableSize = (variations = [], color, size) => {
 
 const unavailableColor = (variations = [], color) => {
   return variations.every((variation) => {
-    return color && variation.color !== color;
+    return (
+      color &&
+      (variation.color !== color ||
+        (variation.color === color && variation.stock <= 0))
+    );
   });
 };
 
@@ -39,6 +45,9 @@ export default function Product() {
   const [qt, setQt] = useState(1);
   const [variations, setVariations] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
+  const [reviewForm, setReviewForm] = useState(false);
+  const [review, setReview] = useState("");
+  const [done, setDone] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -52,9 +61,13 @@ export default function Product() {
     searchParams.get("size") || ""
   );
 
+  const { user } = useAuth();
+
   const { slug } = useParams();
 
-  const handelGetProduct = async (slug) => {
+  const cart = useSelector((state) => state.cart);
+
+  const handleGetProduct = async (slug) => {
     try {
       setIsLoading(true);
       const product = await getProduct({ slug });
@@ -62,8 +75,18 @@ export default function Product() {
         setProduct(product);
         setImages(product?.images);
         setSelectedImg(product?.images[0]);
-        !searchParams.get("color") && setSelectedColor(product?.colors[0]);
-        setVariations(product?.variations);
+
+        if (!searchParams.get("color")) {
+          let result = product?.colors?.find((color) => {
+            return !unavailableColor(product?.variations, color);
+          });
+          if (result) {
+            setSelectedColor(result);
+          }
+        }
+        if (product?.variations) {
+          setVariations(product.variations);
+        }
       }
       setIsLoading(false);
     } catch (error) {
@@ -73,10 +96,34 @@ export default function Product() {
     }
   };
 
+  const handleAddReview = async (e) => {
+    e.preventDefault();
+    try {
+      await addReview({ slug, content: review });
+      setReviewForm(false);
+      setDone(true);
+      setTimeout(() => {
+        setDone(false);
+      }, 5000);
+      setReview("");
+    } catch (error) {
+      setError({ Error: error.message });
+    }
+  };
+
+  const handleDeleteReview = async (id) => {
+    try {
+      await deleteReview({ id });
+    } catch (error) {
+      setError(error.message);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
   useEffect(() => {
     return async () => {
       try {
-        await handelGetProduct(slug);
+        await handleGetProduct(slug);
       } catch (error) {
         console.log(error);
         setError(error.message);
@@ -137,7 +184,16 @@ export default function Product() {
             </p>
           </Link>
           <p className="font-semibold text-sm text-[#787676] mt-3">
-            {product?.price}DZD
+            {product?.onSale ? (
+              <>
+                {product?.salePrice} DZD{" "}
+                <span className="text-gray line-through ml-2">
+                  {product?.price} DZD
+                </span>
+              </>
+            ) : (
+              <>{product?.price} DZD</>
+            )}
           </p>
           <div className="mt-4">
             <h6 className="max-md:text-sm font-semibold mb-3">
@@ -150,7 +206,13 @@ export default function Product() {
                     <SizeButton
                       key={color}
                       label={color}
-                      unavailable={unavailableColor(variations, color)}
+                      unavailable={
+                        unavailableColor(variations, color) ||
+                        product?.stock === 0 ||
+                        product?.variations?.every(
+                          (variation) => variation.stock === 0
+                        )
+                      }
                       selected={selectedColor === color}
                       onclick={() => {
                         router.replace(
@@ -180,11 +242,13 @@ export default function Product() {
                   <SizeButton
                     key={size}
                     label={size}
-                    unavailable={unavailableSize(
-                      variations,
-                      selectedColor,
-                      size
-                    )}
+                    unavailable={
+                      unavailableSize(variations, selectedColor, size) ||
+                      product?.stock === 0 ||
+                      product?.variations?.every(
+                        (variation) => variation.stock === 0
+                      )
+                    }
                     selected={selectedSize === size}
                     onclick={() => {
                       router.replace(
@@ -238,7 +302,7 @@ export default function Product() {
                   +
                 </button>
               </div>
-              {product?.stock <= 10 && (
+              {product?.stock > 0 && product?.stock <= 10 && (
                 <p className="text-[#353535] font-medium text-[10px]">
                   Only{" "}
                   <span className="text-yellow font-semibold ">
@@ -256,7 +320,14 @@ export default function Product() {
           )}
           <button
             type="button"
+            disabled={
+              product?.stock === 0 ||
+              product?.variations?.every((variation) => variation.stock === 0)
+            }
             onClick={() => {
+              const cartItem = cart?.items.find(
+                (item) => item._id === product?._id
+              );
               if (!selectedColor || !selectedSize) {
                 setError({
                   addToCart: true,
@@ -267,11 +338,48 @@ export default function Product() {
                 }, 3000);
                 return;
               }
-              if (qt > product?.stock) {
+              if (qt + cartItem?.quantity > product?.stock) {
                 setError({
                   addToCart: true,
                   Error:
                     "The requested quantity exceeds our current stock. Please adjust your order.",
+                });
+                setTimeout(() => {
+                  setError(null);
+                }, 5000);
+                return;
+              }
+              const variation = product.variations.find((e) => {
+                return (
+                  e.color === selectedColor.toLowerCase() &&
+                  e.size === selectedSize.toLowerCase()
+                );
+              });
+              if (qt + cartItem?.quantity > variation?.stock) {
+                setError({
+                  addToCart: true,
+                  Error:
+                    "The requested quantity exceeds our current stock. Please adjust your order.",
+                });
+                setTimeout(() => {
+                  setError(null);
+                }, 5000);
+                return;
+              }
+              if (unavailableSize(variations, selectedColor, selectedSize)) {
+                setError({
+                  addToCart: true,
+                  Error: "Unavailable color and size combination",
+                });
+                setTimeout(() => {
+                  setError(null);
+                }, 5000);
+                return;
+              }
+              if (unavailableColor(variations, selectedColor)) {
+                setError({
+                  addToCart: true,
+                  Error: "Unavailable color and size combination",
                 });
                 setTimeout(() => {
                   setError(null);
@@ -295,7 +403,7 @@ export default function Product() {
                 setOpenCart(false);
               }, 1500);
             }}
-            className="capitalize rounded-full px-10 py-2 text-white bg-yellow bg-opacity-95 hover:bg-opacity-100 w-fit mt-4 mb-8 font-medium"
+            className="capitalize disabled:opacity-70 rounded-full px-10 py-2 text-white bg-yellow bg-opacity-95 hover:bg-opacity-100 w-fit mt-4 mb-8 font-medium"
           >
             Add to card
           </button>
@@ -319,11 +427,20 @@ export default function Product() {
               >
                 Reviews
               </button>
+              {showReviews && (
+                <button
+                  type="button"
+                  onClick={() => setReviewForm(true)}
+                  className="ml-auto text-sm px-3 py-1 bg-navy hover:bg-navyHover transition-all duration-200 rounded-full text-white"
+                >
+                  Add Review
+                </button>
+              )}
             </div>
             {showReviews ? (
               <div
                 className={`w-full relative bg-white z-10 overflow-hidden ${
-                  product?.reviews?.length > 2 ? "h-56" : "h-14"
+                  product?.reviews?.length > 2 ? "h-56" : "h-[100px]"
                 }`}
               >
                 <div
@@ -333,38 +450,89 @@ export default function Product() {
                     product?.reviews?.length === 0
                       ? "border-opacity-0"
                       : " border-opacity-30"
-                  }  ${product?.reviews?.length > 2 ? "h-56" : "h-14"}`}
+                  }  ${product?.reviews?.length > 2 ? "h-56" : "h-fit"}`}
                 >
-                  {(!product?.reviews || product?.reviews?.length === 0) && (
-                    <p className="text-gray py-2">No Reviews</p>
+                  {done && (
+                    <p className="text-sm text-justify px-3 py-2">
+                      Your review will be visible after it has been chacked and
+                      approved by our admin team.
+                    </p>
                   )}
+                  {reviewForm && (
+                    <form
+                      onSubmit={handleAddReview}
+                      className="flex flex-col w-full h-fit gap-y-2"
+                    >
+                      <textarea
+                        name="review"
+                        rows={2}
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                        placeholder="Your review..."
+                        className="w-full resize-none outline-none py-1 px-2 text-sm rounded-sm"
+                      ></textarea>
+                      <div className="flex self-end gap-x-2 text-sm text-white">
+                        <button
+                          type="submit"
+                          className="px-3 py-1 bg-yellow rounded-full"
+                        >
+                          Add review
+                        </button>
+                        <button
+                          type="button"
+                          className="px-3 py-1 bg-gray rounded-full"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                  {(!product?.reviews || product?.reviews?.length === 0) &&
+                    !reviewForm &&
+                    !done && <p className="text-gray py-2">No Reviews</p>}
                   {product?.reviews &&
+                    !reviewForm &&
+                    !done &&
                     product?.reviews.map((review) => (
                       <div
                         key={review._id}
-                        className="w-full border border-gray py-2 px-2 border-opacity-50 rounded-md bg-white"
+                        className="w-full border border-gray py-2 px-2 border-opacity-50 rounded-md bg-white flex justify-between items-center"
                       >
-                        <div className="flex justify-center items-center w-fit gap-2">
-                          <div className="w-5 h-5 bg-gray rounded-full flex justify-center items-center text-xs capitalize">
-                            {review.user.firstName[0]}
+                        <div>
+                          <div className="flex justify-center items-center w-fit gap-2">
+                            <div className="w-5 h-5 bg-gray rounded-full flex justify-center items-center text-xs capitalize">
+                              {review.user.firstName[0]}
+                            </div>
+                            <div className="flex flex-col justify-center text-[10px] leading-tight capitalize">
+                              <p>
+                                {review.user.lastName[0]}.{" "}
+                                {review.user.firstName}
+                              </p>
+                              <p>
+                                {new Date(review.createdAt).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  }
+                                )}
+                              </p>
+                            </div>
                           </div>
-                          <div className="flex flex-col justify-center text-[10px] leading-tight capitalize">
-                            <p>
-                              {review.user.lastName[0]}. {review.user.firstName}
-                            </p>
-                            <p>
-                              {new Date(review.createdAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }
-                              )}
-                            </p>
-                          </div>
+                          <div className="py-2 text-sm">{review.content}</div>
                         </div>
-                        <div className="py-2 text-sm">{review.content}</div>
+                        {user?._id == review?.user?._id && (
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              await handleDeleteReview(review?._id);
+                              await handleGetProduct(slug);
+                            }}
+                          >
+                            <MdDelete className="text-gray text-lg" />
+                          </button>
+                        )}
                       </div>
                     ))}
                 </div>

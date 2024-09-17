@@ -1,14 +1,7 @@
 "use client";
 
-import ShippingDatePopUp from "@/components/ShippingDatePopUp";
 import { BASE_URL } from "@/constants";
-import {
-  cancelOrder,
-  confirmOrder,
-  deliverOrder,
-  getOrder,
-  setShippingDate,
-} from "@/services/order";
+import { cancelOrder, getOrder } from "@/services/order";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -22,8 +15,6 @@ export default function Order() {
   const [error, setError] = useState(null);
   const [order, setOrder] = useState(null);
   const [canceled, setCanceled] = useState(false);
-  const [openShippingDatePopUp, setOpenShippingDatePopUp] = useState(false);
-  const [date, setDate] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -61,46 +52,17 @@ export default function Order() {
     }
   };
 
-  const handleConfirmOrder = async (id) => {
-    try {
-      setIsLoading(true);
-      await confirmOrder({ id });
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      setError(error.message);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    }
-  };
-
-  const handledeliveredOrder = async (id) => {
-    try {
-      setIsLoading(true);
-      await deliverOrder({ id });
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      setError(error.message);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    }
-  };
-
   useEffect(() => {
     return async () => {
       await handleGetOrder();
     };
-  }, [isLoading]);
-  
+  }, [canceled]);
 
   return (
-    <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
+    <main className="flex flex-col justify-start items-center gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14 relative">
       {!order && !isLoading && (
         <div className="w-full h-screen fixed top-0 left-0 flex justify-center items-center">
-          {error ? error?.Error : "An error occured. Please try again"}
+          {error ? error.message : "An error occured. Please try again"}
         </div>
       )}
       {isLoading && (
@@ -108,99 +70,78 @@ export default function Order() {
           {"Loading..."}
         </div>
       )}
-      {openShippingDatePopUp && (
-        <ShippingDatePopUp
-          setError={setError}
-          setOpenShippingDatePopUp={setOpenShippingDatePopUp}
-          error={error}
-          label={"set shipping date"}
-          date={date}
-          setDate={setDate}
-          id={id}
-          setIsLoading={setIsLoading}
-        />
-      )}
       {order && !isLoading && (
-        <div className="p-5">
+        <>
           <h2 className="md:text-[32px] text-[24px] font-semibold capitalize self-start">
             Order <span className="pl-1 text-sm md:text-lg">#{id}</span>
           </h2>
           <div className="w-full p-5 pl-0 flex flex-col gap-2">
             <p>
               ID:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+              <span className="pl-1 text-[black] text-opacity-45">
                 {order?._id}
               </span>
             </p>
             <p>
               Client:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55 capitalize">
+              <span className="pl-1 text-[black] text-opacity-45 capitalize">
                 {order?.client?.firstName} {order?.client?.lastName}
               </span>
             </p>
             <p>
               Email:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+              <span className="pl-1 text-[black] text-opacity-45">
                 {order?.client?.email}
               </span>
             </p>
             <p>
               Phone:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+              <span className="pl-1 text-[black] text-opacity-45">
                 {order?.client?.phone}
               </span>
             </p>
             <p>
               TotalCost:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+              <span className="pl-1 text-[black] text-opacity-45">
                 {order?.totalCost} DZD
               </span>
             </p>
             <p>
+              Date:{" "}
+              <span className="pl-1 text-[black] text-opacity-45">
+                {new Date(order?.createdAt).toLocaleDateString("en-US", {
+                  month: "numeric",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+            </p>
+            <p>
               Shipping date:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
-                {order?.shippingDate && date ? (
-                  <>
-                    {new Date(order?.shippingDate).toLocaleDateString("en-US", {
+              <span className="pl-1 text-[black] text-opacity-45">
+                {order?.shippingDate
+                  ? new Date(order.shippingDate).toLocaleDateString("en-US", {
                       month: "numeric",
                       day: "numeric",
                       year: "numeric",
-                    })}
-                    <button
-                      type="button"
-                      onClick={() => setOpenShippingDatePopUp(true)}
-                      className="ml-4 rounded-full bg-yellow text-white font-medium text-xs px-3 py-1.5"
-                    >
-                      {" "}
-                      Edit shipping date{" "}
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setOpenShippingDatePopUp(true)}
-                    className=" rounded-full bg-yellow text-white font-medium text-xs px-3 py-1.5"
-                  >
-                    {" "}
-                    Set shipping date{" "}
-                  </button>
-                )}
+                    })
+                  : "Shipping date not yet available"}
               </span>
             </p>
             <p>
               Shipping fees:{" "}
-              <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+              <span className="pl-1 text-[black] text-opacity-45">
                 {order?.shippingFees} DZD
               </span>
             </p>{" "}
             <p>
               Status:{" "}
               <span
-                className={` py-1.5 px-4 rounded-full text-xs ml-2 capitalize ${
+                className={`text-[black] text-opacity-45 py-1.5 px-4 rounded-full text-xs ml-2 capitalize ${
                   order?.status === "canceled" &&
                   " bg-red-200 dark:bg-opacity-90 text-red-500 "
                 } ${
-                  order?.status === "delivered" &&
+                  order?.status === "dilevered" &&
                   " bg-blue-200 dark:bg-opacity-90 text-blue-600 "
                 }${
                   order?.status === "pending" &&
@@ -259,55 +200,33 @@ export default function Order() {
                   {" "}
                   <p>
                     Country:{" "}
-                    <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+                    <span className="pl-1 text-[black] text-opacity-45">
                       {order?.shipping?.country}
                     </span>
                   </p>
                   <p>
                     State:{" "}
-                    <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+                    <span className="pl-1 text-[black] text-opacity-45">
                       {order?.shipping?.state}
                     </span>
                   </p>
                   <p>
                     City:{" "}
-                    <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+                    <span className="pl-1 text-[black] text-opacity-45">
                       {order?.shipping?.city}
                     </span>
                   </p>
                   <p>
                     Address:{" "}
-                    <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
+                    <span className="pl-1 text-[black] text-opacity-45">
                       {order?.shipping?.address}
                     </span>
                   </p>
                 </div>
               </div>
             </div>
-            <div className="mt-6">
-              {order?.status === "pending" && (
-                <button
-                  type={"button"}
-                  onClick={async () => {
-                    await handleConfirmOrder(order?._id);
-                  }}
-                  className="capitalize mr-4 pt-2 pb-[11px] bg-green-200 dark:bg-opacity-90 text-green-600 px-10 font-semibold transition-colors duration-75 mt-4 self-center"
-                >
-                  Confirm Order
-                </button>
-              )}
-              {order?.status === "confirmed" && (
-                <button
-                  type={"button"}
-                  onClick={async () => {
-                    await handledeliveredOrder(order?._id);
-                  }}
-                  className="capitalize mr-4 pt-2 pb-[11px] bg-blue-200 dark:bg-opacity-90 text-blue-600 px-10 font-semibold transition-colors duration-75 mt-4 self-center"
-                >
-                  Delivered Order
-                </button>
-              )}
-              {order?.status === "pending" && (
+            {order?.status === "pending" && (
+              <div className="mt-14">
                 <button
                   type={"button"}
                   onClick={async () => {
@@ -317,10 +236,10 @@ export default function Order() {
                 >
                   Cancel Order
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </div>
+        </>
       )}
     </main>
   );

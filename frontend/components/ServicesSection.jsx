@@ -46,7 +46,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="py-28 w-full bg-white px-10 md:px-75 lg:px-150 grid gap-4 grid-cols-4 mb-14">
+    <section className="my-28 w-full bg-white px-10 md:px-75 lg:px-150 grid gap-4 grid-cols-4 mb-[168px]">
       {services.map((service) => (
         <ServiceCard
           service={service}

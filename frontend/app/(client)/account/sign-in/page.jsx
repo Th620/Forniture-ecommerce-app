@@ -19,7 +19,7 @@ export default function signIn() {
 
   const router = useRouter();
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -82,7 +82,7 @@ export default function signIn() {
         </h2>
 
         <form
-          onSubmit={handelSubmit}
+          onSubmit={handleSubmit}
           className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col"
         >
           {error.form && (

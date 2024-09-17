@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import PricingBox from "@/components/PricingBox";
 import { BASE_URL } from "@/constants";
 import {
@@ -7,21 +8,79 @@ import {
   increaseQuantity,
   removeItem,
 } from "@/lib/features/cart/cartSlice";
+import { getProduct } from "@/services/products";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GoArrowLeft } from "react-icons/go";
+import { MdErrorOutline } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Cart() {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [error, setError] = useState(null);
+
+  const handleCheckCart = async () => {
+    try {
+      if (cart.items.length > 0) {
+        for (const item of cart.items) {
+          const product = await getProduct({ slug: item?.slug });
+          if (!product) {
+            throw new Error("Product not found. Please check your cart.");
+          }
+          if (product?.stock === 0) {
+            throw new Error("Product sold out. Please update your cart.");
+          }
+          const soldOut = product?.variations?.find((variation) => {
+            return (
+              item?.color === variation?.color && item?.size === variation?.size
+            );
+          });
+          if (soldOut?.stock === 0) {
+            throw new Error("Product sold out. Please update your cart.");
+          }
+          if (product.stock - item?.quantity < 0) {
+            throw new Error(
+              "The requested quantity exceeds our current stock. Please adjust your order."
+            );
+          }
+          if (soldOut?.stock - item?.quantity < 0) {
+            throw new Error(
+              "The requested quantity exceeds our current stock. Please adjust your order."
+            );
+          }
+        }
+      }
+    } catch (error) {
+      setError({ Error: error.message });
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
+      return error;
+    }
+  };
+
+  useEffect(() => {
+    return async () => {
+      await handleCheckCart();
+    };
+  }, []);
 
   return (
     <main className="flex flex-col justify-start px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-[100px] min-h-screen mb-14">
       <h2 className="text-[32px] font-semibold capitalize mb-6">cart</h2>
+      <div className="w-full md:w-2/3 h-10">
+        {error && (
+          <div className="max-md:w-full error bg-red-200 text-red-500 h-10 rounded-sm px-4 flex items-center text-xs gap-2">
+            <MdErrorOutline className="size-4" />
+            {error?.Error}
+          </div>
+        )}
+      </div>
       <div className="flex flex-col md:flex-row justify-center gap-x-4 xl:gap-x-6 w-full">
         <div className="w-full min-w-1/2">
           <table className="w-full text-start table">
@@ -188,6 +247,12 @@ export default function Cart() {
           btnLabel={"checkout"}
           className={"mt-9"}
           subtotal={cart?.totalPrice}
+          onClick={async () => {
+            const response = await handleCheckCart();
+            if (!response) router.push("/checkout");
+          }}
+          btn={true}
+          disabled={cart?.items?.length === 0}
         />
       </div>
     </main>

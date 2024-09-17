@@ -51,12 +51,14 @@ export default function NewProduct() {
   const [variationSize, setVariationSize] = useState("");
   const [variationStock, setVariationStock] = useState();
   const [done, setDone] = useState(false);
+  const [onSale, setOnSale] = useState(false);
+  const [salePrice, setSalePrice] = useState(null);
 
   const router = useRouter();
 
   const inputRef = useRef();
 
-  const handelGetCategories = async () => {
+  const handleGetCategories = async () => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
@@ -78,7 +80,7 @@ export default function NewProduct() {
 
   useEffect(() => {
     return async () => {
-      const result = await handelGetCategories();
+      const result = await handleGetCategories();
 
       if (result) {
         setCategories(result);
@@ -96,7 +98,7 @@ export default function NewProduct() {
     });
   }, []);
 
-  const handelCreateProduct = async (e) => {
+  const handleCreateProduct = async (e) => {
     e.preventDefault();
 
     if (selectedFiles.length === 0) {
@@ -211,6 +213,8 @@ export default function NewProduct() {
         },
         stock,
         category,
+        onSale,
+        salePrice,
         price,
         colors,
         sizes,
@@ -261,7 +265,7 @@ export default function NewProduct() {
         <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
           <div className="grid grid-cols-4 w-full h-fit p-5">
             <form
-              onSubmit={handelCreateProduct}
+              onSubmit={handleCreateProduct}
               className="col-span-4 grid grid-cols-4 gap-4"
             >
               <div className="md:col-span-2 col-span-4 flex flex-col items-center gap-4">
@@ -363,7 +367,7 @@ export default function NewProduct() {
                   placeholder={"Title"}
                   value={title}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setTitle(e.target.value);
                   }}
                   className={`w-full border ${
@@ -383,7 +387,7 @@ export default function NewProduct() {
                   placeholder={"Price"}
                   value={price}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setPrice(e.target.value);
                   }}
                   className={`mt-4 w-full border ${
@@ -397,13 +401,49 @@ export default function NewProduct() {
                     {error.Error}
                   </p>
                 )}
+                <label
+                  htmlFor="paymantMethod"
+                  className="ml-4 mt-4 flex items-center gap-2 text-sm"
+                >
+                  <input
+                    type="checkbox"
+                    name="paymantMethod"
+                    id="paymantMethod"
+                    value={"cash on delivery"}
+                    checked={onSale}
+                    onChange={() => setOnSale((prev) => !prev)}
+                  />
+                  On Sale
+                </label>
+                {onSale && (
+                  <SimpleInput
+                    label={"Sale Price"}
+                    type={"number"}
+                    placeholder={"Sale Price"}
+                    value={salePrice}
+                    error={error}
+                    handleChange={(e) => {
+                      setSalePrice(e.target.value);
+                    }}
+                    className={`mt-4 w-full border ${
+                      error?.salePrice
+                        ? "border-red-400"
+                        : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
+                    }`}
+                  />
+                )}
+                {error?.salePrice && (
+                  <p className="text-red-400 text-[10px] mt-1 pl-1 capitalize col-span-2">
+                    {error?.Error}
+                  </p>
+                )}
                 <SimpleInput
                   label={"description"}
                   type={"text"}
                   placeholder={"Description"}
                   value={desc}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setDesc(e.target.value);
                   }}
                   className={`mt-4 w-full border ${
@@ -430,7 +470,7 @@ export default function NewProduct() {
                   setError={setError}
                   className={"w-full mt-4"}
                   ulClassName={"w-full mt-2"}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setFeature(e.target.value);
                   }}
                   type={"text"}
@@ -457,7 +497,7 @@ export default function NewProduct() {
                   placeholder={"Stock"}
                   value={stock}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setStock(e.target.value);
                   }}
                   className={`mt-4 w-full border ${
@@ -483,7 +523,7 @@ export default function NewProduct() {
                   error={error}
                   className={"w-full mt-4"}
                   ulClassName={"flex flex-wrap gap-x-5 pt-2 w-full"}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setColor(e.target.value);
                   }}
                   type={"text"}
@@ -511,7 +551,7 @@ export default function NewProduct() {
                   setError={setError}
                   className={" w-full mt-2"}
                   ulClassName={"flex flex-wrap gap-x-5 py-2 w-full"}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setSize(e.target.value);
                   }}
                   type={"text"}

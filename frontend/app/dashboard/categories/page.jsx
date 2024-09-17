@@ -7,11 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  MdOutlineAdd,
-  MdOutlineDelete,
-  MdOutlineModeEdit,
-} from "react-icons/md";
+import { MdOutlineAdd, MdDelete, MdModeEdit } from "react-icons/md";
 
 export default function Categories() {
   const router = useRouter();
@@ -21,7 +17,7 @@ export default function Categories() {
 
   const [categories, setCategories] = useState([]);
 
-  const handelGetCategories = async () => {
+  const handleGetCategories = async () => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
@@ -37,18 +33,17 @@ export default function Categories() {
 
   useEffect(() => {
     return async () => {
-      await handelGetCategories();
+      await handleGetCategories();
     };
   }, []);
 
-  const handelDeleteCategory = async (id) => {
-
+  const handleDeleteCategory = async (id) => {
     try {
       if (confirm("Are you sure you want to delete this category")) {
         setIsLoading(true);
         const responce = await deleteCategory({ id });
         if (responce) {
-          await handelGetCategories();
+          await handleGetCategories();
         }
       }
       setIsLoading(false);
@@ -84,10 +79,10 @@ export default function Categories() {
             <table className="w-full text-start table">
               <thead className="w-full">
                 <tr className="border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40">
-                  <th className="font-medium text-start text-sm w-4 flex justify-center items-center text-[#8C8C8C] px-5 py-2">
+                  <th className="font-medium text-start text-sm w-4 md:flex justify-center hidden items-center text-[#8C8C8C] px-5 py-2">
                     #
                   </th>
-                  <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
+                  <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 max-sm:w-[20vw] ">
                     image
                   </th>
                   <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
@@ -127,7 +122,7 @@ export default function Categories() {
                           </div>
                         </Link>
                       </td>
-                      <td className="text-sm font-semibold min-w-16 max-sm:hidden">
+                      <td className="text-sm font-semibold min-w-16">
                         {category?.name}
                       </td>
                       <td className="text-sm font-semibold min-w-16">
@@ -149,16 +144,16 @@ export default function Categories() {
                           }}
                           className="px-1"
                         >
-                          <MdOutlineModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
+                          <MdModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
                         </button>
                         <button
                           type="button"
                           onClick={async () => {
-                            await handelDeleteCategory(category?._id);
+                            await handleDeleteCategory(category?._id);
                           }}
                           className="px-1"
                         >
-                          <MdOutlineDelete className="size-[18px] text-red-400" />
+                          <MdDelete className="size-[18px] text-red-400" />
                         </button>
                       </td>
                     </tr>

@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import { useEffect, useState } from "react";
 import CategoryCard from "./CategoryCard";
 import { useRouter } from "next/navigation";
+import { getCategories } from "@/services/category";
 
 const categories = [
   {
@@ -32,7 +33,26 @@ const categories = [
 ];
 
 const CategoriesSection = () => {
+  const [categories, setCategories] = useState([]);
+
   const router = useRouter();
+
+  console.log(categories);
+
+  const handleGetCategories = async () => {
+    try {
+      const data = await getCategories();
+      if (data) {
+        setCategories(data);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    return async () => {
+      await handleGetCategories();
+    };
+  }, []);
 
   return (
     <section className="flex flex-col px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white py-14">
@@ -48,7 +68,10 @@ const CategoriesSection = () => {
         {categories.slice(0, 4).map((category) => (
           <CategoryCard
             category={category}
-            key={category.id}
+            key={category?._id}
+            onClick={() =>
+              router.push(`/products?category=${category?.name?.toLowerCase()}`)
+            }
             className={"col-span-12 sm:col-span-6 md:col-span-3 "}
           />
         ))}

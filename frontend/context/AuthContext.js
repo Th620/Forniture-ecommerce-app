@@ -9,7 +9,7 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handelGetUser = async () => {
+  const handleGetUser = async () => {
     try {
       const profile = await getProfile();
       if (profile) {
@@ -24,7 +24,7 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     return async () => {
-      await handelGetUser();
+      await handleGetUser();
     };
   }, []);
 

@@ -20,25 +20,24 @@ export default function Product() {
 
   const router = useRouter();
 
-  const handelGetProduct = async (slug) => {
+  const handleGetProduct = async (slug) => {
     try {
       setIsLoading(true);
       const product = await getProduct({ slug });
       if (product) {
-        console.log(product);
         setProduct(product);
         setImages(product?.images);
         setSelectedImg(product?.images[0]);
       }
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       setError(error.message);
       setTimeout(() => setError(""), 3000);
-      setIsLoading(false);
     }
   };
 
-  const handelDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id) => {
     try {
       if (confirm("Are you sure you want to delete this product")) {
         setIsLoading(true);
@@ -56,15 +55,14 @@ export default function Product() {
     }
   };
 
-  // handelGetProduct(slug);
-  console.log(product?.images);
-  console.log(images);
+  // handleGetProduct(slug);
+  console.log(product);
 
   useEffect(() => {
     return async () => {
       try {
         console.log(slug);
-        await handelGetProduct(slug);
+        await handleGetProduct(slug);
       } catch (error) {
         console.log(error);
         setError(error.message);
@@ -126,7 +124,9 @@ export default function Product() {
                 }`}
               >
                 <p className="text-xs text-blue-800 ml-[2px] capitalize">
-                  {product?.category ? product.category : "not categorized"}
+                  {product?.category
+                    ? product.category?.name
+                    : "not categorized"}
                 </p>
               </Link>
               <p className="font-semibold text-sm text-[#787676]">
@@ -148,7 +148,7 @@ export default function Product() {
                 </div>
               </div>
               <div className="w-full mt-5">
-                <h6 className="max-md:text-sm font-semibold mb-3">
+                <h6 className="max-md:text-sm font-semibold mb-3 capitalize">
                   product Sizes
                 </h6>
                 <div className="flex gap-2 text-navy flex-wrap w-full">
@@ -166,6 +166,22 @@ export default function Product() {
                 <h6 className="max-md:text-sm font-semibold mb-3">Stock</h6>
                 <div className="h-8 bg-gray flex justify-center items-center w-fit px-4 text-white">
                   {product?.stock}
+                </div>
+              </div>
+              <div className="w-full mt-5">
+                <h6 className="max-md:text-sm font-semibold capitalize mb-3">
+                  product variations
+                </h6>
+                <div className="flex gap-2 flex-wrap w-full">
+                  <ul
+                    className={`text-sm font-medium px-6 pt-2 list-disc capitalize`}
+                  >
+                    {product?.variations?.map((variation) => (
+                      <li className="">
+                        {variation.size} - {variation.color} × {variation.stock}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
 
@@ -196,18 +212,19 @@ export default function Product() {
                 </div>
                 {showReviews ? (
                   <div
-                    className={`w-full relative bg-white z-10 overflow-hidden ${
-                      product?.reviews?.length > 2 ? "h-56" : "h-14"
-                    }`}
+                    className={`w-full relative bg-white dark:bg-darkBody z-10 overflow-hidden ${
+                      product?.reviews?.length > 2 ? "h-56" : "h-[100px]"
+                    } 
+                    `}
                   >
                     <div
                       className={`${
                         product?.reviews?.length === 0 ? "noReviews" : "reviews"
-                      } absolute top-0 left-0 overflow-y-scroll overflow-x-hidden z-0 flex flex-col items-center gap-y-1 bg-bg dark:bg-darkBody px-2 py-2 border-b border-gray ${
+                      } absolute top-0 left-0 overflow-y-scroll overflow-x-hidden z-0 flex flex-col items-center gap-y-1 bg-bg dark:bg-darkBody px-2 py-2 ${
                         product?.reviews?.length === 0
                           ? "border-opacity-0"
                           : "border-opacity-30"
-                      }  ${product?.reviews?.length > 2 ? "h-56" : "h-14"}`}
+                      }  ${product?.reviews?.length > 2 ? "h-56" : "h-fit"}`}
                     >
                       {!product?.reviews ||
                         (product?.reviews?.length === 0 && (
@@ -290,8 +307,17 @@ export default function Product() {
                 </button>
                 <button
                   type="button"
+                  onClick={() =>
+                    router.push(`/dashboard/products/${slug}/reviews`)
+                  }
+                  className="capitalize rounded-full px-10 py-2 text-white bg-navy hover:bg-navyHover w-fit my-14 font-medium"
+                >
+                  manage reviews
+                </button>
+                <button
+                  type="button"
                   onClick={async () => {
-                    await handelDeleteProduct(product?._id);
+                    await handleDeleteProduct(product?._id);
                     router.push("/dashboard/products");
                   }}
                   className="capitalize rounded-full px-10 py-2 text-white bg-gray  hover:bg-grayHover w-fit my-14 font-medium"

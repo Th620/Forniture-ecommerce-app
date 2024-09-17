@@ -2,8 +2,9 @@
 
 import { deleteUser, getUsers, updateUserRole } from "@/services/user";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdOutlineDelete, MdOutlineModeEdit } from "react-icons/md";
+import { MdDelete, MdModeEdit } from "react-icons/md";
 import { RiAdminLine } from "react-icons/ri";
 
 export default function Clients() {
@@ -11,10 +12,13 @@ export default function Clients() {
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState({});
 
-  const handelGetUsers = async () => {
+  const searchParams = useSearchParams();
+  const searchParamsValues = Object.fromEntries(searchParams);
+
+  const handleGetUsers = async () => {
     try {
       setIsLoading(true);
-      const users = await getUsers();
+      const users = await getUsers(searchParamsValues);
 
       setIsLoading(false);
       return users;
@@ -25,7 +29,7 @@ export default function Clients() {
     }
   };
 
-  const handelUpdateUserRole = async ({ id }) => {
+  const handleUpdateUserRole = async ({ id }) => {
     try {
       setIsLoading(true);
       await updateUserRole({ id });
@@ -39,7 +43,7 @@ export default function Clients() {
     }
   };
 
-  const handelDeleteUser = async ({ id }) => {
+  const handleDeleteUser = async ({ id }) => {
     try {
       setIsLoading(true);
       await deleteUser({ id });
@@ -55,10 +59,8 @@ export default function Clients() {
   useEffect(() => {
     return async () => {
       try {
-        const users = await handelGetUsers();
+        const users = await handleGetUsers();
         if (users) {
-          console.log(users);
-
           setUsers([...users]);
         }
       } catch (error) {
@@ -105,7 +107,9 @@ export default function Clients() {
                   {index}
                 </td>
                 <td className="font-semibold pr-4 min-w-10 w-72">
-                  <Link href={`/dashboard/clients/${user?._id}`}>{user?._id}</Link>
+                  <Link href={`/dashboard/clients/${user?._id}`}>
+                    {user?._id}
+                  </Link>
                 </td>
                 <td className="font-medium hidden sm:table-cell min-w-fit w-40 ">
                   {user?.firstName}
@@ -127,7 +131,7 @@ export default function Clients() {
                           }`
                         )
                       ) {
-                        await handelUpdateUserRole({ id: user?._id });
+                        await handleUpdateUserRole({ id: user?._id });
                       }
                     }}
                     className={`text-base ${
@@ -144,12 +148,12 @@ export default function Clients() {
                       if (
                         confirm("Are you sure you want to delete this user")
                       ) {
-                        await handelDeleteUser({ id: user?._id });
+                        await handleDeleteUser({ id: user?._id });
                       }
                     }}
                     className="px-1"
                   >
-                    <MdOutlineDelete className="size-[18px] text-red-400" />
+                    <MdDelete className="size-[18px] text-red-400" />
                   </button>
                 </td>
               </tr>

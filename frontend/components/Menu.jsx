@@ -9,18 +9,20 @@ const Menu = ({ setOpenMenu }) => {
       <ul className="flex flex-col justify-center items-center gap-y-6">
         {navLinks.map((navLink) => (
           <Link
-            href={navLink.link}
+            href={{ pathname: `/${navLink.link}` }}
             key={navLink.id}
             onClick={() => setOpenMenu(false)}
           >
-            <li className="hover:text-navy text-xl font-medium">{navLink.title}</li>
+            <li className="hover:text-navy text-xl font-medium">
+              {navLink.title}
+            </li>
           </Link>
         ))}
       </ul>
       <ul className="flex flex-col justify-center items-center gap-y-6">
         {navBtns.map((navBtn) => (
           <Link
-            href={navBtn.link}
+            href={{ pathname: `/${navBtn.link}` }}
             key={navBtn.id}
             onClick={() => setOpenMenu(flase)}
           >

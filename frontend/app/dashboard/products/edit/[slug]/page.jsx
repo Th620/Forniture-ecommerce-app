@@ -33,6 +33,7 @@ export default function NewProduct() {
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState();
+  const [salePrice, setSalePrice] = useState();
   const [category, setCategory] = useState("");
   const [desc, setDesc] = useState("");
   const [features, setFeatures] = useState([]);
@@ -52,6 +53,7 @@ export default function NewProduct() {
   const [variationStock, setVariationStock] = useState();
   const [done, setDone] = useState(false);
   const [images, setImages] = useState([]);
+  const [onSale, setOnSale] = useState(false);
 
   const router = useRouter();
 
@@ -59,9 +61,7 @@ export default function NewProduct() {
 
   const { slug } = useParams();
 
-  console.log(slug);
-
-  const handelGetCategories = async () => {
+  const handleGetCategories = async () => {
     try {
       setIsLoading(true);
       const categories = await getCategories();
@@ -75,31 +75,33 @@ export default function NewProduct() {
       return cat;
     } catch (error) {
       setIsLoading(false);
-      setError({ handlers: true, Error: error.message });
+      setError({ handlers: true, Error: error?.message });
       setTimeout(() => setError(""), 3000);
     }
   };
 
-  const handelGetProduct = async (slug) => {
+  const handleGetProduct = async (slug) => {
     try {
       setIsLoading(true);
       const product = await getProduct({ slug });
       if (product) {
-        setTitle(product.title);
-        setPrice(product.price);
-        product.productInfo.desc && setDesc(product.productInfo.desc);
-        product.productInfo.features &&
+        setTitle(product?.title);
+        setPrice(product?.price);
+        product?.productInfo?.desc && setDesc(product.productInfo.desc);
+        product?.productInfo?.features &&
           setFeatures(product.productInfo.features);
-        product.colors && setcolors(product.colors);
-        product.sizes & setSizes(product.sizes);
+        product?.colors && setcolors(product.colors);
+        product?.sizes && setSizes(product.sizes);
+        product?.onSale && setOnSale(true);
+        product?.salePrice && setSalePrice(product.salePrice);
         setStock(product.stock);
         product?.category && setCategory(product.category.name);
-        product.images && setImages(product.images);
-        product.variations && setVariations(product.variations);
+        product?.images && setImages(product.images);
+        product?.variations && setVariations(product.variations);
       }
       setIsLoading(false);
     } catch (error) {
-      setError({ handlers: true, Error: error.message });
+      setError({ handlers: true, Error: error?.message });
       setTimeout(() => setError(""), 3000);
       setIsLoading(false);
     }
@@ -107,8 +109,8 @@ export default function NewProduct() {
 
   useEffect(() => {
     return async () => {
-      const result = await handelGetCategories();
-      await handelGetProduct(slug);
+      const result = await handleGetCategories();
+      await handleGetProduct(slug);
 
       if (result) {
         setCategories(result);
@@ -126,7 +128,7 @@ export default function NewProduct() {
     });
   }, []);
 
-  const handelEditProduct = async (e) => {
+  const handleEditProduct = async (e) => {
     e.preventDefault();
 
     if (selectedFiles.length === 0 && images === 0) {
@@ -165,7 +167,7 @@ export default function NewProduct() {
       return;
     }
 
-    if (!stock || stock < 1) {
+    if (!JSON.stringify(stock) || stock < 0) {
       setError({
         stock: true,
         Error: "Stock is required",
@@ -257,6 +259,8 @@ export default function NewProduct() {
         colors,
         sizes,
         variations,
+        onSale,
+        salePrice,
         images,
       })
     );
@@ -284,7 +288,7 @@ export default function NewProduct() {
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      setError({ handlers: true, Error: error.message });
+      setError({ handlers: true, Error: error?.message });
       setTimeout(() => setError(""), 3000);
     }
   };
@@ -303,15 +307,15 @@ export default function NewProduct() {
         <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
           <div className="grid grid-cols-4 w-full h-fit p-5">
             <form
-              onSubmit={handelEditProduct}
+              onSubmit={handleEditProduct}
               className="col-span-4 grid grid-cols-4 gap-4"
             >
               <div className="md:col-span-2 col-span-4 flex flex-col items-center gap-4">
-                {error.handlers && (
+                {error?.handlers && (
                   <div className="w-full">
                     <div className="w-full bg-red-200 dark:bg-opacity-30 dark:bg-red-900 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
                       <MdErrorOutline className="size-4" />
-                      {error.Error}
+                      {error?.Error}
                     </div>
                   </div>
                 )}
@@ -360,7 +364,7 @@ export default function NewProduct() {
                         inputRef.current.click();
                       }}
                       className={`w-full h-28 bg-white dark:bg-darkBg rounded-md text-sm dark:text-gray text-[#404040] flex flex-col justify-center items-center gap-2 capitalize border border-dashed  ${
-                        error.upload
+                        error?.upload
                           ? "border-red-400"
                           : "dark:border-[#8C8C8C] border-[#404040]"
                       }`}
@@ -373,9 +377,9 @@ export default function NewProduct() {
                         } pictures`}
                       </p>
                     </button>
-                    {error.upload && (
+                    {error?.upload && (
                       <p className="text-red-400 text-start text-[10px] mt-1">
-                        {error.Error}
+                        {error?.Error}
                       </p>
                     )}
                   </div>
@@ -428,18 +432,18 @@ export default function NewProduct() {
                   placeholder={"Title"}
                   value={title}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setTitle(e.target.value);
                   }}
                   className={`w-full border ${
-                    error.title
+                    error?.title
                       ? "border-red-400"
                       : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                   }`}
                 />
-                {error.title && (
+                {error?.title && (
                   <p className="text-red-400 text-[10px] mt-1 pl-1 capitalize col-span-2">
-                    {error.Error}
+                    {error?.Error}
                   </p>
                 )}
                 <SimpleInput
@@ -448,18 +452,49 @@ export default function NewProduct() {
                   placeholder={"Price"}
                   value={price}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setPrice(e.target.value);
                   }}
                   className={`mt-4 w-full border ${
-                    error.price
+                    error?.price
                       ? "border-red-400"
                       : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                   }`}
                 />
-                {error.price && (
+                <label
+                  htmlFor="paymantMethod"
+                  className="ml-4 mt-4 flex items-center gap-2 text-sm"
+                >
+                  <input
+                    type="checkbox"
+                    name="paymantMethod"
+                    id="paymantMethod"
+                    value={"cash on delivery"}
+                    checked={onSale}
+                    onChange={() => setOnSale((prev) => !prev)}
+                  />
+                  On Sale
+                </label>
+                {onSale && (
+                  <SimpleInput
+                    label={"Sale Price"}
+                    type={"number"}
+                    placeholder={"Sale Price"}
+                    value={salePrice}
+                    error={error}
+                    handleChange={(e) => {
+                      setSalePrice(e.target.value);
+                    }}
+                    className={`mt-4 w-full border ${
+                      error?.salePrice
+                        ? "border-red-400"
+                        : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
+                    }`}
+                  />
+                )}
+                {error?.salePrice && (
                   <p className="text-red-400 text-[10px] mt-1 pl-1 capitalize col-span-2">
-                    {error.Error}
+                    {error?.Error}
                   </p>
                 )}
                 <SimpleInput
@@ -468,18 +503,18 @@ export default function NewProduct() {
                   placeholder={"Description"}
                   value={desc}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setDesc(e.target.value);
                   }}
                   className={`mt-4 w-full border ${
-                    error.desc
+                    error?.desc
                       ? "border-red-400"
                       : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                   }`}
                 />
-                {error.desc && (
+                {error?.desc && (
                   <p className="text-red-400 text-[10px] mt-1 pl-1 capitalize col-span-2">
-                    {error.Error}
+                    {error?.Error}
                   </p>
                 )}
 
@@ -495,12 +530,12 @@ export default function NewProduct() {
                   setError={setError}
                   className={"w-full mt-4"}
                   ulClassName={"w-full mt-2"}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setFeature(e.target.value);
                   }}
                   type={"text"}
                   inputClassName={`w-full border ${
-                    error.features
+                    error?.features
                       ? "border-red-400"
                       : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                   }`}
@@ -522,18 +557,18 @@ export default function NewProduct() {
                   placeholder={"Stock"}
                   value={stock}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setStock(e.target.value);
                   }}
                   className={`mt-4 w-full border ${
-                    error.stock
+                    error?.stock
                       ? "border-red-400"
                       : "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                   }`}
                 />
-                {error.stock && (
+                {error?.stock && (
                   <p className="text-red-400 text-[10px] mt-1 pl-1 capitalize col-span-2">
-                    {error.Error}
+                    {error?.Error}
                   </p>
                 )}
                 <AddItemInput
@@ -548,19 +583,19 @@ export default function NewProduct() {
                   error={error}
                   className={"w-full mt-4"}
                   ulClassName={"flex flex-wrap gap-x-5 pt-2 w-full"}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setColor(e.target.value);
                   }}
                   type={"text"}
                   inputClassName={`w-full border ${
-                    error.colors
+                    error?.colors
                       ? "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                       : "border-red-400"
                   }`}
                 />
-                {/* {error.colors && (
+                {/* {error?.colors && (
               <p className="text-red-400 text-[10px] mt-1 col-span-2">
-                {error.Error}
+                {error?.Error}
               </p>
             )} */}
 
@@ -576,19 +611,19 @@ export default function NewProduct() {
                   setError={setError}
                   className={" w-full mt-2"}
                   ulClassName={"flex flex-wrap gap-x-5 py-2 w-full"}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setSize(e.target.value);
                   }}
                   type={"text"}
                   inputClassName={`w-full border ${
-                    error.sizes
+                    error?.sizes
                       ? "dark:bg-darkBg placeholder:dark:text-opacity-40 border-gray border-opacity-30 dark:border-opacity-5"
                       : "border-red-400"
                   }`}
                 />
-                {/* {error.sizes && (
+                {/* {error?.sizes && (
               <p className="text-red-400 text-[10px] mt-1 col-span-2">
-                {error.Error}
+                {error?.Error}
               </p>
             )} */}
                 <label className="text-sm mb-1 ml-[2px]">
@@ -614,9 +649,9 @@ export default function NewProduct() {
                   variations={variations}
                   setVariations={setVariations}
                 />
-                {error.variations && (
+                {error?.variations && (
                   <p className="text-red-400 text-[10px] mt-1 pl-1 capitalize col-span-2">
-                    {error.Error}
+                    {error?.Error}
                   </p>
                 )}
                 {variations && (

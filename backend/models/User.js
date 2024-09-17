@@ -9,9 +9,10 @@ const UserSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     phone: { type: Number },
-    country: { type: String },
-    state: { type: String },
+    country: { type: Schema.Types.ObjectId, ref: "Country" },
+    state: { type: Schema.Types.ObjectId, ref: "State" },
     city: { type: String },
+    address: { type: String },
     admin: { type: Boolean, default: false },
   },
   {

@@ -5,11 +5,12 @@ const ProductSchema = new Schema(
     title: { type: String, required: true },
     slug: { type: String, required: true },
     price: { type: Number, required: true },
-    salePrice: { type: Number },
+    salePrice: { type: Number, required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category" },
     productInfo: { desc: { type: String }, features: { type: Array } },
     onSale: { type: Boolean, default: false },
     stock: { type: Number, required: true },
+    sales: { type: Number, default: 0, required: true },
     sizes: { type: [String] },
     colors: { type: [String] },
     variations: [

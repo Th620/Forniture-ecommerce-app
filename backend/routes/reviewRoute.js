@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get("/", authGuard, adminGuard, getReviews);
 router.put("/check/:id", authGuard, adminGuard, checkReview);
-router.delete("/delete/:id", authGuard, adminGuard, deleteReview);
+router.delete("/delete/:id", authGuard, deleteReview);
 
 module.exports = router;

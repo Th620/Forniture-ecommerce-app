@@ -23,9 +23,9 @@ const navLinks = [
     link: "products",
   },
   {
-    id: "customizing",
-    title: "Customizing",
-    link: "customizing",
+    id: "customize",
+    title: "Customize",
+    link: "customize",
   },
 ];
 

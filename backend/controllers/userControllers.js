@@ -4,6 +4,7 @@ const { sign, verify } = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const Country = require("../models/Country");
 const { existsArrayOfObjects } = require("../utils/exist");
+const State = require("../models/State");
 
 const register = async (req, res, next) => {
   try {
@@ -76,8 +77,6 @@ const login = async (req, res, next) => {
       secure: false,
     });
 
-    console.log(req.cookies);
-
     res.json({
       _id: user._id,
       firstName: user.firstName,
@@ -96,24 +95,19 @@ const logout = async (req, res, next) => {
 
 const profile = async (req, res, next) => {
   try {
-    const user = await User.findById(req?.user?._id);
+    const user = await User.findById(req?.user?._id)
+      .select("-password")
+      .populate([
+        { path: "country", populate: [{ path: "states" }] },
+        { path: "state", select: ["state", "shippingFees"] },
+      ]);
     if (!user) {
       let error = new Error("User not found");
       error.statusCode = 404;
       next(error);
     }
 
-    res.json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      country: user.country,
-      state: user.state,
-      city: user.city,
-      admin: user.admin,
-    });
+    res.json(user);
   } catch (error) {
     next(error);
   }
@@ -130,6 +124,7 @@ const updateProfile = async (req, res, next) => {
       state,
       country,
       city,
+      address,
     } = req.body;
 
     let user = await User.findById(req.user._id);
@@ -138,55 +133,66 @@ const updateProfile = async (req, res, next) => {
       throw new Error("User not found");
     }
 
-    if (isEmail(email)) {
-      user.email = email;
-    } else {
-      throw new Error("invalid email");
-    }
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
+    if (email && !isEmail(email)) throw new Error("Invalid email");
 
-    if (password && password.length < 8) {
-      throw new Error("password must be at least 8 caracters");
-    } else if (password) {
-      user.password = password;
-    }
+    if (firstName && typeof firstName !== "string")
+      throw new Error("Enter a correct first name");
+
+    if (lastName && typeof lastName !== "string")
+      throw new Error("Enter a correct last name");
+
+    if (password && password.length < 8)
+      throw new Error("Password must be at least 8 caracters");
 
     if (phone && (typeof +phone !== "number" || parseInt(phone) !== +phone))
-      throw new Error("wrong phone number");
-
-    if (phone) {
-      user.phone = phone;
-    }
+      throw new Error("Wrong phone number");
 
     if (country && typeof country !== "string")
-      throw new Error("wrong country");
+      throw new Error("Wrong country");
 
-    if (state && typeof state !== "string") throw new Error("wrong country");
+    if (state && typeof state !== "string") throw new Error("Wrong country");
 
     if (country) {
-      const countryExist = await Country.findOne({ country });
+      var countryExist = await Country.findById(country).populate([
+        {
+          path: "states",
+          select: ["state"],
+          populate: { path: "orders" },
+        },
+      ]);
 
       if (!countryExist) {
         const error = Error("country not found");
         error.statusCode = 404;
         return next(error);
       }
+    }
 
-      user.country = country;
+    if (state) {
+      const stateExist = await State.findOne({
+        _id: state,
+        country: countryExist._id,
+      });
 
-      if (state) {
-        if (!existsArrayOfObjects(countryExist, "state", state))
-          throw new Error("state not available in our store");
-        user.state = state;
+      if (!stateExist) {
+        const error = Error("State not found");
+        error.statusCode = 404;
+        return next(error);
       }
     }
 
-    if (city && typeof city !== "string") {
-      throw new Error("wrong city");
-    } else if (city) {
-      user.city = city;
-    }
+    if (city && typeof city !== "string") throw new Error("wrong city");
+    if (address && typeof address !== "string") throw new Error("wrong adress");
+
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.email = email || user.email;
+    user.password = password || user.password;
+    user.phone = phone || user.phone;
+    user.country = country || user.country;
+    user.state = state || user.state;
+    user.city = city || user.city;
+    user.address = address || user.address;
 
     const updatedUser = await user.save({ isNew: false });
 
@@ -317,6 +323,9 @@ const getAllUsers = async (req, res, next) => {
     var filter = {};
     if (role?.toLowerCase() === "admin") {
       filter.admin = true;
+    }
+    if (role?.toLowerCase() === "client") {
+      filter.admin = false;
     }
     const users = await User.find(filter).populate([{ path: "orders" }]);
     res.json(users);

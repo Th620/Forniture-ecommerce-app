@@ -28,7 +28,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
 
   const router = useRouter();
 
-  const handelLogOut = async () => {
+  const handleLogOut = async () => {
     try {
       await logout();
       dispatch(resetUserInfo());
@@ -180,7 +180,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
 
           <button
             type="button"
-            onClick={handelLogOut}
+            onClick={handleLogOut}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-red-400 rounded-md gap-2 font-meduim  transition-colors duration-75 w-full `}
           >
             <IoLogOutOutline className="text-lg" />

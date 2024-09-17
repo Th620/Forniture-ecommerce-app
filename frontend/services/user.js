@@ -86,12 +86,12 @@ export const updateProfile = async ({
   country,
   state,
   city,
-  adress,
+  address,
 }) => {
   try {
     const { data } = await axios.put(
       "http://localhost:8080/api/users/updateProfile",
-      { firstName, lastName, email, phone, country, state, city, adress }
+      { firstName, lastName, email, phone, country, state, city, address }
     );
 
     return data;
@@ -135,24 +135,10 @@ export const resetPassword = async ({ id, token, password }) => {
   }
 };
 
-export const getUsers = async () => {
-  try {
-    const { data } = await axios.get("http://localhost:8080/api/users");
-
-    return data;
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message);
-    } else {
-      throw new Error("An unexpected error occured. Please try again");
-    }
-  }
-};
-
-export const getAdmins = async () => {
+export const getUsers = async ({ role }) => {
   try {
     const { data } = await axios.get("http://localhost:8080/api/users", {
-      params: { role: "admin" },
+      params: { role },
     });
 
     return data;

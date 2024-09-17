@@ -17,7 +17,7 @@ const AddItemInput = ({
   errorItem,
   type,
   value,
-  handelChange,
+  handleChange,
   placeholder,
   inputClassName,
   group,
@@ -35,7 +35,7 @@ const AddItemInput = ({
           label={label}
           value={value}
           error={error}
-          handelChange={handelChange}
+          handleChange={handleChange}
           className={`w-full ${
             error[label]
               ? "border-red-400"

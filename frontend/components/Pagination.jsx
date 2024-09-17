@@ -8,8 +8,6 @@ const Pagination = ({ currentPage, totalPageCount, onPageChange }) => {
     return null;
   }
 
-  console.log(paginationRange);
-
   let lastPage = paginationRange[paginationRange.length - 1];
 
   const next = () => {};
@@ -17,11 +15,11 @@ const Pagination = ({ currentPage, totalPageCount, onPageChange }) => {
   const previous = () => {};
 
   return (
-    <div className="flex font-medium items-center gap-2 my-8">
+    <div className={`flex font-medium items-center gap-2 my-8`}>
       <button
         type="button"
         disabled={currentPage === 1}
-        onClick={async () => await onPageChange(currentPage - 1)}
+        onClick={() => onPageChange(currentPage - 1)}
         className="h-8 aspect-square rounded-md flex items-center justify-center text-xl disabled:opacity-50"
       >
         <MdKeyboardArrowLeft />

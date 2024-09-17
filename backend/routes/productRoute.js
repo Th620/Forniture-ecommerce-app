@@ -8,6 +8,8 @@ const {
   searchProduct,
   reviewProduct,
   getProductReviews,
+  productOnSale,
+  getBestSellers,
 } = require("../controllers/productControllers");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 const { upload } = require("../middelware/uploadPictureMiddelware");
@@ -31,7 +33,9 @@ router.put(
   editProduct
 );
 router.delete("/delete/:id", authGuard, adminGuard, deleteProduct);
+router.put("/sale/:id", authGuard, adminGuard, productOnSale);
 router.post("/:slug/review", authGuard, reviewProduct);
-router.get("/:id/reviews",  getProductReviews);
+router.get("/:slug/reviews",authGuard, adminGuard, getProductReviews);
+router.get("/store/bestsellers", getBestSellers);
 
 module.exports = router;

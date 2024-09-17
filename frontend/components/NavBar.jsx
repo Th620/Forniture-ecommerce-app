@@ -12,22 +12,20 @@ import { IoBagOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useStateContext } from "@/context/StateContext";
 import CartContainer from "./CartContainer";
-import { useAuth } from "@/context/AuthContext";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
 
-  const { user } = useAuth();
-
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
 
   const pathName = usePathname();
 
   const { openCart, setOpenCart } = useStateContext();
 
   useEffect(() => {
-    const handelScroll = () => {
+    const handleScroll = () => {
       const scrollTop = window.scrollY;
       if (scrollTop >= 150) {
         setScrolled(true);
@@ -36,14 +34,14 @@ const NavBar = () => {
       }
     };
 
-    window.addEventListener("scroll", handelScroll);
+    window.addEventListener("scroll", handleScroll);
 
-    return () => window.addEventListener("scroll", handelScroll);
+    return () => window.addEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
-      className={`font-montserrat fixed top-0 left-0 flex justify-between items-center w-full px-10 md:px-75 lg:px-150 py-5 text-black z-20 
+      className={`font-montserrat fixed top-0 left-0 flex justify-between items-center w-full px-10 md:px-75 lg:px-150 py-5 text-black z-[100] 
         ${
           scrolled
             ? "bg-white"
@@ -84,13 +82,15 @@ const NavBar = () => {
               </li>
               <Link
                 href={{
-                  pathname: `/${!user ? "account/sign-in" : "profile"}`,
+                  pathname: `/${
+                    !user?.userInfo ? "account/sign-in" : "profile"
+                  }`,
                 }}
               >
                 <li className="">
-                  {user?.firstName ? (
-                    <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-xs border-[1.5px] border-black font-lato">
-                      {user.firstName[0]}
+                  {user?.userInfo?.firstName ? (
+                    <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] border-[1.5px] border-black font-lato">
+                      {user.userInfo.firstName[0]}
                     </div>
                   ) : (
                     <FiUser />

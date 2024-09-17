@@ -11,9 +11,13 @@ export default function Dashboard() {
   const [profitsPercentage, setprofitsPercentage] = useState(0);
   const [productsSoldPercentage, setproductsSoldPercentage] = useState(0);
   const [productSold, setproductSold] = useState(0);
+  const [orders, setOrders] = useState(0);
+  const [ordersPercentage, setOrdersPercentage] = useState(0);
+  const [customers, setCustomers] = useState(0);
+  const [customersPercentage, setCustomersPercenrage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handelGetProductSoldAndProfits = async () => {
+  const handleGetProductSoldAndProfits = async () => {
     try {
       const data = await productSoldAndProfits();
       if (data) {
@@ -21,13 +25,17 @@ export default function Dashboard() {
         setprofitsPercentage(data?.profitsPercentage);
         setproductSold(data?.productSold);
         setproductsSoldPercentage(data?.productSlodPercentage);
+        setOrders(data?.orders);
+        setOrdersPercentage(data?.ordersPercentage);
+        setCustomers(data?.customers);
+        setCustomersPercenrage(data?.customerPercentage);
       }
     } catch (error) {}
   };
 
   useEffect(() => {
     return async () => {
-      await handelGetProductSoldAndProfits();
+      await handleGetProductSoldAndProfits();
       setIsLoading(false);
     };
   }, []);
@@ -53,15 +61,15 @@ export default function Dashboard() {
         <DashboardCard
           className={"md:col-span-3 sm:col-span-6 col-span-12"}
           boxTitel={"new customers"}
-          value={56}
-          percentage={-5}
+          value={customers}
+          percentage={customersPercentage}
           period={"mounth"}
         />
         <DashboardCard
           className={"md:col-span-3 sm:col-span-6 col-span-12"}
           boxTitel={"total orders"}
-          value={78}
-          percentage={+12}
+          value={orders}
+          percentage={customersPercentage}
           period={"mounth"}
         />
         <div className="relative col-span-12 md:col-span-7 h-72 text-[10px] p-4 bg-white dark:bg-darkBg border border-gray border-opacity-30 dark:border-opacity-5 rounded-md">

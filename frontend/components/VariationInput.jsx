@@ -75,7 +75,7 @@ const VariationInput = ({
           value={stock}
           error={error}
           errorMessage={false}
-          handelChange={(e) => {
+          handleChange={(e) => {
             setStock(e.target.value);
           }}
           className={`md:mx-2 lg:min-w-[25%] w-full border ${

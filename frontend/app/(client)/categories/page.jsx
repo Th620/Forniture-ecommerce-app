@@ -12,7 +12,7 @@ export default function Categories() {
 
   const router = useRouter();
 
-  const handelGetCategories = async () => {
+  const handleGetCategories = async () => {
     try {
       const data = await getCategories();
       if (data) {
@@ -28,14 +28,14 @@ export default function Categories() {
 
   useEffect(() => {
     return async () => {
-      await handelGetCategories();
+      await handleGetCategories();
     };
   }, []);
 
   return (
     <main className="flex flex-col justify-center sm:justify-start gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white mt-150 min-h-screen mb-28">
       <h2 className="text-[32px] font-semibold">Categories</h2>
-      <div className="grid grid-cols-12 gap-x-4 gap-y-4">
+      <div className="grid grid-cols-10 gap-x-4 gap-y-4">
         {categories.map((category) => (
           <CategoryCard
             category={category}
@@ -43,7 +43,7 @@ export default function Categories() {
             onClick={() =>
               router.push(`/products?category=${category?.name?.toLowerCase()}`)
             }
-            className={"col-span-12 sm:col-span-6 md:col-span-3"}
+            className={"col-span-10 sm:col-span-5 md:col-span-2"}
           />
         ))}
       </div>

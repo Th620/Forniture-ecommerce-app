@@ -7,8 +7,9 @@ import {
   updateUserRole,
 } from "@/services/user";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdOutlineDelete, MdOutlineModeEdit } from "react-icons/md";
+import { MdDelete, MdModeEdit, MdOutlineAdd } from "react-icons/md";
 import { RiAdminLine } from "react-icons/ri";
 
 export default function Clients() {
@@ -16,9 +17,11 @@ export default function Clients() {
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const handelGetUsers = async () => {
+  const router = useRouter();
+
+  const handleGetUsers = async () => {
     try {
-      const users = await getAdmins();
+      const users = await getUsers({ role: "admin" });
       setIsLoading(false);
       return users;
     } catch (error) {
@@ -28,7 +31,7 @@ export default function Clients() {
     }
   };
 
-  const handelUpdateUserRole = async ({ id }) => {
+  const handleUpdateUserRole = async ({ id }) => {
     try {
       setIsLoading(true);
       await updateUserRole({ id });
@@ -42,7 +45,7 @@ export default function Clients() {
     }
   };
 
-  const handelDeleteUser = async ({ id }) => {
+  const handleDeleteUser = async ({ id }) => {
     try {
       setIsLoading(true);
       await deleteUser({ id });
@@ -58,7 +61,7 @@ export default function Clients() {
   useEffect(() => {
     return async () => {
       try {
-        const users = await handelGetUsers();
+        const users = await handleGetUsers();
         if (users) {
           console.log(users);
 
@@ -73,7 +76,15 @@ export default function Clients() {
 
   return (
     <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
-      <div className="p-5 w-full">
+      <div className="p-5 w-full flex flex-col">
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/clients?role=client")}
+          className="flex justify-center items-center mb-2 w-fit self-end gap-2 capitalize text-sm font-medium bg-yellow px-4 py-2 rounded-md text-white cursor-pointer"
+        >
+          <MdOutlineAdd className="size-4" />
+          add new admin
+        </button>
         <table className="w-full text-start table">
           <thead className="w-full">
             <tr className="border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 capitalize">
@@ -132,7 +143,7 @@ export default function Clients() {
                           }`
                         )
                       ) {
-                        await handelUpdateUserRole({ id: user?._id });
+                        await handleUpdateUserRole({ id: user?._id });
                       }
                     }}
                     className={`text-base ${
@@ -149,12 +160,12 @@ export default function Clients() {
                       if (
                         confirm("Are you sure you want to delete this user")
                       ) {
-                        await handelDeleteUser({ id: user?._id });
+                        await handleDeleteUser({ id: user?._id });
                       }
                     }}
                     className="px-1"
                   >
-                    <MdOutlineDelete className="size-[18px] text-red-400" />
+                    <MdDelete className="size-[18px] text-red-400" />
                   </button>
                 </td>
               </tr>

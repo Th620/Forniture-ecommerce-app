@@ -1,15 +1,15 @@
 "use client";
 
 import CountryPopUp from "@/components/CountryPopUp";
-import { deleteCountry, getCountreis } from "@/services/countries";
+import { deleteCountry, getCountries } from "@/services/countries";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   MdDeleteOutline,
   MdOutlineAdd,
-  MdOutlineDelete,
-  MdOutlineModeEdit,
+  MdDelete,
+  MdModeEdit,
 } from "react-icons/md";
 
 export default function Shipping() {
@@ -23,9 +23,9 @@ export default function Shipping() {
 
   const router = useRouter();
 
-  const handelGetCountries = async () => {
+  const handleGetCountries = async () => {
     try {
-      const data = await getCountreis();
+      const data = await getCountries();
       if (data) {
         setCountries(data);
       }
@@ -39,7 +39,7 @@ export default function Shipping() {
     }
   };
 
-  const handelDeleteCountries = async (id) => {
+  const handleDeleteCountries = async (id) => {
     try {
       if (confirm("Are you sure you want to delete this country")) {
         setIsLoading(true);
@@ -57,7 +57,7 @@ export default function Shipping() {
 
   useEffect(() => {
     return async () => {
-      await handelGetCountries();
+      await handleGetCountries();
     };
   }, [isLoading]);
 
@@ -98,20 +98,19 @@ export default function Shipping() {
           </div>
           <div className="px-5 pt-4 w-full">
             <h3 className="capitalize font-semibold my-5 text-2xl">
-              <h3 className="capitalize font-semibold my-5 text-2xl">
-                countries we provide shipping to:
-              </h3>
+              countries we provide shipping to:
             </h3>
+
             <table className="w-full text-start table">
               <thead className="w-full">
                 <tr className="border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 capitalize">
-                  <th className="font-medium text-start text-sm w-4 flex justify-center items-center text-[#8C8C8C] px-5 py-2">
+                  <th className="font-medium text-start text-sm w-4 hidden md:flex justify-center items-center text-[#8C8C8C] px-5 py-2">
                     #
                   </th>
                   <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
                     country
                   </th>
-                  <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
+                  <th className="font-medium text-start text-sm max-sm:hidden text-[#8C8C8C] py-2 ">
                     states we provide shipping to:
                   </th>
                   <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
@@ -124,13 +123,13 @@ export default function Shipping() {
                   countries.map((country, index) => (
                     <tr
                       key={country?._id}
-                      className="border-b-2 border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 h-fit"
+                      className="border-b-2 border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 h-fit max-sm:h-[5vh]"
                     >
                       <td className="text-sm py-4 font-semibold w-4 min-w-24 table-cell px-5 max-sm:hidden ">
                         {index + 1}
                       </td>
 
-                      <td className="text-sm font-semibold capitalize min-w-16 max-sm:hidden">
+                      <td className="text-sm font-semibold capitalize min-w-16 max-sm:w-[40vw]">
                         <Link
                           href={`/dashboard/shipping/${country?._id}`}
                           className="w-fit h-fit"
@@ -155,7 +154,7 @@ export default function Shipping() {
                         </Link>
                       </td>
 
-                      <td className="font-semibold table-cell md:w-[8%] min-w-14">
+                      <td className="font-semibold table-cell md:w-[8%] max-sm:w-[4%] min-w-14">
                         <button
                           type="button"
                           onClick={() => {
@@ -166,16 +165,16 @@ export default function Shipping() {
                           }}
                           className="px-1"
                         >
-                          <MdOutlineModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
+                          <MdModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
                         </button>
                         <button
                           type="button"
                           onClick={async () => {
-                            await handelDeleteCountries(country?._id);
+                            await handleDeleteCountries(country?._id);
                           }}
                           className="px-1"
                         >
-                          <MdOutlineDelete className="size-[18px] text-red-400" />
+                          <MdDelete className="size-[18px] text-red-400" />
                         </button>
                       </td>
                     </tr>

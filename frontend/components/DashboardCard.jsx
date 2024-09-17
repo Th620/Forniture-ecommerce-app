@@ -30,12 +30,12 @@ const DashboardCard = ({
         {value} {sign}
       </p>
       <div className="flex gap-1 items-center">
-        {percentage < 0 ? (
-          <FaArrowTrendUp className="text-red-400 size-[14px]" />
+        {percentage > 0 ? (
+          <FaArrowTrendUp className="text-green-400 size-[14px]" />
         ) : percentage === 0 ? (
           <TbEqual className="text-orange-300 size-[14px]" />
         ) : (
-          <FaArrowTrendDown className="text-green-400 size-[14px]" />
+          <FaArrowTrendDown className="text-red-400 size-[14px]" />
         )}
         <p className="text-black dark:text-bg text-xs flex items-center gap-1">
           <span

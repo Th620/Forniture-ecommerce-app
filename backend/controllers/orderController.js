@@ -1,127 +1,204 @@
 const Item = require("../models/Item");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
-const Store = require("../models/Store");
-const { isObjectEmpty } = require("../utils/isObjectEmpty");
+const Country = require("../models/Country");
+const State = require("../models/State");
+const User = require("../models/User");
 
-const subtotalCount = async (items, total) => {
-  try {
-    for (let i = 0; i < items.length; i++) {
-      if (typeof items[i].product !== "string" || !items[i].product)
-        throw new Error("no product ID");
-
-      let product = await Product.findById(items[i].product);
-
-      total = total + product.price * items[i].quantity;
-    }
-    return total;
-  } catch (error) {
-    console.log(error);
-  }
+const unavailableSize = (variations = [], color, size) => {
+  return variations.every((variation) => {
+    return (
+      color &&
+      size &&
+      (variation.color !== color ||
+        variation.size !== size ||
+        variation.stock <= 0)
+    );
+  });
 };
 
-const shippingFeesgFeesCount = async (shipping) => {
-  const store = await Store.findOne();
-
-  let countryIndex = null;
-  let stateIndex = null;
-
-  store.countriesDetails.map((item, index) => {
-    if (item.country === shipping.country) {
-      countryIndex = index;
-    }
+const unavailableColor = (variations = [], color) => {
+  return variations.every((variation) => {
+    return (
+      color &&
+      (variation.color !== color ||
+        (variation.color === color && variation.stock <= 0))
+    );
   });
-
-  if (countryIndex === null)
-    throw new Error("we don't provide shipping service to your adress");
-
-  store.countriesDetails[countryIndex].states.map((item, index) => {
-    if (item.state === shipping.state) {
-      stateIndex = index;
-    }
-  });
-
-  if (stateIndex === null)
-    throw new Error("we don't provide shipping service to your adress");
-
-  let shippingFees =
-    store.countriesDetails[countryIndex].states[stateIndex].shippingFee;
-
-  return shippingFees;
 };
 
 const newOrder = async (req, res, next) => {
   try {
-    const { products, shipping } = req.body;
+    const { products, city, country, state, address } = req.body;
 
     if (!products || !Array.isArray(products) || products.length === 0)
-      throw new Error("can place a empty order");
+      throw new Error("you can't place an empty order");
 
-    products.map(async (product) => {
-      if (
-        !product.product ||
-        typeof product.product !== "string" ||
-        !product.color ||
-        !product.size ||
-        !product.quantity ||
-        product.quantity <= 0
-      )
-        throw new Error("wrong product data");
-      const p = await Product.findById(product.product);
-      if (!p) {
-        const error = Error("Product not found");
-        error.statusCode = 404;
+    if (
+      !city ||
+      typeof city !== "string" ||
+      !state ||
+      typeof state !== "string" ||
+      !address ||
+      typeof address !== "string" ||
+      !country ||
+      typeof country !== "string"
+    )
+      throw new Error("invalid shipping information");
+
+    const countryExist = await Country.findById(country);
+    if (!countryExist) {
+      const error = Error("country not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    const stateExist = await State.findOne({
+      _id: state,
+      country: countryExist._id,
+    });
+    if (!stateExist) {
+      const error = Error("state not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    for (let item of products) {
+      try {
+        const product = await Product.findById(item._id);
+
+        if (!product) {
+          const error = Error("product not found");
+          error.statusCode = 404;
+          throw new Error(error);
+        }
+
+        if (
+          !item.color ||
+          !typeof item.color === "string" ||
+          !product.colors.includes(item.color.toLowerCase()) ||
+          !item.size ||
+          !typeof item.size === "string" ||
+          !product.sizes.includes(item.size.toLowerCase())
+        ) {
+          throw new Error(
+            "you should select a color and size for each product"
+          );
+        }
+
+        if (!item.quantity) {
+          item.quantity = 1;
+        }
+
+        if (product.stock - item.quantity < 0) {
+          throw new Error("The requested quantity exceeds our current stock");
+        }
+        if (unavailableColor(product.variations, item.color.toLowerCase())) {
+          throw new Error("unavailable color and size combination");
+        }
+        if (unavailableSize(product.variations, item.color, item.size)) {
+          throw new Error("unavailable color and size combination");
+        }
+        const variation = product.variations.find((e) => {
+          return (
+            e.color === item?.color.toLowerCase() &&
+            e.size === item?.size.toLowerCase()
+          );
+        });
+
+        if (!variation) {
+          throw new Error("variation not found");
+        }
+        if (variation.stock - item.quantity < 0) {
+          throw new Error(
+            "The requested quantity exceeds our current stock. Select another color or size"
+          );
+        }
+      } catch (error) {
         return next(error);
       }
-      if (
-        p.variations.every((variation) => {
-          (variation.color !== color && variation.size !== size) ||
-            variation.stock < product.quantity;
-        })
-      )
-        throw new Error("Order Not available");
+    }
+
+    for (const item of products) {
+      try {
+        const product = await Product.findById(item._id);
+        product.stock = product.stock - item.quantity;
+        const variation = product.variations.find((e) => {
+          return (
+            e.color === item?.color.toLowerCase() &&
+            e.size === item?.size.toLowerCase()
+          );
+        });
+        const index = product.variations.indexOf(variation);
+        product.variations[index].stock =
+          product.variations[index].stock - item.quantity;
+        product.sales = product.sales + item.quantity;
+        await product.save();
+      } catch (error) {
+        return next(error);
+      }
+    }
+
+    const order = await Order.create({
+      client: req.user._id,
+      shipping: {
+        country,
+        state,
+        city,
+        address,
+      },
+      shippingFees: stateExist.shippingFees,
     });
 
-    if (!shipping) throw new Error("shipping info are required");
-
-    const store = await store.findOne({ admins: { $in: [req.user] } });
-
-    const { countries, countriesDetails } = store;
-
-    if (!countries.includes(shipping.country))
-      throw new Error("there is no shipping service to this country");
-
-    const states = countriesDetails.find(
-      (country) => country.country === shipping.country
-    );
-
-    if (!states.includes(shipping.state))
-      throw new Error("there is no shipping service to this state");
-
-    var total = 0;
-
-    products.map(async (product) => {
-      const p = await Product.findById(product.product);
-      p.stock = p.stock - product.quantity;
-      p.variations = p.variations.map((variation) => {
-        if (
-          variation.color === product.color &&
-          variation.size === product.size
-        ) {
-          variation.stock = variation.stock - product.quantity;
+    for (let product of products) {
+      try {
+        const item = await Item.findOne({
+          product: product._id,
+          order: order._id,
+          color: product.color,
+          size: product.size,
+        });
+        if (item) {
+          item.quantity++;
+          await item.save();
+        } else {
+          await Item.create({
+            product: product._id,
+            order: order._id,
+            color: product.color,
+            size: product.size,
+            quantity: product?.quantity || 1,
+          });
         }
-      });
-      await p.save();
-    });
+      } catch (error) {
+        return next(error);
+      }
+    }
+    const finalOrder = await Order.findById(order._id).populate([
+      {
+        path: "products",
+        populate: [{ path: "product", select: ["price"] }],
+      },
+      {
+        path: "client",
+        select: ["firstName", "lastName", "price", "email", "phone"],
+      },
+      {
+        path: "shipping",
+        populate: [
+          {
+            path: "country",
+            select: ["country"],
+          },
+          {
+            path: "state",
+            select: ["state", "shippingFees"],
+          },
+        ],
+      },
+    ]);
 
-    const newOrder = await Order.create({
-      client: req.user,
-      products,
-      shipping,
-      subTotal: await subtotalCount(products, total),
-      shippingFees: await shippingFeesgFeesCount(shipping),
-    });
-    res.status(201).json(newOrder);
+    res.status(201).json(finalOrder);
   } catch (error) {
     next(error);
   }
@@ -138,44 +215,97 @@ const editOrder = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    if (order.status === "confirmed" || order.status === "dilevred")
-      throw new Error("you can't edit the order after it" + order.status);
+    if (order.status === "confirmed" || order.status === "delivered")
+      throw new Error("you can't edit the order after it was " + order.status);
 
-    const { products, shipping } = req.body;
+    const { products, city, country, state, address } = req.body;
 
-    if (products.length === 0) throw new Error("can place a empty order");
-    if (isObjectEmpty(shipping))
-      throw new Error("shipping info are required 1");
-    if (shipping?.country == "")
-      throw new Error("shipping info are required 2");
-    if (shipping?.state == "") throw new Error("shipping info are required");
-    if (shipping?.city == "") throw new Error("shipping info are required");
-    if (shipping?.adress == "") throw new Error("shipping info are required");
+    if (!products || !Array.isArray(products) || products.length === 0)
+      throw new Error("you can't place an empty order");
 
-    const store = await store.findOne({ admins: { $in: [req.user] } });
+    const items = await Item.find({ order: order._id });
 
-    const { countries, countriesDetails } = store;
+    var editedProducts = [];
 
-    if (!countries.includes(shipping.country))
-      throw new Error("there is no shipping service to this country");
+    products.forEach(async (product) => {
+      const result = items.every((item) => {
+        console.log(item);
+        console.log(product);
+        console.log(objectid);
 
-    const states = countriesDetails.find(
-      (country) => country.country === shipping.country
-    );
+        return item._id !== product._id;
+      });
 
-    if (!states.includes(shipping.state))
-      throw new Error("there is no shipping service to this state");
+      console.log(result);
 
-    let shippingFees = 10;
-    let total = 0;
+      if (result) {
+        await Item.findByIdAndDelete(product._id);
+      } else {
+        const p = await Product.findById(product.product);
+        console.log(p);
 
-    order.products = products || order.products;
-    order.shipping.country = shipping.country || order.shipping.country;
-    order.shipping.state = shipping.state || order.shipping.state;
-    order.shipping.city = shipping.city || order.shipping.city;
-    order.shipping.adress = shipping.adress || order.shipping.adress;
-    order.subTotal = (await subtotalCount(products, total)) || order.subTotal;
-    order.shippingFees = shippingFees || order.shippingFees;
+        if (!p) {
+          const error = Error("product not found");
+          error.statusCode = 404;
+          return next(error);
+        }
+        if (p.stock - product.quantity < 0) {
+          const err = Error("The requested quantity exceeds our current stock");
+          return next(err);
+        }
+        const variation = p.variations.find((e) => {
+          return e.color === product.color && e.size === product.size;
+        });
+        if (variation.stock - product.quantity < 0) {
+          const err = Error(
+            "The requested quantity exceeds our current stock. Select another color or size"
+          );
+          return next(err);
+        }
+        editedProducts.push(product);
+      }
+    });
+
+    if (editedProducts.length === 0)
+      throw new Error("you can't place an empty order");
+
+    if (
+      (city && typeof city !== "string") ||
+      (state && typeof state !== "string") ||
+      (address && typeof address !== "string") ||
+      (country && typeof country !== "string")
+    )
+      throw new Error("invalid shipping information");
+
+    if (country) {
+      var countryExist = await Country.findById(country);
+      if (!countryExist) {
+        const error = Error("country not found");
+        error.statusCode = 404;
+        return next(error);
+      }
+    }
+
+    if (state) {
+      var stateExist = await State.findOne({
+        _id: state,
+        country: countryExist._id,
+      });
+      if (!stateExist) {
+        const error = Error("state not found");
+        error.statusCode = 404;
+        return next(error);
+      }
+    }
+
+    if (products) {
+      order.products = editedProducts;
+    }
+    order.shipping.country = country || order.shipping.country;
+    order.shipping.state = state || order.shipping.state;
+    order.shipping.city = city || order.shipping.city;
+    order.shipping.address = address || order.shipping.address;
+    order.shippingFees = stateExist.shippingFees || order.shippingFees;
 
     const editedOrder = await order.save();
     res.json(editedOrder);
@@ -196,8 +326,35 @@ const cancelOrder = async (req, res, next) => {
       return next(error);
     }
 
-    if (order.status === "confirmed" || order.status === "dilevred")
-      throw new Error("you can't edit the order after it" + order.status);
+    if (
+      order.status === "confirmed" ||
+      order.status === "delivered" ||
+      order.status === "canceled"
+    )
+      throw new Error(
+        "you can't cancel the order after it was " + order.status
+      );
+
+    const items = await Item.find({ order: order._id });
+
+    for (const item of items) {
+      try {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          const error = Error("product not found");
+          error.statusCode = 404;
+          throw new Error(error);
+        }
+        product.stock = product.stock + item.quantity;
+        const variation = product.variations.find((v) => {
+          return item.color === v.color && item.size === v.size;
+        });
+        variation.stock = variation.stock + item.quantity;
+        await product.save();
+      } catch (error) {
+        return next(error);
+      }
+    }
 
     order.status = "canceled";
 
@@ -210,14 +367,55 @@ const cancelOrder = async (req, res, next) => {
     next(error);
   }
 };
+
 const getUserOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({ client: req.user }).populate([
-      {
-        path: "products",
-        populate: [{ path: "product", select: ["price"] }],
-      },
-    ]);
+    const { status } = req.query;
+    var where = {};
+
+    if (
+      status === "pending" ||
+      status === "confirmed" ||
+      status === "canceled" ||
+      status === "dilevered"
+    ) {
+      where.status = status;
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 5;
+
+    const total = await Order.find({
+      client: req.user,
+      ...where,
+    }).countDocuments();
+
+    if (total) {
+      var pages = Math.ceil(total / pageSize);
+    }
+    const skip = (page - 1) * pageSize;
+
+    if (pages && page > pages) {
+      throw new Error("page not available");
+    }
+
+    res.header({
+      "X-Totalcount": JSON.stringify(total),
+      "X-CurrentPage": JSON.stringify(page),
+      "X-Pagesize": JSON.stringify(pageSize),
+      "X-TotalPagecount": JSON.stringify(pages),
+    });
+
+    const orders = await Order.find({ client: req.user, ...where })
+      .skip(skip)
+      .limit(pageSize)
+      .populate([
+        {
+          path: "products",
+          populate: [{ path: "product", select: ["price"] }],
+        },
+      ])
+      .sort({ createdAt: "desc" });
 
     res.json(orders);
   } catch (error) {
@@ -236,7 +434,7 @@ const getOrders = async (req, res, next) => {
       status === "pending" ||
       status === "confirmed" ||
       status === "canceled" ||
-      status === "dilevered"
+      status === "delivered"
     ) {
       where.status = status;
     }
@@ -333,7 +531,7 @@ const getOrders = async (req, res, next) => {
           ],
         },
       ])
-      .sort({ updatedAt: "desc" });
+      .sort({ createdAt: "desc" });
 
     res.json(orders);
   } catch (error) {
@@ -353,9 +551,13 @@ const getOrder = async (req, res, next) => {
           populate: [
             {
               path: "product",
-              select: ["price", "title", "slug", "images"],
+              select: ["price", "title", "images", "slug"],
             },
           ],
+        },
+        {
+          path: "client",
+          select: ["firstName", "lastName", "email", "phone"],
         },
       ]);
     } else {
@@ -366,9 +568,13 @@ const getOrder = async (req, res, next) => {
           populate: [
             {
               path: "product",
-              select: ["price"],
+              select: ["price", "title", "images", "slug"],
             },
           ],
+        },
+        {
+          path: "client",
+          select: ["firstName", "lastName", "email", "phone"],
         },
       ]);
     }
@@ -418,9 +624,9 @@ const markOrderAsDelivered = async (req, res, next) => {
       return next(error);
     }
 
-    if (order.status !== "confirmed")
+    if (order.status === "canceled")
       throw new Error(
-        "you can't set order to be delivered before it confirmed"
+        "you can't set order as delivered after it was cansceled"
       );
     order.status = "delivered";
 
@@ -457,7 +663,6 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
         order.products.reduce((total, product) => total + product.quantity, 0),
       0
     );
-
     const profits = orders.reduce((total, order) => total + order.totalCost, 0);
 
     const lastMounthStart = new Date();
@@ -498,6 +703,33 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
     const ordersPercentage =
       100 - (LastMonthOrders.length * 100) / orders.length;
 
+    const customers = await User.find().populate([
+      { path: "orders", select: ["createdAt"] },
+    ]);
+
+    const customersThisMounth = customers.filter((customer) => {
+      return (
+        customer.orders.length > 0 &&
+        customer.orders.some((order) => {
+          return order.createdAt > startOfMonth;
+        })
+      );
+    });
+
+    const customersLastMounth = customers.filter((customer) => {
+      return (
+        customer.orders.length > 0 &&
+        customer.orders.some((order) => {
+          return (
+            order.createdAt > lastMounthStart && order.createdAt < startOfMonth
+          );
+        })
+      );
+    });
+
+    const customerPercentage =
+      100 - (customersLastMounth.length * 100) / customersThisMounth.length;
+
     res.json({
       profits,
       productSold,
@@ -505,7 +737,590 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
       productSlodPercentage,
       orders: orders.length,
       ordersPercentage,
+      customers: customersThisMounth.length,
+      customerPercentage,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getEarnings = async (req, res, next) => {
+  try {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    const jan = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(0, 1),
+        $lt: date.setMonth(1, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const janEarn = jan.reduce((total, order) => total + order.totalCost, 0);
+
+    const feb = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(1, 1),
+        $lt: date.setMonth(2, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const febEarn = feb.reduce((total, order) => total + order.totalCost, 0);
+
+    const mar = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(2, 1),
+        $lt: date.setMonth(3, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const marEarn = mar.reduce((total, order) => total + order.totalCost, 0);
+
+    const apr = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(3, 1),
+        $lt: date.setMonth(4, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const aprEarn = apr.reduce((total, order) => total + order.totalCost, 0);
+
+    const may = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(4, 1),
+        $lt: date.setMonth(5, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const mayEarn = may.reduce((total, order) => total + order.totalCost, 0);
+
+    const jun = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(5, 1),
+        $lt: date.setMonth(6, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const junEarn = jun.reduce((total, order) => total + order.totalCost, 0);
+
+    const jul = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(6, 1),
+        $lt: date.setMonth(7, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const julEarn = jul.reduce((total, order) => total + order.totalCost, 0);
+
+    const aug = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(7, 1),
+        $lt: date.setMonth(8, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const augEarn = aug.reduce((total, order) => total + order.totalCost, 0);
+
+    const sep = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(8, 1),
+        $lt: date.setMonth(9, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const sepEarn = sep.reduce((total, order) => total + order.totalCost, 0);
+
+    const oct = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(9, 1),
+        $lt: date.setMonth(10, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const octEarn = oct.reduce((total, order) => total + order.totalCost, 0);
+
+    const nov = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(10, 1),
+        $lt: date.setMonth(11, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const novEarn = nov.reduce((total, order) => total + order.totalCost, 0);
+
+    const dec = await Order.find({
+      createdAt: {
+        $gte: date.setMonth(11, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const decEarn = dec.reduce((total, order) => total + order.totalCost, 0);
+
+    const lastYear = new Date();
+    lastYear.setFullYear(2023);
+    lastYear.setHours(0, 0, 0, 0);
+
+    const lastjan = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(0, 1),
+        $lt: lastYear.setMonth(1, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastjanEarn = lastjan.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastfeb = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(1, 1),
+        $lt: lastYear.setMonth(2, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastfebEarn = lastfeb.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastmar = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(2, 1),
+        $lt: lastYear.setMonth(3, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastmarEarn = lastmar.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastapr = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(3, 1),
+        $lt: lastYear.setMonth(4, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastaprEarn = lastapr.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastmay = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(4, 1),
+        $lt: lastYear.setMonth(5, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastmayEarn = lastmay.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastjun = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(5, 1),
+        $lt: lastYear.setMonth(6, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastjunEarn = lastjun.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastjul = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(6, 1),
+        $lt: lastYear.setMonth(7, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastjulEarn = lastjul.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastaug = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(7, 1),
+        $lt: lastYear.setMonth(8, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastaugEarn = lastaug.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastsep = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(8, 1),
+        $lt: lastYear.setMonth(9, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastsepEarn = lastsep.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastoct = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(9, 1),
+        $lt: lastYear.setMonth(10, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastoctEarn = lastoct.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastnov = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(10, 1),
+        $lt: lastYear.setMonth(11, 1),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastnovEarn = lastnov.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const lastdec = await Order.find({
+      createdAt: {
+        $gte: lastYear.setMonth(11, 1),
+        $lt: date.setMonth(0),
+      },
+    }).populate([
+      { path: "products", populate: [{ path: "product", select: ["price"] }] },
+    ]);
+
+    const lastdecEarn = lastdec.reduce(
+      (total, order) => total + order.totalCost,
+      0
+    );
+
+    const week = new Date();
+    week.setDate(week.getDate() - week.getDay());
+
+    const sun = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const mon = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const tue = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const wed = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const thu = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const fri = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const sat = await Order.find({
+      createdAt: {
+        $gte: week.setHours(0, 0, 0, 0),
+        $lt: week.setDate(week.getDate() + 1),
+      },
+    });
+
+    const lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - (lastWeek.getDay() + 7));
+    lastWeek.setHours(0, 0, 0, 0);
+
+    const lastsun = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    const lastmon = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    const lasttue = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    const lastwed = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    const lastthu = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    const lastfri = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    const lastsat = await Order.find({
+      createdAt: {
+        $gte: lastWeek.setHours(0, 0, 0, 0),
+        $lt: lastWeek.setDate(lastWeek.getDate() + 1),
+      },
+    });
+
+    res.json({
+      orders: [
+        { name: "Sun", thisWeek: sun.length, lastWeek: lastsun.length },
+        { name: "Mon", thisWeek: mon.length, lastWeek: lastmon.length },
+        { name: "Tue", thisWeek: tue.length, lastWeek: lasttue.length },
+        { name: "Wed", thisWeek: wed.length, lastWeek: lastwed.length },
+        { name: "Thu", thisWeek: thu.length, lastWeek: lastthu.length },
+        { name: "Fri", thisWeek: fri.length, lastWeek: lastfri.length },
+        { name: "Sat", thisWeek: sat.length, lastWeek: lastsat.length },
+      ],
+      earnings: [
+        { name: "Jan", thisYear: janEarn, lastYear: lastjanEarn },
+        { name: "Feb", thisYear: febEarn, lastYear: lastfebEarn },
+        { name: "Mar", thisYear: marEarn, lastYear: lastmarEarn },
+        { name: "Apr", thisYear: aprEarn, lastYear: lastaprEarn },
+        { name: "May", thisYear: mayEarn, lastYear: lastmayEarn },
+        { name: "Jun", thisYear: junEarn, lastYear: lastjunEarn },
+        { name: "Jul", thisYear: julEarn, lastYear: lastjulEarn },
+        { name: "Aug", thisYear: augEarn, lastYear: lastaugEarn },
+        { name: "Sep", thisYear: sepEarn, lastYear: lastsepEarn },
+        { name: "Oct", thisYear: octEarn, lastYear: lastoctEarn },
+        { name: "Nov", thisYear: novEarn, lastYear: lastnovEarn },
+        { name: "Dec", thisYear: decEarn, lastYear: lastdecEarn },
+      ],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteOrder = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findByIdAndDelete(id);
+
+    if (!order) {
+      const error = Error("order not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (order.status === "confirmed" || order.status === "delivered")
+      throw new Error(
+        "you can't delete the order after it was " + order.status
+      );
+
+    const items = await Item.find({ order: order._id });
+
+    for (const item of items) {
+      try {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          const error = Error("product not found");
+          error.statusCode = 404;
+          throw new Error(error);
+        }
+        product.stock = product.stock + item.quantity;
+        const variation = product.variations.find((v) => {
+          return item.color === v.color && item.size === v.size;
+        });
+        variation.stock = variation.stock + item.quantity;
+        await product.save();
+      } catch (error) {
+        return next(error);
+      }
+    }
+
+    await Item.deleteMany({ order: order._id });
+
+    res.json({
+      message: "order deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const setShippingDate = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const { shippingDate } = req.body;
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+      const error = Error("order not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    if (order.status === "canceled" || order.status === "delivered")
+      throw new Error(
+        "you can't set shiiping date after the order was " + order.status
+      );
+
+    if (
+      !shippingDate ||
+      (typeof shippingDate !== "string" && typeof shippingDate !== "number")
+    )
+      throw new Error("Invalid Date");
+
+    if (
+      new Date().setHours(0, 0, 0, 0) >
+      new Date(shippingDate).setHours(0, 0, 0, 0)
+    )
+      throw new Error("Invalid date");
+
+    order.shippingDate = new Date(shippingDate);
+
+    await order.save();
+
+    res.json({
+      message: "shipping date setted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCartTotalPrice = async (req, res, next) => {
+  try {
+    const { items } = req.body;
+    let totalPrice = 0;
+
+    if (!items) throw new Error("NO items");
+
+    if (!Array.isArray(items)) throw new Error("Wrong items structure");
+
+    for (const item of items) {
+      if (
+        !item._id ||
+        typeof item._id !== "string" ||
+        !item.color ||
+        typeof item.color !== "string" ||
+        !item.size ||
+        typeof item.size !== "string" ||
+        !item.quantity ||
+        typeof +item.quantity !== "number"
+      )
+        throw new Error("wrong items structure");
+
+      const product = await Product.findById(item._id);
+      if (!product) {
+        const err = Error("product not found");
+        err.statusCode = 404;
+        next(err);
+      }
+
+      const variation = product.variations.find((v) => {
+        return (
+          v.color === item?.color.toLowerCase() &&
+          v.size === item?.size.toLowerCase()
+        );
+      });
+      if (!variation) throw new Error("variation not found");
+      if (product.stock <= 0 && variation.stock <= 0)
+        throw new Error(`${product.title} is out of stock`);
+
+      totalPrice += product.salePrice * item.quantity;
+    }
+
+    res.json({ totalPrice });
   } catch (error) {
     next(error);
   }
@@ -515,9 +1330,14 @@ module.exports = {
   newOrder,
   editOrder,
   cancelOrder,
+  deleteOrder,
   getOrders,
   getOrder,
   confirmOrder,
   markOrderAsDelivered,
   getSoldProductNumberAndProfits,
+  getUserOrders,
+  setShippingDate,
+  getCartTotalPrice,
+  getEarnings,
 };

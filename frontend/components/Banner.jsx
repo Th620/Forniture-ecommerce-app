@@ -1,4 +1,4 @@
-import React from "react";
+import Link from "next/link";
 import { GoArrowRight } from "react-icons/go";
 
 const Banner = () => {
@@ -8,12 +8,12 @@ const Banner = () => {
         Customizable Designs From <br className="max-md:hidden" />
         <span className="text-yellow">Sustainable</span> Materials
       </h2>
-      <button
-        type="button"
+      <Link
+        href={"/customize"}
         className="flex justify-center items-center gap-x-1 hover:gap-x-2 transition-all duration-150 text-sm text-gray"
       >
         Order Now <GoArrowRight />
-      </button>
+      </Link>
     </section>
   );
 };

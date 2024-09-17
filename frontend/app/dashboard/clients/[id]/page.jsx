@@ -15,7 +15,7 @@ export default function User() {
 
   const { id } = useParams();
 
-  const handelGetUser = async ({ id }) => {
+  const handleGetUser = async ({ id }) => {
     try {
       setIsLoading(true);
       const data = await getUser({ id });
@@ -40,7 +40,7 @@ export default function User() {
 
   useEffect(() => {
     return async () => {
-      await handelGetUser({ id });
+      await handleGetUser({ id });
     };
   }, []);
 
@@ -111,9 +111,9 @@ export default function User() {
               </div>
 
               <div className="md:col-span-2 flex flex-col gap-2">
-                <p className="text-sm">Full Adress:</p>
+                <p className="text-sm">Full Address:</p>
                 <div className="h-10 bg-input dark:bg-darkBg flex items-center dark:text-gray text-black text-opacity-50 dark:text-opacity-100 outline-none col-span-4 placeholder:text-gray placeholder:text-sm text-sm font-medium px-4 rounded-sm">
-                  {user?.adress}
+                  {user?.address}
                 </div>
               </div>
             </div>

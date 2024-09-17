@@ -4,7 +4,7 @@ import StatePopUp from "@/components/StatePopup";
 import {
   deleteCountry,
   deleteState,
-  getCountreis,
+  getCountries,
   getCountry,
 } from "@/services/countries";
 import Link from "next/link";
@@ -13,8 +13,8 @@ import { useEffect, useState } from "react";
 import {
   MdDeleteOutline,
   MdOutlineAdd,
-  MdOutlineDelete,
-  MdOutlineModeEdit,
+  MdDelete ,
+  MdModeEdit,
 } from "react-icons/md";
 
 export default function States() {
@@ -31,7 +31,7 @@ export default function States() {
 
   const { countryId } = useParams();
 
-  const handelGetCountry = async (id) => {
+  const handleGetCountry = async (id) => {
     try {
       const data = await getCountry({ id });
       if (data) {
@@ -47,7 +47,7 @@ export default function States() {
     }
   };
 
-  const handelDeleteState = async (id) => {
+  const handleDeleteState = async (id) => {
     try {
       console.log(id);
 
@@ -67,7 +67,7 @@ export default function States() {
 
   useEffect(() => {
     return async () => {
-      await handelGetCountry(countryId);
+      await handleGetCountry(countryId);
     };
   }, [isLoading]);
 
@@ -119,7 +119,7 @@ export default function States() {
             <table className="w-full text-start table">
               <thead className="w-full">
                 <tr className="border-b-2 capitalize border-opacity-20 border-[#8C8C8C] dark:border-opacity-40">
-                  <th className="font-medium text-start text-sm w-4 flex justify-center items-center text-[#8C8C8C] px-5 py-2">
+                  <th className="font-medium text-start text-sm w-4 max-sm:hidden flex justify-center items-center text-[#8C8C8C] px-5 py-2">
                     #
                   </th>
                   <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
@@ -128,7 +128,7 @@ export default function States() {
                   <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
                     Shipping Fees
                   </th>
-                  <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
+                  <th className="font-medium text-start text-sm max-sm:hidden text-[#8C8C8C] py-2">
                     orders
                   </th>
                 </tr>
@@ -144,13 +144,13 @@ export default function States() {
                         {index + 1}
                       </td>
 
-                      <td className="text-sm font-semibold capitalize min-w-16 max-sm:hidden">
+                      <td className="text-sm font-semibold capitalize min-w-16 px-5">
                         {state?.state}
                       </td>
-                      <td className="text-sm font-semibold capitalize min-w-16 max-sm:hidden">
+                      <td className="text-sm font-semibold capitalize min-w-16">
                         {state?.shippingFees}
                       </td>
-                      <td className="text-sm font-semibold min-w-16">
+                      <td className="text-sm font-semibold min-w-16 max-sm:hidden">
                         <Link
                           href={`/dashboard/orders?state=${state?.state}`}
                           className="w-fit h-fit"
@@ -159,7 +159,7 @@ export default function States() {
                         </Link>
                       </td>
 
-                      <td className="font-semibold table-cell md:w-[8%] min-w-14">
+                      <td className="font-semibold table-cell md:w-[8%] max-sm:w-[4%] min-w-14">
                         <button
                           type="button"
                           onClick={() => {
@@ -171,18 +171,16 @@ export default function States() {
                           }}
                           className="px-1"
                         >
-                          <MdOutlineModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
+                          <MdModeEdit className="size-[18px] text-[#8C8C8C] dark:text-bg" />
                         </button>
                         <button
                           type="button"
                           onClick={async () => {
-                            console.log(state?._id);
-
-                            await handelDeleteState(state?._id);
+                            await handleDeleteState(state?._id);
                           }}
                           className="px-1"
                         >
-                          <MdOutlineDelete className="size-[18px] text-red-400" />
+                          <MdDelete  className="size-[18px] text-red-400" />
                         </button>
                       </td>
                     </tr>

@@ -21,7 +21,7 @@ const router = express.Router();
 
 // categories route
 
-router.get("/categories", getCategories);
+router.get("/categories",  getCategories);
 router.get("/categories/:slug", authGuard, adminGuard, getCategory);
 
 router.post(

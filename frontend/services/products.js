@@ -31,13 +31,27 @@ export const getProducts = async ({
   size,
   color,
   searchKeyword,
+  page,
+  pageSize = 16,
 }) => {
   try {
-    const { data } = await axios.get(`http://localhost:8080/api/products`, {
-      params: { color, size, searchKeyword, size, sort, category },
-    });
+    const { data, headers } = await axios.get(
+      `http://localhost:8080/api/products`,
+      {
+        params: {
+          color,
+          size,
+          searchKeyword,
+          size,
+          sort,
+          category,
+          page,
+          pageSize,
+        },
+      }
+    );
 
-    return data;
+    return { data, headers };
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
       throw new Error(error.response.data.message);
@@ -51,6 +65,23 @@ export const getProduct = async ({ slug }) => {
   try {
     const { data } = await axios.get(
       `http://localhost:8080/api/products/${slug}`
+    );
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const getBestSellers = async ({ category }) => {
+  try {
+    const { data } = await axios.get(
+      `http://localhost:8080/api/products/store/bestsellers`,
+      { params: { category } }
     );
 
     return data;
@@ -87,10 +118,25 @@ export const editProduct = async ({ slug, formData }) => {
 
 export const deleteProduct = async ({ id }) => {
   try {
-    console.log(id);
-
     const { data } = await axios.delete(
       `http://localhost:8080/api/products/delete/${id}`
+    );
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const addReview = async ({ slug, content }) => {
+  try {
+    const { data } = await axios.post(
+      `http://localhost:8080/api/products/${slug}/review`,
+      { content }
     );
 
     return data;

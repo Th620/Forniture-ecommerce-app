@@ -4,7 +4,7 @@ const DOTS = "...";
 
 export const usePagination = ({ currentPage, totalPageCount }) => {
   const paginationRange = useMemo(() => {
-    console.log(currentPage);
+    console.log(totalPageCount);
 
     // 1- totalPageCount <= 7
     if (totalPageCount <= 7) {

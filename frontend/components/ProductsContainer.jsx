@@ -8,7 +8,7 @@ const ProductsContainer = ({ products, isLoading, noProducts }) => {
 
   // const searchParamsvalues = Object.fromEntries([...searchParams]);
 
-  // const handelGetProducts = async ({
+  // const handleGetProducts = async ({
   //   color,
   //   size,
   //   sort,
@@ -37,7 +37,7 @@ const ProductsContainer = ({ products, isLoading, noProducts }) => {
   // useEffect(() => {
   //   return async () => {
   //     try {
-  //       const fetchProducts = await handelGetProducts(searchParamsvalues);
+  //       const fetchProducts = await handleGetProducts(searchParamsvalues);
 
   //       if (fetchProducts) {
   //         if (fetchProducts.length === 0) {

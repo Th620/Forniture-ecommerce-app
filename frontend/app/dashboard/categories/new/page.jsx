@@ -19,7 +19,7 @@ export default function NewCategory() {
 
   const inputRef = useRef();
 
-  const handelAddCategory = async (e) => {
+  const handleAddCategory = async (e) => {
     e.preventDefault();
 
     if (!selectedFile) {
@@ -81,7 +81,7 @@ export default function NewCategory() {
         <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
           <div className="grid grid-cols-4 w-full h-fit p-5">
             <form
-              onSubmit={handelAddCategory}
+              onSubmit={handleAddCategory}
               className="col-span-4 grid grid-cols-4 gap-4"
             >
               <div className="md:col-span-2 col-span-4 flex flex-col items-center gap-4">
@@ -152,7 +152,7 @@ export default function NewCategory() {
                   placeholder={"Name"}
                   value={name}
                   error={error}
-                  handelChange={(e) => {
+                  handleChange={(e) => {
                     setName(e.target.value);
                   }}
                   className={`w-full border ${

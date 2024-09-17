@@ -1,12 +1,13 @@
 "use client";
 
 import { setUserInfo } from "@/lib/features/user/userSlice";
-import { useAppDispatch } from "@/lib/hook";
 import { register } from "@/services/user";
 import Link from "next/link";
 import { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import isEmail from "validator/lib/isEmail";
 
 export default function signUp() {
   const [firstName, setFirstName] = useState("");
@@ -16,11 +17,11 @@ export default function signUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({});
 
-  const dispatch = useDispatc();
+  const dispatch = useDispatch();
 
   const router = useRouter();
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     if (!firstName) {
@@ -98,7 +99,7 @@ export default function signUp() {
         </h2>
 
         <form
-          onSubmit={handelSubmit}
+          onSubmit={handleSubmit}
           className="col-span-4 md:col-span-2 md:col-start-2 flex flex-col"
         >
           {error.form && (
