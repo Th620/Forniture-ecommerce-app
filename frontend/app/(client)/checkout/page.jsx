@@ -14,6 +14,7 @@ import {
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { isMobilePhone } from "validator";
 import isEmail from "validator/lib/isEmail";
 
 export default function Checkout() {
@@ -163,7 +164,7 @@ export default function Checkout() {
         setIsLoading(false);
         return;
       }
-      if (phone && (typeof +phone !== "number" || parseInt(phone) !== +phone)) {
+      if (phone && !isMobilePhone(phone, "ar-DZ")) {
         setError({ phone: true, Error: "Enter a valid phone number" });
         setTimeout(() => {
           setError(null);

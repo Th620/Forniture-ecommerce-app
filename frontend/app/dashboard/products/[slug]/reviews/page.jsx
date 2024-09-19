@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { FaRegSquareCheck, FaSquareCheck } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 
-export default function Categories() {
+export default function Reviews() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -21,7 +21,7 @@ export default function Categories() {
   const { slug } = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [productTitle, setProductTitle] = useState("");
   const [reviews, setReviews] = useState([]);
   const [currentPage, setCurrentPage] = useState(
@@ -76,25 +76,6 @@ export default function Categories() {
     };
   }, []);
 
-  const handleDeleteCategory = async (id) => {
-    try {
-      if (confirm("Are you sure you want to delete this category")) {
-        setIsLoading(true);
-        const responce = await deleteCategory({ id });
-        if (responce) {
-          await handleGetCategories();
-        }
-      }
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      setError(error.message);
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-    }
-  };
-
   return (
     <>
       {isLoading ? (
@@ -108,7 +89,7 @@ export default function Categories() {
               {`${productTitle}'s  reviews`}
             </h3>
             <table className="w-full text-start table">
-              <thead className="w-full">
+              <thead className="w-full capitalize">
                 <tr className="border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40">
                   <th className="font-medium text-start text-sm w-4 md:flex justify-center hidden items-center text-[#8C8C8C] px-5 py-2">
                     #

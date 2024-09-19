@@ -52,7 +52,7 @@ const footerSections = [
   {
     id: "service",
     title: "Service",
-    links: ["Paymant", "Delivry", "Contacts"],
+    links: ["Paymant", "Delivery", "Contacts"],
   },
   {
     id: "follow us",

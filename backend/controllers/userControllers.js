@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const Country = require("../models/Country");
 const { existsArrayOfObjects } = require("../utils/exist");
 const State = require("../models/State");
+const { isMobilePhone } = require("validator");
 
 const register = async (req, res, next) => {
   try {
@@ -144,7 +145,7 @@ const updateProfile = async (req, res, next) => {
     if (password && password.length < 8)
       throw new Error("Password must be at least 8 caracters");
 
-    if (phone && (typeof +phone !== "number" || parseInt(phone) !== +phone))
+    if (phone && !isMobilePhone(phone, "ar-DZ"))
       throw new Error("Wrong phone number");
 
     if (country && typeof country !== "string")

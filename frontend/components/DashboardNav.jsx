@@ -29,7 +29,7 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
           className="md:hidden text-xl cursor-pointer"
         />
         <h1 className="font-semibold capitalize text-xl min-w-[100px]">
-          {active === "" ? "dashboard" : active}
+          {active === "" ? "dashboard" : active.replace("-",  " ")}
         </h1>
       </div>
       <div className="md:flex items-center gap-x-3 hidden">

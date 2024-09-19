@@ -48,6 +48,7 @@ const productRoute = require("./routes/productRoute");
 const orderRoute = require("./routes/orderRoute");
 const reviewRoute = require("./routes/reviewRoute");
 const storeRoute = require("./routes/storeRoute");
+const messageRoute = require("./routes/customOrderRoute");
 
 //connectDB
 connectDB();
@@ -58,6 +59,7 @@ app.use("/api/products", productRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/store", storeRoute);
+app.use("/api/custom-orders", messageRoute);
 
 // //static assets
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));

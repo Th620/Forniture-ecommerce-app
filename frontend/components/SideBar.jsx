@@ -147,15 +147,15 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/store");
+              router.push("/dashboard/custom-orders");
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full ${
-              active === "store" ? "bg-navy text-white" : ""
+              active === "custom-orders" ? "bg-navy text-white" : ""
             }`}
           >
             <MdOutlineStorefront />
-            store
+            Custom Orders
           </button>
           <button
             onClick={() => {

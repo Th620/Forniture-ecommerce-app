@@ -1264,7 +1264,7 @@ const setShippingDate = async (req, res, next) => {
       new Date().setHours(0, 0, 0, 0) >
       new Date(shippingDate).setHours(0, 0, 0, 0)
     )
-      throw new Error("Invalid date");
+      throw new Error("Invalid Date");
 
     order.shippingDate = new Date(shippingDate);
 

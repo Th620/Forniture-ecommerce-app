@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { MdErrorOutline, MdKeyboardArrowDown } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { isEmail } from "validator";
+import { isEmail, isMobilePhone } from "validator";
 
 export default function Profile() {
   const [openCountrySelect, setOpenCountrySelect] = useState(false);
@@ -78,7 +78,7 @@ export default function Profile() {
       }, 3000);
       return;
     }
-    if (phone && (typeof +phone !== "number" || parseInt(phone) !== +phone)) {
+    if (phone && !isMobilePhone(phone, "ar-DZ")) {
       setError({ phone: true, Error: "Enter a valid phone number" });
       setTimeout(() => {
         setError(null);
@@ -113,14 +113,6 @@ export default function Profile() {
             data: data,
           })
         );
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setEmail(data.email);
-        data.city && setCity(data.city);
-        data.country && setCountry(data.country);
-        data.state && setState(data.state);
-        data.address && setAddress(data.address);
-        data.phone && setPhone(data.phone);
       }
       setIsLoading(false);
     } catch (error) {
