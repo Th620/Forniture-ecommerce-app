@@ -81,6 +81,7 @@ export default function ForgotPassword() {
             <div className="flex flex-col mt-7">
               <button
                 type="submit"
+                disabled={isLoading}
                 className="bg-navy transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-navyHover py-2 px-14 text-white font-lato font-medium"
               >
                 Reset Password

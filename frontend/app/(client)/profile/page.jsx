@@ -29,12 +29,11 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [countries, setCountries] = useState([]);
+  const [done, setDone] = useState("");
 
   const dispatch = useDispatch();
 
   const router = useRouter();
-
-  let user = useSelector((state) => state.user);
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
@@ -105,6 +104,10 @@ export default function Profile() {
         address,
       });
       if (data) {
+        setDone("Profile updated seccessfully");
+        setTimeout(() => {
+          setDone("");
+        }, 3000);
         dispatch(setUserInfo(data));
         localStorage.setItem(
           "account",
@@ -192,13 +195,22 @@ export default function Profile() {
             className="flex justify-center items-center gap-4 flex-col"
           >
             <div className=" grid grid-cols-4 w-full gap-x-4">
-              {error?.handlers && (
+              {error?.handlers ? (
                 <div className="col-span-4">
                   <div className="max-md:w-full error bg-red-200 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
                     <MdErrorOutline className="size-4" />
                     {error?.Error}
                   </div>
                 </div>
+              ) : (
+                done && (
+                  <div className="col-span-4">
+                    <div className="max-md:w-full error bg-blue-100 text-blue-900 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
+                      <MdErrorOutline className="size-4" />
+                      {done}
+                    </div>
+                  </div>
+                )
               )}
               <button
                 type="button"

@@ -12,6 +12,7 @@ import {
   MdErrorOutline,
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
+  MdOutlineErrorOutline,
 } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { isMobilePhone } from "validator";
@@ -76,6 +77,9 @@ export default function Checkout() {
         }, 2000);
       } else {
         setError({ Error: err.message });
+        setTimeout(() => {
+          setError(null);
+        }, 3000);
       }
     }
   };
@@ -149,6 +153,9 @@ export default function Checkout() {
     } catch (error) {
       setIsLoading(false);
       setError({ Error: error.message });
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -458,6 +465,7 @@ export default function Checkout() {
                           type="button"
                           onClick={() => {
                             setCountry(country);
+                            setState("");
                             setOpenCountrySelect(false);
                           }}
                           className="btn px-2 py-1 hover:bg-[#E2E3E5] transition-colors duration-100 text-left capitalize text-[12px] w-full"

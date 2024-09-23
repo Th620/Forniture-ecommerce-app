@@ -13,6 +13,7 @@ import { useStateContext } from "@/context/StateContext";
 import { MdDelete } from "react-icons/md";
 import { useAuth } from "@/context/AuthContext";
 import { deleteReview } from "@/services/review";
+import MobileCart from "@/components/MobileCart";
 
 const unavailableSize = (variations = [], color, size) => {
   return variations.every((variation) => {
@@ -61,6 +62,8 @@ export default function Product() {
     searchParams.get("size") || ""
   );
 
+  const [openCart, setOpenMobileCart] = useState(false);
+
   const { user } = useAuth();
 
   const { slug } = useParams();
@@ -86,6 +89,9 @@ export default function Product() {
         }
         if (product?.variations) {
           setVariations(product.variations);
+        }
+        if (product?.stock === 0) {
+          setError({ addToCart: true, Error: "Out of Stock" });
         }
       }
       setIsLoading(false);
@@ -326,7 +332,10 @@ export default function Product() {
             }
             onClick={() => {
               const cartItem = cart?.items.find(
-                (item) => item._id === product?._id
+                (item) =>
+                  item?._id === product?._id &&
+                  item?.color?.toLowerCase() === selectedColor?.toLowerCase() &&
+                  item?.size?.toLowerCase() === selectedSize?.toLowerCase()
               );
               if (!selectedColor || !selectedSize) {
                 setError({
@@ -349,7 +358,7 @@ export default function Product() {
                 }, 5000);
                 return;
               }
-              const variation = product.variations.find((e) => {
+              const variation = product?.variations.find((e) => {
                 return (
                   e.color === selectedColor.toLowerCase() &&
                   e.size === selectedSize.toLowerCase()
@@ -401,7 +410,12 @@ export default function Product() {
               setOpenCart(true);
               setTimeout(() => {
                 setOpenCart(false);
-              }, 1500);
+              }, 3000);
+              setOpenMobileCart(true);
+              setTimeout(() => {
+                setOpenMobileCart(false);
+              }, 3000);
+              setQt(1);
             }}
             className="capitalize disabled:opacity-70 rounded-full px-10 py-2 text-white bg-yellow bg-opacity-95 hover:bg-opacity-100 w-fit mt-4 mb-8 font-medium"
           >
@@ -469,7 +483,7 @@ export default function Product() {
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
                         placeholder="Your review..."
-                        className="w-full resize-none outline-none py-1 px-2 text-sm rounded-sm"
+                        className="w-full resize-none outline-none py-1 px-2 text-sm rounded-sm bg-white"
                       ></textarea>
                       <div className="flex self-end gap-x-2 text-sm text-white">
                         <button
@@ -562,7 +576,7 @@ export default function Product() {
                 <ol className="text-sm list-disc">
                   {product?.productInfo?.features &&
                     product?.productInfo?.features.map((feature) => (
-                      <li className="ml-6">
+                      <li key={feature} className="ml-6">
                         {feature}
                         {feature[feature.length - 1] !== "." && "."}
                       </li>
@@ -585,6 +599,9 @@ export default function Product() {
           ))} */}
         </div>
       </div>
+      {openCart && (
+        <MobileCart setOpenCart={setOpenMobileCart} openCart={openCart} />
+      )}
     </main>
   );
 }

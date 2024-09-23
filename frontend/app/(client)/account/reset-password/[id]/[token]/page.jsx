@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { resetPassword } from "@/services/user";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { MdErrorOutline } from "react-icons/md";
 
 export default function ResetPassword() {
@@ -13,6 +13,8 @@ export default function ResetPassword() {
 
   const { id, token } = useParams();
 
+  const router = useRouter();
+
   const handleResetPassword = async (e) => {
     try {
       e.preventDefault();
@@ -22,6 +24,7 @@ export default function ResetPassword() {
         return;
       }
       await resetPassword({ password, id, token });
+      router.push("/");
       setPassword("");
       setDone(true);
       setIsLoading(false);
@@ -53,7 +56,7 @@ export default function ResetPassword() {
                 {error === "jwt expired"
                   ? "link expired"
                   : error === "invalid token"
-                  ? "wrong link"
+                  ? "invalid link"
                   : error}
               </div>
             )}
@@ -79,6 +82,7 @@ export default function ResetPassword() {
             <div className="flex flex-col mt-7">
               <button
                 type="submit"
+                disabled={isLoading}
                 className="bg-navy py-2  transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-navyHover px-14 text-white font-lato font-medium"
               >
                 Reset Password

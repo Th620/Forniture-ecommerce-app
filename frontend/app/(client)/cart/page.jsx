@@ -75,7 +75,7 @@ export default function Cart() {
       <h2 className="text-[32px] font-semibold capitalize mb-6">cart</h2>
       <div className="w-full md:w-2/3 h-10">
         {error && (
-          <div className="max-md:w-full error bg-red-200 text-red-500 h-10 rounded-sm px-4 flex items-center text-xs gap-2">
+          <div className="max-md:w-full w-12 error bg-red-200 text-red-500 h-10 rounded-sm px-4 flex items-center text-xs gap-2">
             <MdErrorOutline className="size-4" />
             {error?.Error}
           </div>

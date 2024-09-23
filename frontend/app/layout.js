@@ -24,7 +24,7 @@ const lato = Lato({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="">
-      <body className={`${montserrat.className} ${lato.className} bg-white`}>
+      <body className={`${montserrat.className} ${lato.className} bg-white relative`}>
         <StateProvider>
           <AuthProvider>
             <StoreProvider>{children}</StoreProvider>

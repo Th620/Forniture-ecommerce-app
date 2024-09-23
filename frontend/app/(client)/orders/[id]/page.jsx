@@ -1,12 +1,13 @@
 "use client";
 
+import Loading from "@/app/loading";
 import { BASE_URL } from "@/constants";
 import { cancelOrder, getOrder } from "@/services/order";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { MdOutlineErrorOutline } from "react-icons/md";
 
 export default function Order() {
   const { id } = useParams();
@@ -15,8 +16,6 @@ export default function Order() {
   const [error, setError] = useState(null);
   const [order, setOrder] = useState(null);
   const [canceled, setCanceled] = useState(false);
-
-  const dispatch = useDispatch();
 
   const handleGetOrder = async () => {
     try {
@@ -27,10 +26,7 @@ export default function Order() {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      setError({ Error: error.message });
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+      setError({ order: true, Error: error.message });
     }
   };
 
@@ -60,16 +56,13 @@ export default function Order() {
 
   return (
     <main className="flex flex-col justify-start items-center gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14 relative">
-      {!order && !isLoading && (
-        <div className="w-full h-screen fixed top-0 left-0 flex justify-center items-center">
-          {error ? error.message : "An error occured. Please try again"}
+      {error && error?.order && (
+        <div className="w-full h-screen text-[#8C8C8C] flex max-md:flex-col gap-y-4 justify-center items-center gap-x-2 p-5 md:p-10">
+          <MdOutlineErrorOutline className="md:text-lg text-3xl" />
+          {error?.Error || "An unexpected error occured. Please try again"}
         </div>
       )}
-      {isLoading && (
-        <div className="w-full h-screen fixed top-0 left-0 flex justify-center items-center">
-          {"Loading..."}
-        </div>
-      )}
+      {isLoading && <Loading />}
       {order && !isLoading && (
         <>
           <h2 className="md:text-[32px] text-[24px] font-semibold capitalize self-start">
@@ -227,6 +220,9 @@ export default function Order() {
             </div>
             {order?.status === "pending" && (
               <div className="mt-14">
+                {error && !error?.order && (
+                  <p className="text-xs text-red-400">{error}</p>
+                )}
                 <button
                   type={"button"}
                   onClick={async () => {

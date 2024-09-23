@@ -38,9 +38,6 @@ export default function Customize() {
     } catch (error) {
       setIsLoading(false);
       setError({ Error: error.message });
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
     }
   };
 
