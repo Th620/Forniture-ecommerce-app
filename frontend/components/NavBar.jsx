@@ -12,8 +12,9 @@ import { IoBagOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useStateContext } from "@/context/StateContext";
 import CartContainer from "./CartContainer";
+import SearchClient from "./SearchClient";
 
-const NavBar = () => {
+const NavBar = ({}) => {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
 
@@ -23,6 +24,7 @@ const NavBar = () => {
   const pathName = usePathname();
 
   const { openCart, setOpenCart } = useStateContext();
+  const [openSearch, setOpenSearch] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +53,7 @@ const NavBar = () => {
         }
       `}
     >
+      {openSearch && <SearchClient setOpenSearch={setOpenSearch} />}
       <div className="w-full flex justify-between items-center">
         <Link href={"/"}>
           <Image src={Logo} width={65} height={39} alt="logo" />
@@ -77,8 +80,14 @@ const NavBar = () => {
               ))}
             </ul>
             <ul className="hidden lg:flex justify-center items-center gap-x-5">
-              <li className="text-xl">
-                <IoIosSearch />
+              <li className="h-[20px]">
+                <button
+                  type="button"
+                  onClick={() => setOpenSearch(true)}
+                  className="text-xl h-[20px]"
+                >
+                  <IoIosSearch />
+                </button>
               </li>
               <Link
                 href={{
@@ -98,7 +107,12 @@ const NavBar = () => {
                 </li>
               </Link>
 
-              <li className="relative">
+              <li className="relative w-fit">
+                {cart?.totalQuantity > 0 && (
+                  <span className="absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full bg-red-700 text-white">
+                    {cart.totalQuantity}
+                  </span>
+                )}
                 <Link href={"/cart"}>
                   <IoBagOutline
                     className="text-xl cursor-pointer"
@@ -123,7 +137,6 @@ const NavBar = () => {
       >
         <FiMenu className="block lg:hidden max-lg:text-2xl" />
       </button>
-
       {openMenu && <Menu setOpenMenu={setOpenMenu} />}
     </nav>
   );

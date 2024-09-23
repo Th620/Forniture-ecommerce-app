@@ -7,12 +7,33 @@ export const getOrders = async ({
   status = "",
   page,
   period,
+  u,
+  state,
 }) => {
   try {
     const { data, headers } = await axios.get(
       "http://localhost:8080/api/orders",
       {
-        params: { country, status, page, period },
+        params: { country, status, page, period, user: u, state },
+      }
+    );
+
+    return { data, headers };
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const getOrdersToShip = async ({ page, shippingDate }) => {
+  try {
+    const { data, headers } = await axios.get(
+      "http://localhost:8080/api/orders/shipping/to-ship",
+      {
+        params: { shippingDate, page },
       }
     );
 
@@ -187,8 +208,6 @@ export const getEarnings = async () => {
     }
   }
 };
-
-
 
 export const newOrder = async ({ products, city, country, state, address }) => {
   try {

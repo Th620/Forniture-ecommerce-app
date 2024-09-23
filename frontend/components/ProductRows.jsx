@@ -102,7 +102,7 @@ const ProductRows = ({
   return (
     <>
       {products.length > 0 &&
-        products.map((product) => (
+        products?.map((product) => (
           <tr
             key={product?._id}
             className="border-b-2 border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 h-fit"

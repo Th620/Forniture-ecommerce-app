@@ -93,7 +93,6 @@ import { getCategories } from "@/services/category";
 const BestSellerSection = () => {
   const [index, setIndex] = useState(0);
   const [active, setActive] = useState("all categories");
-  const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -106,7 +105,6 @@ const BestSellerSection = () => {
         setProducts(data);
       }
     } catch (error) {
-      setError({ Error: error });
     }
   };
 
@@ -116,9 +114,7 @@ const BestSellerSection = () => {
       if (data) {
         setCategories(data);
       }
-    } catch (error) {
-      setIsLoading(false);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

@@ -32,6 +32,8 @@ const MeetingDate = ({
     try {
       await rescheduleCustomOrder({ id, meetingDate: date });
       await handler();
+      setopenMeetingDatePopUp(false);
+      setopenMessage(false);
     } catch (error) {
       setError({ Error: error.message });
       setTimeout(() => {

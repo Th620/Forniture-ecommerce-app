@@ -1,3 +1,5 @@
+"use client";
+
 import { Logo } from "@/constants";
 import { footerSections } from "@/constants";
 import Image from "next/image";
@@ -10,10 +12,16 @@ const Footer = () => {
     <footer className="grid grid-cols-12 gap-y-10 w-full py-10 px-10 md:px-75 lx:px-150 bg-blueBg text-black font-montserrat">
       <div className="sm:col-span-4 col-span-12 sm:order-last">
         <h6 className="font-semibold">Subscribe To Our Newsletter:</h6>
-        <form className="relative flex items-center w-full h-8 my-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+          className="relative flex items-center w-full h-8 my-4"
+        >
           <input
             type="email"
             name="email"
+            onSubmit={(e) => (e.target.value = '')}
             placeholder="Your Email"
             className="rounded-sm w-full h-full text-[12px] outline-none bg-white pl-4 placeholder:text-lightGray text-black pr-10"
           />

@@ -78,7 +78,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-medium w-full ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-medium w-full ${
               active === "" ? "bg-navy text-white" : ""
             }`}
           >
@@ -90,7 +90,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/clients");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
               active === "clients" ? "bg-navy text-white" : ""
             }`}
           >
@@ -102,7 +102,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/products");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
               active === "products" ? "bg-navy text-white" : ""
             }`}
           >
@@ -114,7 +114,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/categories");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
               active === "categories" ? "bg-navy text-white" : ""
             }`}
           >
@@ -126,7 +126,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/orders");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
               active === "orders" ? "bg-navy text-white" : ""
             }`}
           >
@@ -138,7 +138,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/shipping");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full  ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full  ${
               active === "shipping" ? "bg-navy text-white" : ""
             }`}
           >
@@ -150,7 +150,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/custom-orders");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
               active === "custom-orders" ? "bg-navy text-white" : ""
             }`}
           >
@@ -162,7 +162,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
               router.push("/dashboard/admins");
               setShowMenu(false);
             }}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-md gap-2 font-meduim w-full  ${
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full  ${
               active === "admins" ? "bg-navy text-white" : ""
             }`}
           >
@@ -172,7 +172,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
         </div>
         <div className="flex flex-col items-center gap-2 w-full self-end">
           <button
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-[#808080] dark:hover:text-bg rounded-md gap-2 font-meduim w-full transition-colors duration-75 md:hidden`}
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-[#808080] dark:hover:text-bg rounded-[4px] gap-2 font-meduim w-full transition-colors duration-75 md:hidden`}
           >
             <IoSearch />
             Search
@@ -181,7 +181,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           <button
             type="button"
             onClick={handleLogOut}
-            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-red-400 rounded-md gap-2 font-meduim  transition-colors duration-75 w-full `}
+            className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-red-400 rounded-[4px] gap-2 font-meduim  transition-colors duration-75 w-full `}
           >
             <IoLogOutOutline className="text-lg" />
             Log out

@@ -1,7 +1,12 @@
 import { usePagination } from "@/hooks/usePagination";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
-const Pagination = ({ currentPage, totalPageCount, onPageChange }) => {
+const Pagination = ({
+  currentPage,
+  totalPageCount,
+  onPageChange,
+  className,
+}) => {
   const paginationRange = usePagination({ currentPage, totalPageCount });
 
   if (paginationRange < 2) {
@@ -10,12 +15,8 @@ const Pagination = ({ currentPage, totalPageCount, onPageChange }) => {
 
   let lastPage = paginationRange[paginationRange.length - 1];
 
-  const next = () => {};
-
-  const previous = () => {};
-
   return (
-    <div className={`flex font-medium items-center gap-2 my-8`}>
+    <div className={`flex font-medium items-center gap-2 my-8 ${className}`}>
       <button
         type="button"
         disabled={currentPage === 1}
