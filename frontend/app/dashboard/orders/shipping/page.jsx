@@ -1,45 +1,38 @@
 "use client";
 
-import MessagePopUp from "@/components/MessagePopUp";
 import Pagination from "@/components/Pagination";
-import { deleteCategory } from "@/services/category";
-import { getMeetings, getMessages } from "@/services/message";
 import Link from "next/link";
-
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaRegSquareCheck, FaSquareCheck } from "react-icons/fa6";
-import { HiOutlineFilter } from "react-icons/hi";
-import { IoClose } from "react-icons/io5";
 import { BsCalendarDateFill } from "react-icons/bs";
 import DateFilter from "@/components/DateFilter";
-import { MdOutlineErrorOutline } from "react-icons/md";
+import { getOrdersToShip } from "@/services/order";
 import Loading from "@/app/loading";
+import { MdOutlineErrorOutline } from "react-icons/md";
 
-export default function Meetings() {
+export default function OrderToShip() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [meeting, setMeeting] = useState([]);
-  const [message, setMessage] = useState(null);
+  const [orders, setOrders] = useState(null);
   const [currentPage, setCurrentPage] = useState(
     +searchParams.get("page") || 1
   );
+
   const [totalPageCount, setTotalPageCount] = useState(0);
 
-  const [openMessage, setOpenMessage] = useState(false);
   const [filter, setFilter] = useState(searchParams.get("d") || "");
 
-  const [openfilter, setOpenFilter] = useState(false);
+  const [openfilter, setOpenFilter] = useState(null);
 
-  const handleGetMeetings = async (page, d) => {
+  const handleGetShipping = async (page, d) => {
     try {
-      const response = await getMeetings({ page, d });
+      const response = await getOrdersToShip({ page, shippingDate: d });
       if (response.data) {
-        setMeeting(response.data);
+        setOrders(response.data);
         if (JSON.parse(response.headers?.get("x-totalpagecount"))) {
           setTotalPageCount(
             JSON.parse(response.headers.get("x-totalpagecount"))
@@ -56,7 +49,7 @@ export default function Meetings() {
 
   useEffect(() => {
     return async () => {
-      await handleGetMeetings(currentPage, filter);
+      await handleGetShipping(currentPage, filter);
     };
   }, []);
 
@@ -84,7 +77,7 @@ export default function Meetings() {
                 Date
               </button>
               <h3 className="capitalize font-semibold text-2xl mb-5 self-start">
-                meetings
+                orders to ship
               </h3>
 
               <table className="w-full text-start table">
@@ -93,57 +86,59 @@ export default function Meetings() {
                     <th className="font-medium text-start text-sm w-4 md:flex justify-center hidden items-center text-[#8C8C8C] px-5 py-2">
                       #
                     </th>
-                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 max-lg:hidden">
-                      user
+                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
+                      order
                     </th>
-                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 max-md:hidden ">
-                      name
+                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
+                      shippingDate
                     </th>
-                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
-                      date
+                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
+                      total cost
                     </th>
-                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 ">
-                      content
+                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 max-md:hidden">
+                      country
+                    </th>
+                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 max-md:hidden">
+                      state
+                    </th>
+                    <th className="font-medium text-start text-sm text-[#8C8C8C] py-2 max-md:hidden">
+                      city
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {!meeting ||
-                    (meeting?.length === 0 && (
+                  {!orders ||
+                    (orders?.length === 0 && (
                       <tr>
                         <td colSpan={6} className="table-cell">
                           <div className="text-gray py-4 text-center">
-                            No Messages
+                            No orders
                           </div>
                         </td>
                       </tr>
                     ))}
-                  {meeting?.length > 0 &&
-                    meeting.map((message, index) => (
+                  {orders?.length > 0 &&
+                    orders.map((order, index) => (
                       <tr
-                        key={message?._id}
+                        key={order?._id}
                         className="border-b-2 text-xs border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 h-[5vh] md:h-[6vh]"
                       >
-                        <td className="font-semibold w-4 table-cell px-5 max-sm:hidden">
+                        <td className="font-semibold w-4 table-cell px-5 max-md:hidden">
                           {index + 1 + (currentPage - 1) * 4}
                         </td>
 
-                        <td className="font-semibold w-[15vw] max-lg:hidden">
+                        <td className="font-semibold md:w-[20vw]">
                           <Link
                             href={
-                              message?.user
-                                ? `/dashboard/clients/${message.user}`
-                                : ""
+                              order?._id ? `/dashboard/orders/${order._id}` : ""
                             }
                           >
-                            {message?.user ? message.user : "-"}
+                            {order?._id}
                           </Link>
                         </td>
-                        <td className="font-medium min-w-16 capitalize max-md:hidden">
-                          {message?.name}
-                        </td>
-                        <td className="font-medium min-w-16 capitalize">
-                          {new Date(message?.meetingDate).toLocaleDateString(
+
+                        <td className="font-medium capitalize">
+                          {new Date(order?.shippingDate).toLocaleDateString(
                             "en-US",
                             {
                               month: "numeric",
@@ -152,32 +147,19 @@ export default function Meetings() {
                             }
                           )}
                         </td>
-                        <td className="font-medium min-w-16">
-                          <p
-                            onClick={() => {
-                              setMessage(message);
-                              setOpenMessage(true);
-                            }}
-                            className="overflow-ellipsis max-w-[25vw] line-clamp-1 cursor-pointer"
-                          >
-                            {message?.content}
-                          </p>
+                        <td className="capitalize font-semibold">
+                          {order?.totalCost} DZD
                         </td>
 
-                        <td className="font-medium table-cell w-[26vw] md:w-[8vw] text-white">
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setMessage(message);
-                                setOpenMessage(true);
-                              }}
-                              className="capitalize px-3 py-1.5 bg-navy rounded-full hover:bg-navyHover duration-200 transition-colors"
-                            >
-                              <span className="max-lg:hidden">show</span>{" "}
-                              details
-                            </button>
-                          </div>
+                        <td className="font-medium capitalize max-md:hidden">
+                          {order?.shipping?.country?.country}
+                        </td>
+                        <td className="font-medium capitalize max-md:hidden">
+                          {order?.shipping?.state?.state}
+                        </td>
+
+                        <td className="font-medium capitalize max-md:hidden">
+                          {order?.shipping?.city}
                         </td>
                       </tr>
                     ))}
@@ -189,26 +171,23 @@ export default function Meetings() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `http://localhost:3000/dashboard/custom-orders/meetings?${new URLSearchParams(
+                    `http://localhost:3000/dashboard/orders/shipping?${new URLSearchParams(
                       {
                         page,
                       }
                     )}`
                   );
-                  await handleGetMeetings(page, filter);
+                  await handleGetShipping(page, filter);
                 }}
               />
             </div>
-          )}
-          {openMessage && (
-            <MessagePopUp message={message} setOpenMessage={setOpenMessage} />
           )}
           {openfilter && (
             <DateFilter
               setFilter={setFilter}
               setOpenFilter={setOpenFilter}
               handler={async (filter) =>
-                await handleGetMeetings(currentPage, filter)
+                await handleGetShipping(currentPage, filter)
               }
             />
           )}

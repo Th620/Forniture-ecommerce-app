@@ -6,7 +6,8 @@ import { SlPicture } from "react-icons/sl";
 import { MdClose, MdErrorOutline } from "react-icons/md";
 import SimpleInput from "@/components/simpleInput";
 import { useParams, useRouter } from "next/navigation";
-import { addCategory, editCategory, getCategory } from "@/services/category";
+import { editCategory, getCategory } from "@/services/category";
+import Loading from "@/app/loading";
 
 export default function EditCategory() {
   const [error, setError] = useState({});
@@ -97,9 +98,7 @@ export default function EditCategory() {
   return (
     <>
       {isLoading ? (
-        <div className="min-h-screen flex justify-center w-full bg-white dark:bg-black text-black dark:text-white items-center pt-[60px] md:pl-[20%]">
-          {"Loading..."}
-        </div>
+        <Loading className={"dash-load max-md:p-0"} />
       ) : done ? (
         <div className="min-h-screen flex justify-center items-center  w-full bg-white dark:bg-black text-black dark:text-white md:pl-[20%]">
           {"Category Edited Successfully"}

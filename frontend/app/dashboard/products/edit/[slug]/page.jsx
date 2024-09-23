@@ -11,6 +11,7 @@ import VariationInput from "@/components/VariationInput";
 import { getCategories } from "@/services/category";
 import { editProduct, getProduct } from "@/services/products";
 import { useParams, useRouter } from "next/navigation";
+import Loading from "@/app/loading";
 
 const removeImage = (file, files, setSelectedFiles) => {
   const array = files.filter((item) => {
@@ -296,9 +297,7 @@ export default function NewProduct() {
   return (
     <>
       {isLoading ? (
-        <div className="min-h-screen flex justify-center w-full bg-white dark:bg-black text-black dark:text-white items-center pt-[60px] md:pl-[20%]">
-          {"Loading..."}
-        </div>
+        <Loading className={"dash-load max-md:p-0"} />
       ) : done ? (
         <div className="min-h-screen flex justify-center items-center  w-full bg-white dark:bg-black text-black dark:text-white pt-[60px] md:pl-[20%]">
           {"Product Edited Successfully"}

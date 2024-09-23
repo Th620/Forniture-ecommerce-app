@@ -7,6 +7,7 @@ import { MdClose, MdErrorOutline } from "react-icons/md";
 import SimpleInput from "@/components/simpleInput";
 import { useRouter } from "next/navigation";
 import { addCategory } from "@/services/category";
+import Loading from "@/app/loading";
 
 export default function NewCategory() {
   const [error, setError] = useState({});
@@ -70,9 +71,7 @@ export default function NewCategory() {
   return (
     <>
       {isLoading ? (
-        <div className="min-h-screen flex justify-center w-full bg-white dark:bg-black text-black dark:text-white items-center pt-[60px] md:pl-[20%]">
-          {"Loading..."}
-        </div>
+        <Loading className={"dash-load max-md:p-0"} />
       ) : done ? (
         <div className="min-h-screen flex justify-center items-center  w-full bg-white dark:bg-black text-black dark:text-white md:pl-[20%]">
           {"Category Created Successfully"}

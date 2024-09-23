@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import ShippingDatePopUp from "@/components/ShippingDatePopUp";
 import { BASE_URL } from "@/constants";
 import {
@@ -7,13 +8,12 @@ import {
   confirmOrder,
   deliverOrder,
   getOrder,
-  setShippingDate,
 } from "@/services/order";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { MdOutlineErrorOutline } from "react-icons/md";
 
 export default function Order() {
   const { id } = useParams();
@@ -25,8 +25,6 @@ export default function Order() {
   const [openShippingDatePopUp, setOpenShippingDatePopUp] = useState(false);
   const [date, setDate] = useState(null);
 
-  const dispatch = useDispatch();
-
   const handleGetOrder = async () => {
     try {
       const data = await getOrder({ id });
@@ -36,10 +34,7 @@ export default function Order() {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      setError({ Error: error.message });
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+      setError(error.message);
     }
   };
 
@@ -55,9 +50,6 @@ export default function Order() {
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
     }
   };
 
@@ -69,9 +61,6 @@ export default function Order() {
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
     }
   };
 
@@ -83,9 +72,6 @@ export default function Order() {
     } catch (error) {
       setIsLoading(false);
       setError(error.message);
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
     }
   };
 
@@ -94,20 +80,16 @@ export default function Order() {
       await handleGetOrder();
     };
   }, [isLoading]);
-  
 
   return (
     <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
       {!order && !isLoading && (
-        <div className="w-full h-screen fixed top-0 left-0 flex justify-center items-center">
-          {error ? error?.Error : "An error occured. Please try again"}
+        <div className="right-0 absolute md:left-[20%] left-0 bottom-0 top-0 text-[#8C8C8C] inline-flex justify-center items-center gap-x-2 p-5 md:p-10">
+          <MdOutlineErrorOutline className="text-lg" />
+          {error}
         </div>
       )}
-      {isLoading && (
-        <div className="w-full h-screen fixed top-0 left-0 flex justify-center items-center">
-          {"Loading..."}
-        </div>
-      )}
+      {isLoading && <Loading className={"dash-load max-md:p-0"} />}
       {openShippingDatePopUp && (
         <ShippingDatePopUp
           setError={setError}

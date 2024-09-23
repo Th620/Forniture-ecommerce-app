@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import SizeButton from "@/components/SizeButton";
 import { BASE_URL } from "@/constants";
 import { deleteProduct, getProduct } from "@/services/products";
@@ -73,9 +74,7 @@ export default function Product() {
   return (
     <>
       {isLoading ? (
-        <div className="min-h-screen flex justify-center w-full bg-white dark:bg-black text-black dark:text-white items-center pt-[60px] md:pl-[20%]">
-          {"Loading..."}
-        </div>
+        <Loading className={"dash-load max-md:p-0"} />
       ) : (
         <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
           <div className="flex flex-col md:grid md:grid-cols-18 gap-4 grid-flow-col-dense p-5">
@@ -212,7 +211,7 @@ export default function Product() {
                 </div>
                 {showReviews ? (
                   <div
-                    className={`w-full relative bg-white dark:bg-darkBody z-10 overflow-hidden ${
+                    className={`w-full relative bg-bg dark:bg-darkBody z-10 overflow-hidden ${
                       product?.reviews?.length > 2 ? "h-56" : "h-[100px]"
                     } 
                     `}
