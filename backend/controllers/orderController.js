@@ -425,10 +425,13 @@ const getUserOrders = async (req, res, next) => {
 
 const getOrders = async (req, res, next) => {
   try {
-    const { country, status, user, period } = req.query;
+    const { country, status, user, period, state } = req.query;
     var where = {};
     if (country) {
-      where = { "shipping.city": country };
+      where = { "shipping.country": country };
+    }
+    if (state) {
+      where = { "shipping.state": state };
     }
     if (
       status === "pending" ||
@@ -441,8 +444,6 @@ const getOrders = async (req, res, next) => {
     if (user) {
       where.client = user;
     }
-
-    var time;
 
     const date = new Date();
 
@@ -645,6 +646,7 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
     startOfMonth.setHours(0, 0, 0, 0);
 
     const orders = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: startOfMonth,
       },
@@ -663,7 +665,13 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
         order.products.reduce((total, product) => total + product.quantity, 0),
       0
     );
-    const profits = orders.reduce((total, order) => total + order.totalCost, 0);
+    const profits = orders.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastMounthStart = new Date();
     lastMounthStart.setMonth(lastMounthStart.getMonth() - 1);
@@ -671,6 +679,7 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
     lastMounthStart.setHours(0, 0, 0, 0);
 
     const LastMonthOrders = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: lastMounthStart,
         $lt: startOfMonth,
@@ -691,10 +700,13 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
       0
     );
 
-    const lastMonthProfits = LastMonthOrders.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastMonthProfits = LastMonthOrders.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const profitsPercentage = 100 - (lastMonthProfits * 100) / profits;
     const productSlodPercentage =
@@ -758,7 +770,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const janEarn = jan.reduce((total, order) => total + order.totalCost, 0);
+    const janEarn = jan.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const feb = await Order.find({
       createdAt: {
@@ -769,7 +787,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const febEarn = feb.reduce((total, order) => total + order.totalCost, 0);
+    const febEarn = feb.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const mar = await Order.find({
       createdAt: {
@@ -780,7 +804,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const marEarn = mar.reduce((total, order) => total + order.totalCost, 0);
+    const marEarn = mar.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const apr = await Order.find({
       createdAt: {
@@ -791,7 +821,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const aprEarn = apr.reduce((total, order) => total + order.totalCost, 0);
+    const aprEarn = apr.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const may = await Order.find({
       createdAt: {
@@ -802,7 +838,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const mayEarn = may.reduce((total, order) => total + order.totalCost, 0);
+    const mayEarn = may.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const jun = await Order.find({
       createdAt: {
@@ -813,7 +855,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const junEarn = jun.reduce((total, order) => total + order.totalCost, 0);
+    const junEarn = jun.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const jul = await Order.find({
       createdAt: {
@@ -824,7 +872,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const julEarn = jul.reduce((total, order) => total + order.totalCost, 0);
+    const julEarn = jul.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const aug = await Order.find({
       createdAt: {
@@ -835,7 +889,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const augEarn = aug.reduce((total, order) => total + order.totalCost, 0);
+    const augEarn = aug.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const sep = await Order.find({
       createdAt: {
@@ -846,7 +906,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const sepEarn = sep.reduce((total, order) => total + order.totalCost, 0);
+    const sepEarn = sep.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const oct = await Order.find({
       createdAt: {
@@ -857,7 +923,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const octEarn = oct.reduce((total, order) => total + order.totalCost, 0);
+    const octEarn = oct.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const nov = await Order.find({
       createdAt: {
@@ -868,7 +940,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const novEarn = nov.reduce((total, order) => total + order.totalCost, 0);
+    const novEarn = nov.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const dec = await Order.find({
       createdAt: {
@@ -878,7 +956,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const decEarn = dec.reduce((total, order) => total + order.totalCost, 0);
+    const decEarn = dec.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastYear = new Date();
     lastYear.setFullYear(2023);
@@ -893,10 +977,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastjanEarn = lastjan.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastjanEarn = lastjan.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastfeb = await Order.find({
       createdAt: {
@@ -907,10 +994,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastfebEarn = lastfeb.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastfebEarn = lastfeb.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastmar = await Order.find({
       createdAt: {
@@ -921,10 +1011,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastmarEarn = lastmar.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastmarEarn = lastmar.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastapr = await Order.find({
       createdAt: {
@@ -935,10 +1028,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastaprEarn = lastapr.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastaprEarn = lastapr.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastmay = await Order.find({
       createdAt: {
@@ -949,10 +1045,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastmayEarn = lastmay.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastmayEarn = lastmay.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastjun = await Order.find({
       createdAt: {
@@ -963,10 +1062,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastjunEarn = lastjun.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastjunEarn = lastjun.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastjul = await Order.find({
       createdAt: {
@@ -977,10 +1079,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastjulEarn = lastjul.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastjulEarn = lastjul.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastaug = await Order.find({
       createdAt: {
@@ -991,10 +1096,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastaugEarn = lastaug.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastaugEarn = lastaug.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastsep = await Order.find({
       createdAt: {
@@ -1005,10 +1113,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastsepEarn = lastsep.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastsepEarn = lastsep.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastoct = await Order.find({
       createdAt: {
@@ -1019,10 +1130,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastoctEarn = lastoct.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastoctEarn = lastoct.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastnov = await Order.find({
       createdAt: {
@@ -1033,10 +1147,13 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastnovEarn = lastnov.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastnovEarn = lastnov.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const lastdec = await Order.find({
       createdAt: {
@@ -1047,15 +1164,19 @@ const getEarnings = async (req, res, next) => {
       { path: "products", populate: [{ path: "product", select: ["price"] }] },
     ]);
 
-    const lastdecEarn = lastdec.reduce(
-      (total, order) => total + order.totalCost,
-      0
-    );
+    const lastdecEarn = lastdec.reduce((total, order) => {
+      if (order.status === "delivered") {
+        return total + order.totalCost;
+      } else {
+        return total + 0;
+      }
+    }, 0);
 
     const week = new Date();
     week.setDate(week.getDate() - week.getDay());
 
     const sun = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1063,6 +1184,7 @@ const getEarnings = async (req, res, next) => {
     });
 
     const mon = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1070,6 +1192,7 @@ const getEarnings = async (req, res, next) => {
     });
 
     const tue = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1077,6 +1200,7 @@ const getEarnings = async (req, res, next) => {
     });
 
     const wed = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1084,6 +1208,7 @@ const getEarnings = async (req, res, next) => {
     });
 
     const thu = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1091,6 +1216,7 @@ const getEarnings = async (req, res, next) => {
     });
 
     const fri = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1098,6 +1224,7 @@ const getEarnings = async (req, res, next) => {
     });
 
     const sat = await Order.find({
+      status: { $ne: "canceled" },
       createdAt: {
         $gte: week.setHours(0, 0, 0, 0),
         $lt: week.setDate(week.getDate() + 1),
@@ -1326,6 +1453,76 @@ const getCartTotalPrice = async (req, res, next) => {
   }
 };
 
+const getOrdersToShip = async (req, res, next) => {
+  try {
+    const { shippingDate } = req.query;
+
+    let where = {};
+
+    const date = new Date(shippingDate);
+
+    if (shippingDate) {
+      where = {
+        $gte: date.setHours(0, 0, 0, 0),
+        $lt: date.setDate(date.getDate() + 1),
+      };
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 8;
+
+    const total = await Order.find({
+      shippingDate: { $ne: null, $exists: true, ...where },
+    }).countDocuments();
+
+    if (total) {
+      var pages = Math.ceil(total / pageSize);
+    }
+    const skip = (page - 1) * pageSize;
+
+    if (pages && page > pages) {
+      throw new Error("page not available");
+    }
+
+    res.header({
+      "X-Totalcount": JSON.stringify(total),
+      "X-CurrentPage": JSON.stringify(page),
+      "X-Pagesize": JSON.stringify(pageSize),
+      "X-TotalPagecount": JSON.stringify(pages),
+    });
+
+    const orders = await Order.find({
+      shippingDate: { $ne: null, $exists: true, ...where },
+    })
+      .skip(skip)
+      .limit(pageSize)
+      .populate([
+        {
+          path: "products",
+          populate: [{ path: "product", select: ["price"] }],
+        },
+        {
+          path: "shipping",
+          populate: [
+            {
+              path: "country",
+              select: ["country"],
+            },
+            {
+              path: "state",
+              select: ["state", "shippingFees"],
+            },
+          ],
+        },
+      ])
+      .sort({ shippingDate: "asc" });
+
+    res.json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   newOrder,
   editOrder,
@@ -1340,4 +1537,5 @@ module.exports = {
   setShippingDate,
   getCartTotalPrice,
   getEarnings,
+  getOrdersToShip,
 };

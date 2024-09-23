@@ -52,11 +52,10 @@ const Product = require("../models/Product");
 
 const getCategories = async (req, res, next) => {
   try {
-    
-      const categories = await Category.find().populate([
-        { path: "products", select: ["title"] },
-      ]);
-    
+    const categories = await Category.find().populate([
+      { path: "products", select: ["title"] },
+    ]);
+
     res.json(categories);
   } catch (error) {
     next(error);
@@ -207,7 +206,7 @@ const getCountriesDetails = async (req, res, next) => {
   try {
     const countries = await Country.find().populate([
       { path: "states", select: ["state", "shippingFees"] },
-      { path: "orders" },
+      { path: "orders", match: { status: { $ne: "canceled" } } },
     ]);
 
     // const states = await State.find().populate([{ path: "orders" }]);
@@ -226,7 +225,7 @@ const getCountry = async (req, res, next) => {
       {
         path: "states",
         select: ["state", "shippingFees"],
-        populate: { path: "orders" },
+        populate: { path: "orders", match: { status: { $ne: "canceled" } } },
       },
     ]);
 

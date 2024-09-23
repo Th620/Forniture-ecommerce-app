@@ -33,7 +33,12 @@ const register = async (req, res, next) => {
       throw new Error("user already registred");
     }
 
-    user = await User.create({ firstName, lastName, email, password });
+    user = await User.create({
+      firstName: firstName?.trim(),
+      lastName: lastName.trim(),
+      email,
+      password,
+    });
 
     const token = user.generateJWT();
 
@@ -69,8 +74,6 @@ const login = async (req, res, next) => {
     }
 
     const token = user.generateJWT();
-
-    console.log(token);
 
     res.cookie("token", token, {
       maxAge: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -185,15 +188,15 @@ const updateProfile = async (req, res, next) => {
     if (city && typeof city !== "string") throw new Error("wrong city");
     if (address && typeof address !== "string") throw new Error("wrong adress");
 
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
+    user.firstName = firstName?.trim() || user.firstName;
+    user.lastName = lastName?.trim() || user.lastName;
     user.email = email || user.email;
     user.password = password || user.password;
     user.phone = phone || user.phone;
     user.country = country || user.country;
     user.state = state || user.state;
-    user.city = city || user.city;
-    user.address = address || user.address;
+    user.city = city?.trim() || user.city;
+    user.address = address?.trim() || user.address;
 
     const updatedUser = await user.save({ isNew: false });
 
@@ -339,7 +342,10 @@ const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate([
+      { path: "country" },
+      { path: "state" },
+    ]);
 
     if (!user) {
       const error = Error("User not found");
