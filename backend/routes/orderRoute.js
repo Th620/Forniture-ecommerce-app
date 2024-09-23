@@ -13,12 +13,14 @@ const {
   setShippingDate,
   getCartTotalPrice,
   getEarnings,
+  getOrdersToShip,
 } = require("../controllers/orderController");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 
 const router = express.Router();
 
 router.get("/", authGuard, adminGuard, getOrders);
+router.get("/shipping/to-ship", authGuard, adminGuard, getOrdersToShip);
 router.get("/user", authGuard, getUserOrders);
 router.get("/:id", authGuard, getOrder);
 router.post("/new", authGuard, newOrder);
