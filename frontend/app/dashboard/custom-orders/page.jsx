@@ -215,7 +215,7 @@ export default function CustomOrders() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `http://localhost:3000/dashboard/custom-orders?${new URLSearchParams(
+                    `/dashboard/custom-orders?${new URLSearchParams(
                       {
                         page,
                       }

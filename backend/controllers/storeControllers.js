@@ -1,6 +1,6 @@
 const Category = require("../models/Category");
 const Country = require("../models/Country");
-const Store = require("../models/Store");
+const Order = require("../models/Order");
 const State = require("../models/State");
 const { fileRemoverSingleFile } = require("../utils/fileRemover");
 const { existsArrayOfObjects } = require("../utils/exist");
@@ -308,13 +308,26 @@ const deleteCountry = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const country = await Country.findByIdAndDelete({ _id: id });
+    const country = await Country.findById(id);
 
     if (!country) {
       const error = Error("country not found");
       error.statusCode = 404;
       return next(error);
     }
+
+    const order = await Order.findOne({
+      "shipping.country": country,
+      status: { $nin: ["confirmed"] },
+    });
+
+    if (order) {
+      throw new Error(
+        "You can't delete this country because there is confirmed order from it"
+      );
+    }
+
+    await Country.findByIdAndDelete(id);
 
     res.json({ message: "country deletd successfully" });
   } catch (error) {
@@ -362,13 +375,26 @@ const deleteState = async (req, res, next) => {
   try {
     const { stateId } = req.params;
 
-    const state = await State.findByIdAndDelete(stateId);
+    const state = await State.findById(stateId);
 
     if (!state) {
       const error = Error("country not found");
       error.statusCode = 404;
       return next(error);
     }
+
+    const order = await Order.findOne({
+      "shipping.state": state,
+      status: { $nin: ["confirmed"] },
+    });
+
+    if (order) {
+      throw new Error(
+        "You can't delete this state because there is confirmed order from it"
+      );
+    }
+
+    await State.findByIdAndDelete(stateId);
 
     res.json({ message: "state deleted successfully" });
   } catch (error) {

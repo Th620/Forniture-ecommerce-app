@@ -265,7 +265,7 @@ export default function NewProduct() {
         images,
       })
     );
-
+    
     try {
       setIsLoading(true);
       const response = await editProduct({ slug, formData });

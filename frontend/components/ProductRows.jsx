@@ -117,7 +117,7 @@ const ProductRows = ({
                     src={
                       product?.images[0]
                         ? BASE_URL + product?.images[0]
-                        : "/lamp.png"
+                        : "/not-found.png"
                     }
                     layout="fill"
                     objectFit="cover"

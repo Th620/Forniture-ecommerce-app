@@ -145,7 +145,7 @@ export default function Orders() {
             onPageChange={async (page) => {
               setCurrentPage(page);
               router.replace(
-                `http://localhost:3000/orders?${new URLSearchParams({
+                `/orders?${new URLSearchParams({
                   ...searchParamsValues,
                   page,
                 })}`,

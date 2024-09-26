@@ -6,9 +6,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsCalendarDateFill } from "react-icons/bs";
 import DateFilter from "@/components/DateFilter";
-import { getOrdersToShip } from "@/services/order";
+import { deliverOrder, getOrdersToShip } from "@/services/order";
 import Loading from "@/app/loading";
 import { MdOutlineErrorOutline } from "react-icons/md";
+import { FaRegCircleRight } from "react-icons/fa6";
 
 export default function OrderToShip() {
   const router = useRouter();
@@ -46,6 +47,24 @@ export default function OrderToShip() {
       setIsLoading(false);
       setError(error.message);
       setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handleMarkOrderAsDelivered = async (id) => {
+    try {
+      if (
+        confirm("Are you sure that you ant to mark this order as delivered?")
+      ) {
+        setIsLoading(true);
+        await deliverOrder({ id });
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setError(error.message);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -163,6 +182,27 @@ export default function OrderToShip() {
                         <td className="font-medium capitalize max-md:hidden">
                           {order?.shipping?.city}
                         </td>
+                        <td>
+                          <button
+                            type="button"
+                            disabled={order?.status === "delivered"}
+                            onClick={async () => {
+                              await handleMarkOrderAsDelivered(order?._id);
+                              await handleGetShipping(currentPage, filter)
+                            }}
+                            className="px-1 max-sm:hidden"
+                          >
+                            <abbr title="Set it to delivered">
+                              <FaRegCircleRight
+                                className={`size-[18px] ${
+                                  order?.status === "delivered"
+                                    ? "text-blue-600"
+                                    : "text-[#8C8C8C] dark:text-bg"
+                                }`}
+                              />
+                            </abbr>
+                          </button>
+                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -173,12 +213,12 @@ export default function OrderToShip() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `http://localhost:3000/dashboard/orders/shipping?${new URLSearchParams(
+                    `/dashboard/orders/shipping?${new URLSearchParams(
                       {
                         page,
                       }
                     )}`,
-                    { scroll: true}
+                    { scroll: true }
                   );
                   await handleGetShipping(page, filter);
                 }}

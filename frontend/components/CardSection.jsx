@@ -36,7 +36,7 @@ const CardSection = () => {
           <h3 className=" md:text-2xl">
             Shop Now <br />
             <span className="font-semibold">
-              <span className="text-yellow"> Up to 50% Off </span>
+              <span className="text-yellow"> Up to 15% Off </span>
               <br /> Accessories
             </span>
           </h3>

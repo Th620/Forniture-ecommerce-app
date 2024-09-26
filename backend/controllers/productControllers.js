@@ -561,9 +561,7 @@ const getBestSellers = async (req, res, next) => {
       where.category = categoryExist;
     }
 
-    const products = await Product.find(where)
-      .sort({sales: 'descs'})
-      .limit(8);
+    const products = await Product.find(where).sort({ sales: "desc" }).limit(8);
     res.json(products);
   } catch (error) {
     next(error);
@@ -595,7 +593,9 @@ const getYouMayAlsoLikeProducts = async (req, res, next) => {
       colors: { $in: product.colors },
       category: c,
       stock: { $ne: 0 },
-    }).limit(5);
+    })
+      .limit(5)
+      .sort({ sales: "desc" });
 
     if (products.length === 5) {
       return res.json(products);
@@ -603,7 +603,11 @@ const getYouMayAlsoLikeProducts = async (req, res, next) => {
 
     var IDs = products.map((p) => p.id);
 
-    const p = await Product.find({ category: c, _id: { $nin: IDs } })
+    const p = await Product.find({
+      category: c,
+      _id: { $nin: IDs },
+      slug: { $ne: product.slug },
+    })
       .sort({ sales: "desc" })
       .limit(5 - products.length);
 
@@ -615,7 +619,10 @@ const getYouMayAlsoLikeProducts = async (req, res, next) => {
       IDs.push(i.id);
     });
 
-    const other = await Product.find({ _id: { $nin: IDs } })
+    const other = await Product.find({
+      _id: { $nin: IDs },
+      slug: { $ne: product.slug },
+    })
       .sort({ sales: "desc" })
       .limit(5 - [...products, ...p].length);
 

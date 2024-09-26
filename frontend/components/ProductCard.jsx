@@ -24,7 +24,7 @@ const ProductCard = ({
       <Link href={`/products/${product?.slug}`} className="flex flex-col">
         <div className="relative overflow-hidden w-full aspect-[1/1.4] bg-bg flex justify-center items-center">
           <Image
-            src={product?.images ? BASE_URL + product?.images[0] : "/lamp.png"}
+            src={product?.images ? BASE_URL + product?.images[0] : "/not-found.png"}
             objectFit="cover"
             layout="fill"
             alt={product?.title}

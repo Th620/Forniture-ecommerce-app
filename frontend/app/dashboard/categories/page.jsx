@@ -126,7 +126,7 @@ export default function Categories() {
                                   src={
                                     category?.image
                                       ? BASE_URL + category?.image
-                                      : "/lamp.png"
+                                      : "/not-found.png"
                                   }
                                   layout="fill"
                                   objectFit="cover"

@@ -161,7 +161,7 @@ export default function Order() {
                             src={
                               product?.product?.images
                                 ? BASE_URL + product.product.images[0]
-                                : "/lamp.png"
+                                : "/not-found.png"
                             }
                             layout="fill"
                             objectFit="cover"

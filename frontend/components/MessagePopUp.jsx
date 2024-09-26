@@ -128,7 +128,7 @@ const MessagePopUp = ({
               className="px-4 py-1.5 capitalize rounded-full bg-gray text-white"
               onClick={() => setOpenMessage(false)}
             >
-              Cancel
+              return
             </button>
           </div>
         </div>

@@ -53,7 +53,15 @@ const CountryPopUp = ({
     <div
       className={`fixed z-20 bg-[#282828b1] top-0 left-0 flex items-center justify-center font-montserrat w-full h-screen pt-[60px] md:pl-[20%]`}
     >
-      <div
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (label.toLowerCase() === "edit country") {
+            await handleEditCountries({ id: countryId, country });
+          } else {
+            await handleAddCountry({ country });
+          }
+        }}
         className={`dark:bg-darkBg  w-3/4 md:w-1/3 rounded-sm bg-white flex flex-col justify-center px-8 py-6`}
       >
         <label htmlFor={"country"} className="mb-2">
@@ -80,14 +88,7 @@ const CountryPopUp = ({
         />
         <div className="flex items-center justify-start gap-4 my-4">
           <button
-            type="button"
-            onClick={async () => {
-              if (label.toLowerCase() === "edit country") {
-                await handleEditCountries({ id: countryId, country });
-              } else {
-                await handleAddCountry({ country });
-              }
-            }}
+            type="submit"
             className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-yellow px-4 h-10 rounded-md text-white cursor-pointer w-fit"
           >
             {label}
@@ -102,7 +103,7 @@ const CountryPopUp = ({
             cancel
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

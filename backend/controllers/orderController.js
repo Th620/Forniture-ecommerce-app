@@ -390,7 +390,8 @@ const getUserOrders = async (req, res, next) => {
       ...where,
     }).countDocuments();
 
-    var pages = 0;if (total) {
+    var pages = 0;
+    if (total) {
       pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
@@ -494,7 +495,8 @@ const getOrders = async (req, res, next) => {
 
     const total = await Order.find(where).countDocuments();
 
-    var pages = 0;if (total) {
+    var pages = 0;
+    if (total) {
       pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
@@ -559,6 +561,14 @@ const getOrder = async (req, res, next) => {
         {
           path: "client",
           select: ["firstName", "lastName", "email", "phone"],
+        },
+        {
+          path: "shipping.country",
+          select: ["country"],
+        },
+        {
+          path: "shipping.state",
+          select: ["state"],
         },
       ]);
     } else {
@@ -630,6 +640,7 @@ const markOrderAsDelivered = async (req, res, next) => {
         "you can't set order as delivered after it was cansceled"
       );
     order.status = "delivered";
+    order.shippingDate = new Date();
 
     await order.save();
 
@@ -1475,7 +1486,8 @@ const getOrdersToShip = async (req, res, next) => {
       shippingDate: { $ne: null, $exists: true, ...where },
     }).countDocuments();
 
-    var pages = 0;if (total) {
+    var pages = 0;
+    if (total) {
       pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;

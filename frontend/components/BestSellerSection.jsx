@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MdKeyboardArrowLeft } from "react-icons/md";
+import { MdKeyboardArrowLeft, MdOutlineErrorOutline } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import ProductCard from "./ProductCard";
 import { getBestSellers } from "@/services/products";
@@ -95,6 +95,7 @@ const BestSellerSection = () => {
   const [active, setActive] = useState("all categories");
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleGetBestSellers = async (category) => {
     try {
@@ -104,7 +105,9 @@ const BestSellerSection = () => {
       if (data) {
         setProducts(data);
       }
-    } catch (error) {}
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const handleGetCategories = async () => {
@@ -113,7 +116,9 @@ const BestSellerSection = () => {
       if (data) {
         setCategories(data);
       }
-    } catch (error) {}
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   useEffect(() => {
@@ -194,15 +199,22 @@ const BestSellerSection = () => {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-12 gap-x-4 gap-y-4 py-3">
-        {products.slice(index, index + 4).map((product) => (
-          <ProductCard
-            product={product}
-            key={product._id}
-            className={"col-span-12 sm:col-span-6 md:col-span-3"}
-          />
-        ))}
-      </div>
+      {error ? (
+        <div className="w-full py-14 text-[#8C8C8C] flex max-md:flex-col gap-y-4 justify-center items-center gap-x-2 px-5 md:px-10">
+          <MdOutlineErrorOutline className="md:text-lg text-3xl" />
+          {error}
+        </div>
+      ) : (
+        <div className="grid grid-cols-12 gap-x-4 gap-y-4 py-3">
+          {products.slice(index, index + 4).map((product) => (
+            <ProductCard
+              product={product}
+              key={product._id}
+              className={"col-span-12 sm:col-span-6 md:col-span-3"}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };

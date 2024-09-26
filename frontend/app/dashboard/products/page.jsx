@@ -151,7 +151,7 @@ export default function Products() {
             <button
               type="button"
               onClick={() =>
-                router.push("/dashboard/products/new", { scroll: true})
+                router.push("/dashboard/products/new", { scroll: true })
               }
               className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-yellow px-4 py-2 rounded-md text-white cursor-pointer"
             >
@@ -203,7 +203,7 @@ export default function Products() {
                                 src={
                                   product?.images[0]
                                     ? BASE_URL + product?.images[0]
-                                    : "/lamp.png"
+                                    : "/not-found.png"
                                 }
                                 layout="fill"
                                 objectFit="cover"
@@ -282,7 +282,7 @@ export default function Products() {
                             onClick={() => {
                               router.push(
                                 `/dashboard/products/edit/${product?.slug}`,
-                                { scroll: true}
+                                { scroll: true }
                               );
                             }}
                             className="px-1"
@@ -293,6 +293,7 @@ export default function Products() {
                             type="button"
                             onClick={async () => {
                               await handleDeleteProduct(product?._id);
+                              await handleGetProducts(searchParamsvalues);
                             }}
                             className="px-1"
                           >

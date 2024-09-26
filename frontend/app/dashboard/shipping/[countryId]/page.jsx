@@ -47,8 +47,6 @@ export default function States() {
 
   const handleDeleteState = async (id) => {
     try {
-      console.log(id);
-
       if (confirm("Are you sure you want to delete this state")) {
         setIsLoading(true);
         await deleteState({ id });
@@ -59,7 +57,7 @@ export default function States() {
       setError(error.message);
       setTimeout(() => {
         setError(null);
-      }, 3000);
+      }, 5000);
     }
   };
 
@@ -90,20 +88,20 @@ export default function States() {
               stateId={stateId}
             />
           )}
-          {error && !error.country ? (
-            <div className="mr-auto w-1/3">
-              <div className="w-full bg-red-200 dark:bg-opacity-30 dark:bg-red-900 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
-                <MdErrorOutline className="size-4" />
-                {error}
-              </div>
+          {error?.country ? (
+            <div className="right-0 absolute md:left-[20%] left-0 bottom-0 top-0 text-[#8C8C8C] flex max-md:flex-col gap-y-4 justify-center items-center gap-x-2 p-5 md:p-10">
+              <MdOutlineErrorOutline className="md:text-lg text-3xl" />
+              {error.Error}
             </div>
           ) : (
             <>
               <div className="flex gap-4 pt-5 px-5 items-center justify-end">
-                {error?.country && (
-                  <div className="right-0 absolute md:left-[20%] left-0 bottom-0 top-0 text-[#8C8C8C] flex max-md:flex-col gap-y-4 justify-center items-center gap-x-2 p-5 md:p-10">
-                    <MdOutlineErrorOutline className="md:text-lg text-3xl" />
-                    {error.Error}
+                {error && !error?.country && (
+                  <div className="mr-auto w-1/3">
+                    <div className="w-full bg-red-200 dark:bg-opacity-30 dark:bg-red-900 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
+                      <MdErrorOutline className="size-4" />
+                      {error}
+                    </div>
                   </div>
                 )}
                 <button

@@ -3,6 +3,7 @@
 import Loading from "@/app/loading";
 import CountryPopUp from "@/components/CountryPopUp";
 import { deleteCountry, getCountries } from "@/services/countries";
+import { cancelOrder, getOrders } from "@/services/order";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -37,9 +38,10 @@ export default function Shipping() {
 
   const handleDeleteCountries = async (id) => {
     try {
-      if (confirm("Are you sure you want to delete this country")) {
+      if (confirm("Are you sure you want to delete this country?")) {
         setIsLoading(true);
         await deleteCountry({ id });
+        
       }
       setIsLoading(false);
     } catch (error) {
@@ -47,7 +49,7 @@ export default function Shipping() {
       setError(error.message);
       setTimeout(() => {
         setError(null);
-      }, 3000);
+      }, 5000);
     }
   };
 

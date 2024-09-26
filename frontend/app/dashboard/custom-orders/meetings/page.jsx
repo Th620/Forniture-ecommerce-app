@@ -191,7 +191,7 @@ export default function Meetings() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `http://localhost:3000/dashboard/custom-orders/meetings?${new URLSearchParams(
+                    `/dashboard/custom-orders/meetings?${new URLSearchParams(
                       {
                         page,
                       }

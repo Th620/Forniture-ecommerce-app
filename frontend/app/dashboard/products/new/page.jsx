@@ -221,7 +221,7 @@ export default function NewProduct() {
         console.log(response);
         setDone(true);
         setTimeout(() => {
-          router.push("/dashboard/products", { scroll: true});
+          router.push("/dashboard/products", { scroll: true });
         }, 3000);
       }
       setTitle("");
@@ -591,6 +591,15 @@ export default function NewProduct() {
                     {variations.map((variation) => (
                       <li className="">
                         {variation.size}-{variation.color}×{variation.stock}
+                        <button
+                          className="inline ml-1"
+                          type="button"
+                          onClick={() =>
+                            removeItem(variation, variations, setVariations)
+                          }
+                        >
+                          ×
+                        </button>
                       </li>
                     ))}
                   </ul>

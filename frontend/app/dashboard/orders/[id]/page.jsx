@@ -25,6 +25,8 @@ export default function Order() {
   const [openShippingDatePopUp, setOpenShippingDatePopUp] = useState(false);
   const [date, setDate] = useState(null);
 
+  console.log(order);
+
   const handleGetOrder = async () => {
     try {
       const data = await getOrder({ id });
@@ -209,7 +211,7 @@ export default function Order() {
                             src={
                               product?.product?.images
                                 ? BASE_URL + product.product.images[0]
-                                : "/lamp.png"
+                                : "/not-found.png"
                             }
                             layout="fill"
                             objectFit="cover"
@@ -242,13 +244,13 @@ export default function Order() {
                   <p>
                     Country:{" "}
                     <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
-                      {order?.shipping?.country}
+                      {order?.shipping?.country?.country}
                     </span>
                   </p>
                   <p>
                     State:{" "}
                     <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
-                      {order?.shipping?.state}
+                      {order?.shipping?.state?.state}
                     </span>
                   </p>
                   <p>

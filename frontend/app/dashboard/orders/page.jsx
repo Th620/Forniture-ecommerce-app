@@ -121,7 +121,7 @@ export default function Orders() {
       queries.status = status;
     }
 
-    router.push(`?${new URLSearchParams(queries)}`, { scroll: true});
+    router.push(`?${new URLSearchParams(queries)}`, { scroll: true });
     setOpenFilter(false);
 
     await handleGetOrders(queries);
@@ -332,7 +332,9 @@ export default function Orders() {
                                 await handleConfirmOrder(order?._id);
                                 setDate(null);
                                 setOrderId(order?._id);
-                                setOpenShippingdatePopUp(true);
+                                if (!order.shippingDate) {
+                                  setOpenShippingdatePopUp(true);
+                                }
                               } catch (error) {}
                             }}
                             className="px-1 max-sm:hidden"
@@ -396,13 +398,13 @@ export default function Orders() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `http://localhost:3000/dashboard/orders?${new URLSearchParams(
+                    `/dashboard/orders?${new URLSearchParams(
                       {
                         ...searchParamsValues,
                         page,
                       }
                     )}`,
-                    { scroll: true}
+                    { scroll: true }
                   );
                   await handleGetOrders({
                     ...searchParamsValues,

@@ -114,7 +114,7 @@ export default function Cart() {
                       <div className="relative aspect-[1/1.2] w-[6vw] bg-bg">
                         <Image
                           src={
-                            item?.image ? BASE_URL + item.image : "/lamp.png"
+                            item?.image ? BASE_URL + item.image : "/not-found.png"
                           }
                           layout="fill"
                           objectFit="cover"

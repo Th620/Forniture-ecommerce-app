@@ -48,6 +48,15 @@ input[type="search"]::-moz-search-cancel-button {
   display: none;
 }
 
+.cart::-webkit-scrollbar {
+  display: none;
+}
+
+.cart {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* .stock {
   width: calc(100% - theme(spacing.10));
 } */

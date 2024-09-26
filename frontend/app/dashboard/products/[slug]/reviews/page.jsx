@@ -198,7 +198,7 @@ export default function Reviews() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `http://localhost:3000/dashboard/products/${slug}/reviews?${new URLSearchParams(
+                    `/dashboard/products/${slug}/reviews?${new URLSearchParams(
                       {
                         page,
                       }
