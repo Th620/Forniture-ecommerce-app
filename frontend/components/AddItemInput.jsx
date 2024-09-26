@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import SimpleInput from "./simpleInput";
+import SimpleInput from "./SimpleInput";
 import { MdOutlineAdd } from "react-icons/md";
 
 const removeItem = (value, group, setGroup) => {

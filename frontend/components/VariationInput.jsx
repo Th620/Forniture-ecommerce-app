@@ -1,6 +1,6 @@
 import React from "react";
 import Select from "./Select";
-import SimpleInput from "./simpleInput";
+import SimpleInput from "./SimpleInput";
 import { MdOutlineAdd } from "react-icons/md";
 
 const calcStock = (variations, stock) => {

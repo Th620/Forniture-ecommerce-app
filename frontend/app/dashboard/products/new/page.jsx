@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { SlPicture } from "react-icons/sl";
 import { MdClose, MdErrorOutline } from "react-icons/md";
-import SimpleInput from "@/components/simpleInput";
+import SimpleInput from "@/components/SimpleInput";
 import AddItemInput from "@/components/AddItemInput";
 import Select from "@/components/Select";
 import VariationInput from "@/components/VariationInput";

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { SlPicture } from "react-icons/sl";
 import { MdClose, MdErrorOutline } from "react-icons/md";
-import SimpleInput from "@/components/simpleInput";
+import SimpleInput from "@/components/SimpleInput";
 import { useRouter } from "next/navigation";
 import { addCategory } from "@/services/category";
 import Loading from "@/app/loading";
