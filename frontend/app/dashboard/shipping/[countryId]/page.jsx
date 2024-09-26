@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  MdDeleteOutline,
   MdOutlineAdd,
   MdDelete,
   MdModeEdit,
@@ -121,7 +120,7 @@ export default function States() {
               </div>
               <div className="px-5 pt-4 w-full">
                 <h3 className="capitalize font-semibold my-5 text-2xl">
-                  {country?.country}'s states we provide shipping to:
+                  {country?.country}&apos;s states we provide shipping to:
                 </h3>
                 <table className="w-full text-start table">
                   <thead className="w-full">

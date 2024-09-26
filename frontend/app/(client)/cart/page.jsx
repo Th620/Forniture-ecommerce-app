@@ -68,7 +68,7 @@ export default function Cart() {
     return async () => {
       await handleCheckCart();
     };
-  }, []);
+  }, [cart]);
 
   return (
     <main className="flex flex-col justify-start px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-[100px] min-h-screen mb-14">

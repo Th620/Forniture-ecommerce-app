@@ -9,7 +9,7 @@ import { MdErrorOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import isEmail from "validator/lib/isEmail";
 
-export default function signIn() {
+export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState({});

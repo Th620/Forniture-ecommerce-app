@@ -52,7 +52,7 @@ export default function Order() {
     return async () => {
       await handleGetOrder();
     };
-  }, [canceled]);
+  }, [canceled, id]);
 
   return (
     <main className="flex flex-col justify-start items-center gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14 relative">
