@@ -154,7 +154,7 @@ export default function Order() {
                 </h4>
                 <div className="md:w-1/2 ml-4 mt-2">
                   {order?.products?.map((product) => (
-                    <div className="flex items-stretch py-2">
+                    <div key={product?._id} className="flex items-stretch py-2">
                       <Link href={`/products/${product?.product?.slug}`}>
                         <div className="relative aspect-[1/1.2] w-[52px] bg-bg mr-2">
                           <Image

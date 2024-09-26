@@ -348,7 +348,7 @@ export default function Product() {
                         left!
                       </span>
                       <br />
-                      Don't miss it
+                      Don&apos;t miss it
                     </p>
                   )}
                 </div>

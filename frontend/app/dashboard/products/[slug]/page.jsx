@@ -139,6 +139,7 @@ export default function Product() {
                   {product?.colors &&
                     product?.colors.map((color) => (
                       <div
+                        key={color}
                         className={`border-[1.5px] py-2 px-6 border-yellow text-white bg-yellow text-sm capitalize rounded-sm`}
                       >
                         {color}
@@ -154,6 +155,7 @@ export default function Product() {
                   {product?.sizes &&
                     product?.sizes.map((size) => (
                       <div
+                        key={size}
                         className={`border-[1.5px] py-2 px-6 border-yellow text-white bg-yellow text-sm capitalize rounded-sm`}
                       >
                         {size}
@@ -176,7 +178,7 @@ export default function Product() {
                     className={`text-sm font-medium px-6 pt-2 list-disc capitalize`}
                   >
                     {product?.variations?.map((variation) => (
-                      <li className="">
+                      <li key={variation} className="">
                         {variation.size} - {variation.color} × {variation.stock}
                       </li>
                     ))}
@@ -285,7 +287,7 @@ export default function Product() {
                     <ol className="text-sm list-disc">
                       {product?.productInfo?.features &&
                         product?.productInfo?.features.map((feature) => (
-                          <li className="ml-6">
+                          <li key={feature} className="ml-6">
                             {feature}
                             {feature[feature.length - 1] !== "." && "."}
                           </li>
@@ -321,7 +323,7 @@ export default function Product() {
                   type="button"
                   onClick={async () => {
                     await handleDeleteProduct(product?._id);
-                    router.push("/dashboard/products", { scroll: true});
+                    router.push("/dashboard/products", { scroll: true });
                   }}
                   className="capitalize rounded-full px-10 py-2 text-white bg-gray  hover:bg-grayHover w-fit my-14 font-medium"
                 >

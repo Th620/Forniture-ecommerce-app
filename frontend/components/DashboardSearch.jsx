@@ -54,7 +54,7 @@ const DashboardSearch = ({ setOpenSearch }) => {
           onSubmit={async (e) => {
             router.push(
               `/dashboard/products?${new URLSearchParams({ search })}`,
-              { scroll: true}
+              { scroll: true }
             );
           }}
           className="flex items-center justify-stretch border-b-2 border-gray py-2 w-full"
@@ -88,6 +88,7 @@ const DashboardSearch = ({ setOpenSearch }) => {
           )}
           {products?.map((product) => (
             <Link
+              key={product?.slug}
               className="w-full"
               onClick={() => setOpenSearch(false)}
               href={`/dashboard/products/${product?.slug}`}
@@ -122,7 +123,7 @@ const DashboardSearch = ({ setOpenSearch }) => {
               type="button"
               onClick={() => {
                 setOpenSearch(false);
-                router.push(`/products?s=${search}`, { scroll: true});
+                router.push(`/products?s=${search}`, { scroll: true });
               }}
               className="capitalize search text-gray underline py-2"
             >

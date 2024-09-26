@@ -24,6 +24,7 @@ const CartContainer = ({ setOpenCart }) => {
         <div className="max-h-[50vh] h-fit overflow-y-scroll cart">
           {cart.items?.map((item, index) => (
             <div
+              key={item?.slug}
               className={`flex items-stretch ${
                 index === cart.items.length - 1 ? "" : "border-b-[1.5px]"
               } border-gray border-opacity-20 py-2 pr-2 scrollable`}

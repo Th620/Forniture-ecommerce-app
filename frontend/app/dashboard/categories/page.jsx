@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdOutlineAdd, MdDelete, MdModeEdit, MdOutlineErrorOutline } from "react-icons/md";
+import { MdOutlineAdd, MdDelete, MdModeEdit, MdOutlineErrorOutline, MdErrorOutline } from "react-icons/md";
 
 export default function Categories() {
   const router = useRouter();

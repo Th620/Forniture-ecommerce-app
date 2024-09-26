@@ -53,7 +53,7 @@ const SearchClient = ({ setOpenSearch }) => {
           method="GET"
           onSubmit={async (e) => {
             if (search) {
-              router.push(`/products?search=${search}`, { scroll: true});
+              router.push(`/products?search=${search}`, { scroll: true });
             }
           }}
           className="flex items-center justify-stretch border-b-2 border-gray py-2 w-full"
@@ -87,6 +87,7 @@ const SearchClient = ({ setOpenSearch }) => {
           )}
           {products?.map((product) => (
             <Link
+              key={product?.slug}
               className="w-full"
               onClick={() => setOpenSearch(false)}
               href={`/products/${product?.slug}`}
@@ -121,7 +122,7 @@ const SearchClient = ({ setOpenSearch }) => {
               type="button"
               onClick={() => {
                 setOpenSearch(false);
-                router.push(`/products?search=${search}`, { scroll: true});
+                router.push(`/products?search=${search}`, { scroll: true });
               }}
               className="capitalize search text-gray underline py-2"
             >

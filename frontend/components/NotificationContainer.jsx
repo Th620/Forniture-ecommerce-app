@@ -24,12 +24,14 @@ const NotificationsContainer = ({
         )}
         {notifications?.map((notification, index) => (
           <div
+            key={notification.content}
             onClick={() => {
               if (notification?.state === "meetings") {
                 router.push(
                   `/dashboard/custom-orders/meetings?d=${
                     new Date().toISOString().split("T")[0]
-                  }`, { scroll: true}
+                  }`,
+                  { scroll: true }
                 );
                 return;
               }
@@ -37,12 +39,13 @@ const NotificationsContainer = ({
                 router.push(
                   `/dashboard/orders/shipping?d=${
                     new Date().toISOString().split("T")[0]
-                  }`
-                  , { scroll: true});
+                  }`,
+                  { scroll: true }
+                );
                 return;
               }
               if (notification?.state === "orders") {
-                router.push(`/dashboard/orders?period=today`, { scroll: true});
+                router.push(`/dashboard/orders?period=today`, { scroll: true });
                 return;
               }
             }}

@@ -236,7 +236,9 @@ export default function Products() {
                         <td className="text-xs font-semibold min-w-16 max-sm:hidden">
                           {product?.colors?.length <= 4
                             ? product?.colors?.map((item) => (
-                                <p className="font-medium">{item}</p>
+                                <p key={item} className="font-medium">
+                                  {item}
+                                </p>
                               ))
                             : [
                                 product?.colors[0],
@@ -245,12 +247,16 @@ export default function Products() {
                                 product?.colors[3],
                                 "...",
                               ].map((item) => (
-                                <p className="font-medium">{item}</p>
+                                <p key={item} className="font-medium">
+                                  {item}
+                                </p>
                               ))}
                         </td>
                         <td className="text-xs font-semibold min-w-16 max-sm:hidden">
                           {product?.sizes?.map((item) => (
-                            <p className="font-medium">{item}</p>
+                            <p key={item} className="font-medium">
+                              {item}
+                            </p>
                           ))}
                         </td>
                         <td className="font-semibold table-cell md:w-[12%] min-w-14">

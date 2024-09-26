@@ -88,7 +88,7 @@ const AddItemInput = ({
           className={`${ulClassName} text-sm font-medium px-6 list-disc capitalize`}
         >
           {group.map((item) => (
-            <li className="">
+            <li key={item} className="">
               {item}{" "}
               <button
                 className="inline ml-1"

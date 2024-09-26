@@ -265,14 +265,14 @@ export default function NewProduct() {
         images,
       })
     );
-    
+
     try {
       setIsLoading(true);
       const response = await editProduct({ slug, formData });
       if (response) {
         setDone(true);
         setTimeout(() => {
-          router.push("/dashboard/products", { scroll: true});
+          router.push("/dashboard/products", { scroll: true });
         }, 3000);
       }
       setTitle("");
@@ -386,8 +386,11 @@ export default function NewProduct() {
 
                 {selectedFiles.length > 0 && (
                   <div className="w-full flex flex-col items-center gap-2">
-                    {selectedFiles.map((file) => (
-                      <div className="w-full bg-white dark:bg-darkBg flex items-center px-4 py-3 dark:text-gray text-[#404040] rounded-md border border-gray border-opacity-30 dark:border-opacity-5">
+                    {selectedFiles.map((file, index) => (
+                      <div
+                        key={file.name + index}
+                        className="w-full bg-white dark:bg-darkBg flex items-center px-4 py-3 dark:text-gray text-[#404040] rounded-md border border-gray border-opacity-30 dark:border-opacity-5"
+                      >
                         <SlPicture />
                         <p className="text-xs ml-2">{file.name}</p>
                         <button
@@ -406,7 +409,10 @@ export default function NewProduct() {
                 {images.length > 0 && (
                   <div className="w-full flex flex-col items-center gap-2">
                     {images.map((image) => (
-                      <div className="w-full bg-white dark:bg-darkBg flex items-center px-4 py-3 dark:text-gray text-[#404040] rounded-md border border-gray border-opacity-30 dark:border-opacity-5">
+                      <div
+                        key={image}
+                        className="w-full bg-white dark:bg-darkBg flex items-center px-4 py-3 dark:text-gray text-[#404040] rounded-md border border-gray border-opacity-30 dark:border-opacity-5"
+                      >
                         <SlPicture />
                         <p className="text-xs ml-2">{image}</p>
                         <button
@@ -658,7 +664,7 @@ export default function NewProduct() {
                     className={`text-sm font-medium px-6 pt-2 list-disc capitalize`}
                   >
                     {variations.map((variation) => (
-                      <li className="">
+                      <li key={variation?._id} className="">
                         {variation.size}-{variation.color}×{variation.stock}
                         <button
                           className="inline ml-1"
