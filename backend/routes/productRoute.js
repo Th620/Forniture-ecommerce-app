@@ -10,6 +10,7 @@ const {
   getProductReviews,
   productOnSale,
   getBestSellers,
+  getYouMayAlsoLikeProducts,
 } = require("../controllers/productControllers");
 const { authGuard, adminGuard } = require("../middelware/authMiddelware");
 const { upload } = require("../middelware/uploadPictureMiddelware");
@@ -35,7 +36,8 @@ router.put(
 router.delete("/delete/:id", authGuard, adminGuard, deleteProduct);
 router.put("/sale/:id", authGuard, adminGuard, productOnSale);
 router.post("/:slug/review", authGuard, reviewProduct);
-router.get("/:slug/reviews",authGuard, adminGuard, getProductReviews);
+router.get("/:slug/reviews", authGuard, adminGuard, getProductReviews);
 router.get("/store/bestsellers", getBestSellers);
+router.get("/:slug/suggest", getYouMayAlsoLikeProducts);
 
 module.exports = router;

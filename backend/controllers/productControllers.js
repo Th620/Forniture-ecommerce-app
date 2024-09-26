@@ -366,8 +366,10 @@ const getProducts = async (req, res, next) => {
 
     const total = await Product.find(where).countDocuments();
 
+    var pages = 0;
+
     if (total) {
-      var pages = Math.ceil(total / pageSize);
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 
@@ -485,8 +487,9 @@ const getProductReviews = async (req, res, next) => {
 
     const total = await Review.find({ product: product._id }).countDocuments();
 
+    var pages = 0;
     if (total) {
-      var pages = Math.ceil(total / pageSize);
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 
@@ -559,9 +562,64 @@ const getBestSellers = async (req, res, next) => {
     }
 
     const products = await Product.find(where)
-      .sort([["sales", 1]])
+      .sort({sales: 'descs'})
       .limit(8);
     res.json(products);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getYouMayAlsoLikeProducts = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    const product = await Product.findOne({ slug });
+
+    if (!product) {
+      const err = Error("product not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    const c = await Category.findById(product.category);
+
+    if (!c) {
+      const err = Error("category not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    const products = await Product.find({
+      slug: { $ne: slug },
+      colors: { $in: product.colors },
+      category: c,
+      stock: { $ne: 0 },
+    }).limit(5);
+
+    if (products.length === 5) {
+      return res.json(products);
+    }
+
+    var IDs = products.map((p) => p.id);
+
+    const p = await Product.find({ category: c, _id: { $nin: IDs } })
+      .sort({ sales: "desc" })
+      .limit(5 - products.length);
+
+    if ([...products, ...p].length === 5) {
+      return res.json([...products, ...p]);
+    }
+
+    p.forEach((i) => {
+      IDs.push(i.id);
+    });
+
+    const other = await Product.find({ _id: { $nin: IDs } })
+      .sort({ sales: "desc" })
+      .limit(5 - [...products, ...p].length);
+
+    res.json([...products, ...p, ...other]);
   } catch (error) {
     next(error);
   }
@@ -578,4 +636,5 @@ module.exports = {
   getProductReviews,
   productOnSale,
   getBestSellers,
+  getYouMayAlsoLikeProducts,
 };
