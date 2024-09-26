@@ -8,7 +8,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdOutlineAdd, MdDelete, MdModeEdit, MdOutlineErrorOutline, MdErrorOutline } from "react-icons/md";
+import {
+  MdOutlineAdd,
+  MdDelete,
+  MdModeEdit,
+  MdOutlineErrorOutline,
+  MdErrorOutline,
+} from "react-icons/md";
 
 export default function Categories() {
   const router = useRouter();
@@ -81,7 +87,9 @@ export default function Categories() {
                 )}
                 <button
                   type="button"
-                  onClick={() => router.push("/dashboard/categories/new", { scroll: true})}
+                  onClick={() =>
+                    router.push("/dashboard/categories/new", { scroll: true })
+                  }
                   className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-yellow px-4 py-2 rounded-md text-white cursor-pointer"
                 >
                   <MdOutlineAdd className="size-4" />
@@ -123,9 +131,10 @@ export default function Categories() {
                             >
                               <div className="relative aspect-[1/1.2] sm:min-h-[10vh] min-h-[7vh] text-xs bg-white dark:bg-black">
                                 <Image
-                                  src={process.env.NEXT_PUBLIC_BASE_URL +
+                                  src={
                                     category?.image
-                                      ?  category?.image
+                                      ? process.env.NEXT_PUBLIC_BASE_URL +
+                                        category?.image
                                       : "/not-found.png"
                                   }
                                   layout="fill"

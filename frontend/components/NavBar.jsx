@@ -19,29 +19,10 @@ const NavBar = ({}) => {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [openCartQuantity, setOpenCartQuantity] = useState(null);
 
   const cart = useSelector((state) => state.cart);
-
-  const getProfileData = useCallback(async () => {
-    try {
-      const data = await getProfile();
-      console.log(data);
-
-      if (data) {
-        setFirstName(data.firstName);
-      }
-    } catch (error) {
-      const err = JSON.parse(error?.message);
-      if (err.status === 401) {
-        setError("Unauthorized");
-        setTimeout(() => {
-          router.push("/account/sign-in", { scroll: true });
-        }, 2000);
-      } else {
-        setError({ handlers: true, Error: err?.message });
-      }
-    }
-  }, []);
+  const user = useSelector((state) => state.user);
 
   const pathName = usePathname();
 
@@ -64,10 +45,16 @@ const NavBar = ({}) => {
   }, []);
 
   useEffect(() => {
-    return async () => {
-      await getProfileData();
+    return () => {
+      setOpenCartQuantity(cart?.totalQuantity);
     };
-  }, []);
+  }, [cart]);
+
+  useEffect(() => {
+    return () => {
+      setFirstName(user?.userInfo?.firstName);
+    };
+  }, [user]);
 
   return (
     <nav
@@ -126,7 +113,7 @@ const NavBar = ({}) => {
                 }}
                 className=""
               >
-                {firstName ? (
+                {firstName && user?.userInfo ? (
                   <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] border-[1.5px] border-black font-lato">
                     {firstName[0]}
                   </div>
@@ -139,15 +126,13 @@ const NavBar = ({}) => {
             </li>
 
             <li className="relative w-fit">
-              <span
-                className={`absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full ${
-                  cart?.totalQuantity > 0
-                    ? "bg-red-700 text-white"
-                    : "bg-transparent"
-                } `}
-              >
-                {cart.totalQuantity}
-              </span>
+              {openCartQuantity > 0 && (
+                <span
+                  className={`absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full bg-red-700 text-white`}
+                >
+                  {openCartQuantity > 0 ? cart?.totalQuantity : ""}
+                </span>
+              )}
 
               <Link href={"/cart"}>
                 <IoBagOutline

@@ -19,7 +19,6 @@ export const userSlice = createSlice({
     },
     resetUserInfo: (state, action) => {
       state.userInfo = null;
-
       global?.window?.localStorage?.removeItem("account");
     },
   },

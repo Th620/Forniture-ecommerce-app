@@ -142,11 +142,8 @@ export default function Products() {
         } else {
           setNoProducts(true);
         }
-
         setIsLoading(false);
-        return products;
       } catch (error) {
-        console.log(error);
         setIsLoading(false);
         setError(error.message);
       }
@@ -167,7 +164,7 @@ export default function Products() {
       });
     };
     f();
-  }, []);
+  }, [handleGetProducts]);
 
   return (
     <>

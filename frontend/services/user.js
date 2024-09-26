@@ -44,7 +44,7 @@ export const login = async ({ email, password }) => {
 
 export const logout = async () => {
   try {
-    const { data } = await axios.post(`$F{process.env.NEXT_PUBLIC_PROXY}/api/users/logout`);
+    const { data } = await axios.post(`${process.env.NEXT_PUBLIC_PROXY}/api/users/logout`);
 
     return data;
   } catch (error) {

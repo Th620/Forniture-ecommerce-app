@@ -63,14 +63,14 @@ export default function Dashboard() {
                 className={"md:col-span-3 sm:col-span-6 col-span-12"}
                 boxTitel={"product sold"}
                 value={productSold}
-                percentage={productsSoldPercentage}
+                percentage={Math.round(productsSoldPercentage * 10) / 10}
                 period={"mounth"}
               />
               <DashboardCard
                 className={"md:col-span-3 sm:col-span-6 col-span-12"}
                 boxTitel={"total profit"}
                 value={profits}
-                percentage={profitsPercentage}
+                percentage={Math.round(profitsPercentage * 10) / 10}
                 period={"mounth"}
                 sign="DZD"
               />
@@ -78,14 +78,14 @@ export default function Dashboard() {
                 className={"md:col-span-3 sm:col-span-6 col-span-12"}
                 boxTitel={"new customers"}
                 value={customers}
-                percentage={customersPercentage}
+                percentage={Math.round(customersPercentage * 10) / 10}
                 period={"mounth"}
               />
               <DashboardCard
                 className={"md:col-span-3 sm:col-span-6 col-span-12"}
                 boxTitel={"total orders"}
                 value={orders}
-                percentage={customersPercentage}
+                percentage={Math.round(customersPercentage * 10) / 10}
                 period={"mounth"}
               />
               <div className="relative col-span-12 md:col-span-7 h-72 text-[10px] p-4 bg-white dark:bg-darkBg border border-gray border-opacity-30 dark:border-opacity-5 rounded-md">
