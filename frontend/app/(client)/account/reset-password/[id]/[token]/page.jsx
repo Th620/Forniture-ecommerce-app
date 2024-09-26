@@ -24,7 +24,7 @@ export default function ResetPassword() {
         return;
       }
       await resetPassword({ password, id, token });
-      router.push("/");
+      router.push("/", { scroll: true});
       setPassword("");
       setDone(true);
       setIsLoading(false);

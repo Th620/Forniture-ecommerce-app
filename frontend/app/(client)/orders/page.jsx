@@ -31,6 +31,8 @@ export default function Orders() {
         setOrders(data);
         if (JSON.parse(headers.get("X-TotalPagecount"))) {
           setTotalPageCount(JSON.parse(headers.get("X-TotalPagecount")));
+        } else {
+          setTotalPageCount(0);
         }
       }
       setIsLoading(false);
@@ -146,7 +148,8 @@ export default function Orders() {
                 `http://localhost:3000/orders?${new URLSearchParams({
                   ...searchParamsValues,
                   page,
-                })}`
+                })}`,
+                { scroll: true}
               );
               await handleGetOrders({
                 ...searchParamsValues,

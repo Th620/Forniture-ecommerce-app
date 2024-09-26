@@ -79,7 +79,7 @@ export default function signUp() {
         );
       }
 
-      router.push("/");
+      router.push("/", { scroll: true});
     } catch (error) {
       setEmail("");
       setPassword("");

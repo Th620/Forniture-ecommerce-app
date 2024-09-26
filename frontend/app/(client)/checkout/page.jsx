@@ -73,7 +73,7 @@ export default function Checkout() {
       if (err.status === 401) {
         setError({ Error: "Unauthorized" });
         setTimeout(() => {
-          router.push("/account/sign-in");
+          router.push("/account/sign-in", { scroll: true});
         }, 2000);
       } else {
         setError({ Error: err.message });
@@ -353,7 +353,7 @@ export default function Checkout() {
               type={"button"}
               onClick={() => {
                 if (order._id) {
-                  router.push(`/orders/${order._id}`);
+                  router.push(`/orders/${order._id}`, { scroll: true});
                 }
               }}
               className="capitalize pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white w-1/2 mt-4 self-center"

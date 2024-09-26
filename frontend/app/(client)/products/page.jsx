@@ -29,7 +29,6 @@ export default function Products() {
     +searchParams.get("page") || 1
   );
   const [totalPageCount, setTotalPageCount] = useState(0);
-  console.log(totalPageCount);
 
   const [category, setCategory] = useState(
     searchParams.get("category") || "all categories"
@@ -122,7 +121,7 @@ export default function Products() {
     size,
     sort,
     category,
-    s,
+    search,
     page,
   }) => {
     try {
@@ -131,17 +130,19 @@ export default function Products() {
         size,
         sort,
         category,
-        searchKeyword: s,
+        searchKeyword: search,
         pageSize: 16,
         page,
-      });;
+      });
 
       if (data) {
         if (data.length === 0) {
           setNoProducts(true);
         }
-        if (JSON.parse(headers?.get("x-totalpagecount"))) {
+        if (JSON.parse(headers.get("x-totalpagecount"))) {
           setTotalPageCount(JSON.parse(headers.get("x-totalpagecount")));
+        } else {
+          setTotalPageCount(0);
         }
         setProducts([...data]);
       } else {
@@ -151,25 +152,26 @@ export default function Products() {
       setIsLoading(false);
       return products;
     } catch (error) {
+      console.log(error);
       setIsLoading(false);
       setError(error.message);
     }
   };
-  
 
   useEffect(() => {
-    return async () => {
+    const f = async () => {
       await handleGetProducts({
         color: searchParams.get("color"),
         size: searchParams.get("size"),
         sort: searchParams.get("sort"),
         category: searchParams.get("category"),
-        searchKeyword: searchParams.get("searchKeyword"),
+        searchKeyword: searchParams.get("search"),
         page: currentPage,
-        s: searchParams.get("s"),
+        search: searchParams.get("search"),
       });
     };
-  }, []);
+    f();
+  }, [searchParams]);
 
   return (
     <>
@@ -209,15 +211,13 @@ export default function Products() {
                         delete searchParamsvalues.size;
                       }
                       router.replace(
-                        `/products?${new URLSearchParams(searchParamsvalues)}`
+                        `/products?${new URLSearchParams(searchParamsvalues)}`,
+                        { scroll: true}
                       );
                       try {
                         await handleGetProducts({
-                          color: searchParams.get("color"),
                           size: option === "all" ? "" : option,
-                          sort: searchParams.get("sort"),
-                          category: searchParams.get("category"),
-                          searchKeyword: searchParams.get("searchKeyword"),
+                          ...searchParamsvalues,
                           page: currentPage,
                         });
                       } catch (error) {
@@ -252,15 +252,13 @@ export default function Products() {
                         delete searchParamsvalues.color;
                       }
                       router.replace(
-                        `/products?${new URLSearchParams(searchParamsvalues)}`
+                        `/products?${new URLSearchParams(searchParamsvalues)}`,
+                        { scroll: true}
                       );
                       try {
                         await handleGetProducts({
                           color: option === "all" ? "" : option,
-                          size: searchParams.get("size"),
-                          sort: searchParams.get("sort"),
-                          category: searchParams.get("category"),
-                          searchKeyword: searchParams.get("searchKeyword"),
+                          ...searchParamsvalues,
                           page: currentPage,
                         });
                       } catch (error) {
@@ -301,19 +299,18 @@ export default function Products() {
                         delete searchParamsvalues.sort;
                       }
                       router.replace(
-                        `/products?${new URLSearchParams(searchParamsvalues)}`
+                        `/products?${new URLSearchParams(searchParamsvalues)}`,
+                        { scroll: true}
                       );
                       try {
                         await handleGetProducts({
-                          color: searchParams.get("color"),
-                          size: searchParams.get("size"),
+                          ...searchParamsvalues,
                           sort:
                             option === "price low to hight" ||
                             option === "no sort"
                               ? "-1"
                               : "1",
-                          category: searchParams.get("category"),
-                          searchKeyword: searchParams.get("searchKeyword"),
+
                           page: currentPage,
                         });
                       } catch (error) {
@@ -359,15 +356,13 @@ export default function Products() {
                           router.replace(
                             `/products?${new URLSearchParams(
                               searchParamsvalues
-                            )}`
+                            )}`,
+                            { scroll: true}
                           );
                           try {
                             await handleGetProducts({
-                              color: searchParams.get("color"),
-                              size: searchParams.get("size"),
-                              sort: searchParams.get("sort"),
+                              ...searchParamsvalues,
                               category: item === "all categories" ? "" : item,
-                              searchKeyword: searchParams.get("searchKeyword"),
                               page: currentPage,
                             });
                           } catch (error) {
@@ -419,7 +414,8 @@ export default function Products() {
                         `http://localhost:3000/products?${new URLSearchParams({
                           ...searchParamsvalues,
                           page,
-                        })}`
+                        })}`,
+                        { scroll: true}
                       );
                       await handleGetProducts({
                         ...searchParamsvalues,

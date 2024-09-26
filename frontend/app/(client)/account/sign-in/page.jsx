@@ -63,7 +63,7 @@ export default function signIn() {
         );
       }
 
-      router.push("/");
+      router.push("/", { scroll: true});
     } catch (error) {
       setEmail("");
       setPassword("");

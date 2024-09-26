@@ -4,7 +4,7 @@ import SizeButton from "@/components/SizeButton";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { addReview, getProduct } from "@/services/products";
+import { addReview, getProduct, getSuggestions } from "@/services/products";
 import { BASE_URL } from "@/constants";
 import Link from "next/link";
 import { addItem } from "@/lib/features/cart/cartSlice";
@@ -14,6 +14,7 @@ import { MdDelete } from "react-icons/md";
 import { useAuth } from "@/context/AuthContext";
 import { deleteReview } from "@/services/review";
 import MobileCart from "@/components/MobileCart";
+import ProductCard from "@/components/ProductCard";
 
 const unavailableSize = (variations = [], color, size) => {
   return variations.every((variation) => {
@@ -38,7 +39,7 @@ const unavailableColor = (variations = [], color) => {
 };
 
 export default function Product() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState({});
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
@@ -49,6 +50,7 @@ export default function Product() {
   const [reviewForm, setReviewForm] = useState(false);
   const [review, setReview] = useState("");
   const [done, setDone] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -72,7 +74,6 @@ export default function Product() {
 
   const handleGetProduct = async (slug) => {
     try {
-      setIsLoading(true);
       const product = await getProduct({ slug });
       if (product) {
         setProduct(product);
@@ -94,11 +95,26 @@ export default function Product() {
           setError({ addToCart: true, Error: "Out of Stock" });
         }
       }
-      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       setError(error.message);
       setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handelYouMayAlsoLike = async () => {
+    try {
+      const data = await getSuggestions({ slug });
+      if (data) {
+        setSuggestions(data);
+      }
       setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      setError(error.message);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -130,8 +146,8 @@ export default function Product() {
     return async () => {
       try {
         await handleGetProduct(slug);
+        await handelYouMayAlsoLike();
       } catch (error) {
-        console.log(error);
         setError(error.message);
       }
     };
@@ -228,7 +244,7 @@ export default function Product() {
                               ? `&size=${selectedSize}`
                               : ""
                           }`,
-                          { scroll: false }
+                          { scroll: true }
                         );
                         if (unavailableSize(variations, color, selectedSize)) {
                           setSelectedSize("");
@@ -259,7 +275,7 @@ export default function Product() {
                     onclick={() => {
                       router.replace(
                         `/products/${slug}?color=${selectedColor}&size=${size}`,
-                        { scroll: false }
+                        { scroll: true }
                       );
                       setSelectedSize(size);
                     }}
@@ -296,7 +312,7 @@ export default function Product() {
                   size={2}
                   value={qt}
                   readOnly
-                  className="h-full text-center bg-gray"
+                  className="h-full text-center w-10 bg-gray"
                 />
                 <button
                   type="button"
@@ -466,7 +482,7 @@ export default function Product() {
                       : " border-opacity-30"
                   }  ${product?.reviews?.length > 2 ? "h-56" : "h-fit"}`}
                 >
-                  {done && (
+                  {done && !reviewForm && (
                     <p className="text-sm text-justify px-3 py-2">
                       Your review will be visible after it has been chacked and
                       approved by our admin team.
@@ -494,6 +510,7 @@ export default function Product() {
                         </button>
                         <button
                           type="button"
+                          onClick={() => setReviewForm(false)}
                           className="px-3 py-1 bg-gray rounded-full"
                         >
                           Cancel
@@ -589,14 +606,15 @@ export default function Product() {
       </div>
       <div className="md:mt-14 md:mb-14">
         <h3 className="font-semibold pb-2 text-lg">You may also like</h3>
-        <div className="grid grid-cols-12 gap-x-4 gap-y-4 py-3">
-          {/* {products.map((product) => (
-            <ProductCard
-              product={product}
-              key={product.id}
-              className={"col-span-12 sm:col-span-6 md:col-span-3"}
-            />
-          ))} */}
+        <div className="grid grid-cols-10 gap-x-4 gap-y-4 py-3">
+          {suggestions.length > 0 &&
+            suggestions?.map((product) => (
+              <ProductCard
+                product={product}
+                key={product._id}
+                className={"col-span-10 md:col-span-2"}
+              />
+            ))}
         </div>
       </div>
       {openCart && (

@@ -48,6 +48,11 @@ export const getProducts = async ({
           page,
           pageSize,
         },
+        // headers: {
+        //   "Cache-Control": "no-cache",
+        //   Pragma: "no-cache",
+        //   Expires: "0",
+        // },
       }
     );
 
@@ -64,7 +69,8 @@ export const getProducts = async ({
 export const getProduct = async ({ slug }) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:8080/api/products/${slug}`
+      `http://localhost:8080/api/products/${slug}`,
+      {}
     );
 
     return data;
@@ -137,6 +143,22 @@ export const addReview = async ({ slug, content }) => {
     const { data } = await axios.post(
       `http://localhost:8080/api/products/${slug}/review`,
       { content }
+    );
+
+    return data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An unexpected error occured. Please try again");
+    }
+  }
+};
+
+export const getSuggestions = async ({ slug }) => {
+  try {
+    const { data } = await axios.get(
+      `http://localhost:8080/api/products/${slug}/suggest`
     );
 
     return data;

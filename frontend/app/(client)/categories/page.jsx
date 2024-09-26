@@ -55,7 +55,8 @@ export default function Categories() {
                     key={category?._id}
                     onClick={() =>
                       router.push(
-                        `/products?category=${category?.name?.toLowerCase()}`
+                        `/products?category=${category?.name?.toLowerCase()}`,
+                        { scroll: true}
                       )
                     }
                     className={"col-span-10 sm:col-span-5 md:col-span-2"}

@@ -178,7 +178,7 @@ export default function Cart() {
                         size={2}
                         value={item?.quantity}
                         readOnly
-                        className="h-full text-center bg-gray"
+                        className="h-full w-10 text-center bg-gray"
                       />
                       <button
                         type="button"
@@ -231,7 +231,9 @@ export default function Cart() {
                   <div className="items-center gap-x-4 gap-y-2 flex-wrap w-full pt-7 flex">
                     <button
                       type="button"
-                      onClick={() => router.push("/products")}
+                      onClick={() =>
+                        router.push("/products", { scroll: true})
+                      }
                       className="capitalize pt-2 pb-[11px] font-medium text-black inline-flex justify-center items-center gap-x-2 transition-all duration-500 hover:gap-x-3"
                     >
                       <GoArrowLeft className="text-lg" />
@@ -249,7 +251,7 @@ export default function Cart() {
           subtotal={cart?.totalPrice}
           onClick={async () => {
             const response = await handleCheckCart();
-            if (!response) router.push("/checkout");
+            if (!response) router.push("/checkout", { scroll: true});
           }}
           btn={true}
           disabled={cart?.items?.length === 0}
