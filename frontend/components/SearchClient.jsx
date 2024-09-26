@@ -16,23 +16,11 @@ const SearchClient = ({ setOpenSearch }) => {
 
   const router = useRouter();
 
-  const handleGetProducts = async ({
-    color,
-    size,
-    sort,
-    category,
-    searchKeyword,
-    page,
-  }) => {
+  const handleGetProducts = async ({ searchKeyword }) => {
     try {
       const { data, headers } = await getProducts({
-        color,
-        size,
-        sort,
-        category,
         searchKeyword,
         pageSize: 4,
-        page,
       });
 
       if (data) {
@@ -60,15 +48,13 @@ const SearchClient = ({ setOpenSearch }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-screen bg-[#282828] bg-opacity-75 z-[200000] flex flex-col justify-center items-center">
-      <div className="lg:w-1/3">
+      <div className="lg:w-1/3 w-4/5">
         <form
+          method="GET"
           onSubmit={async (e) => {
-            e.preventDefault();
             if (search) {
-              setOpenSearch(false);
-              router.push(`/products?s=${search}`);
+              router.push(`/products?search=${search}`, { scroll: true});
             }
-            setOpenSearch(false);
           }}
           className="flex items-center justify-stretch border-b-2 border-gray py-2 w-full"
         >
@@ -89,7 +75,7 @@ const SearchClient = ({ setOpenSearch }) => {
             placeholder="Search..."
             className="search bg-transparent placeholder:text-gray placeholder:text-opacity-90 text-2xl w-full outline-none pr-5 text-gray"
           />
-          <button type="submit">
+          <button type="submit" className="search">
             <IoIosSearch className="search text-3xl text-gray text-opacity-90" />
           </button>
         </form>
@@ -106,7 +92,7 @@ const SearchClient = ({ setOpenSearch }) => {
               href={`/products/${product?.slug}`}
             >
               <div className="flex items-stretch py-2 search">
-                <div className="relative aspect-[1/1.2] w-[4vw] bg-bg mr-2 search">
+                <div className="relative aspect-[1/1.2] md:w-[4vw] w-[10vw] bg-bg mr-2 search">
                   <Image
                     src={
                       product?.images[0]
@@ -135,7 +121,7 @@ const SearchClient = ({ setOpenSearch }) => {
               type="button"
               onClick={() => {
                 setOpenSearch(false);
-                router.push(`/products?s=${search}`);
+                router.push(`/products?search=${search}`, { scroll: true});
               }}
               className="capitalize search text-gray underline py-2"
             >
