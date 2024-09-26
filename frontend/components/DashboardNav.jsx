@@ -1,12 +1,12 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { CiDark } from "react-icons/ci";
 import { FiSun } from "react-icons/fi";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { MdNotificationsNone } from "react-icons/md";
 import NotificationContainer from "./NotificationContainer";
 import { getMeetings } from "@/services/message";
@@ -117,6 +117,10 @@ const getNotifications = async () => {
 const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
   const pathname = usePathname();
 
+  const searchParams = useSearchParams();
+
+  const [value, setvalue] = useState(searchParams.get("search") || "");
+
   let user = useSelector((state) => state.user);
 
   const [active, setActive] = useState("");
@@ -150,7 +154,16 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
           {active === "" ? "dashboard" : active.replace("-", " ")}
         </h1>
       </div>
-      <div className="md:flex items-center gap-x-3 hidden">
+      <form
+        method="GET"
+        onSubmit={(e) => {
+          router.replace(
+            `/dashboard/products?${new URLSearchParams({ search: value })}`,
+            { scroll: true}
+          );
+        }}
+        className="md:flex items-center gap-x-3 hidden"
+      >
         <IoSearch className="text-[#8C8C8C]" />
         <label htmlFor="search" className="sr-only">
           Search:
@@ -159,10 +172,15 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
           type="search"
           name="search"
           id="search"
+          value={value}
+          onChange={(e) => setvalue(e.target.value)}
           placeholder="Search here..."
           className="h-8 bg-transparent placeholder:text-[#8C8C8C] dark:text-bg outline-none text-black"
         />
-      </div>
+        <button type="submit" className="sr-only">
+          search
+        </button>
+      </form>
       <div className="flex items-center gap-x-3">
         {theme === "dark" ? (
           <button
@@ -209,7 +227,7 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
         </div>
         <button
           type="button"
-          onClick={() => router.push("/profile")}
+          onClick={() => router.push("/profile", { scroll: true})}
           className="size-[30px] rounded-full dark:bg-opacity-10 dark:hover:bg-opacity-15 transition-all duration-75 hover-bg-bg bg-input capitalize flex justify-center items-center text-[#8C8C8C] dark:text-gray"
         >
           {user?.userInfo?.firstName && user.userInfo.firstName[0]}

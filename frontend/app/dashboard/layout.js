@@ -6,6 +6,7 @@ import SideBar from "@/components/SideBar";
 import { Suspense, useEffect, useState } from "react";
 import AuthProvider from "@/context/AuthContext";
 import Loading from "../loading";
+import DashboardSearch from "@/components/DashboardSearch";
 
 export default function DashboardLayout({ children }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -23,12 +24,14 @@ export default function DashboardLayout({ children }) {
     }
   }, []);
 
+  const [openSearch, setopenSearch] = useState(false);
+
   return (
     <AuthProvider>
       <AdminProtectedRoute>
         <Suspense fallback={<Loading />}>
           <div
-            className={`${
+            className={`relative ${
               localStorage.theme === "dark" ||
               (!("theme" in localStorage) &&
                 window.matchMedia("(prefers-color-scheme: dark)").matches)
@@ -36,13 +39,18 @@ export default function DashboardLayout({ children }) {
                 : ""
             }`}
           >
-            <SideBar showMenu={showMenu} setShowMenu={setShowMenu} />
+            <SideBar
+              showMenu={showMenu}
+              setShowMenu={setShowMenu}
+              setOpenSearch={setopenSearch}
+            />
             <DashboardNav
               setShowMenu={setShowMenu}
               theme={theme}
               setTheme={setTheme}
             />
-            {children}
+            {children}{" "}
+            {openSearch && <DashboardSearch setOpenSearch={setopenSearch} />}
           </div>
         </Suspense>
       </AdminProtectedRoute>

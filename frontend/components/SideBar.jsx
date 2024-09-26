@@ -17,7 +17,7 @@ import { logout } from "@/services/user";
 import { resetUserInfo } from "@/lib/features/user/userSlice";
 import { useDispatch } from "react-redux";
 
-const SideBar = ({ showMenu, setShowMenu }) => {
+const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
   const pathname = usePathname();
 
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
     try {
       await logout();
       dispatch(resetUserInfo());
-      router.push("/");
+      router.push("/", { scroll: true});
     } catch (error) {
       setError(error.message);
     }
@@ -75,7 +75,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
         <div className="flex flex-col items-center gap-2 w-full">
           <button
             onClick={() => {
-              router.push("/dashboard");
+              router.push("/dashboard", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-medium w-full ${
@@ -87,7 +87,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/clients");
+              router.push("/dashboard/clients", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -99,7 +99,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/products");
+              router.push("/dashboard/products", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -111,7 +111,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/categories");
+              router.push("/dashboard/categories", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -123,7 +123,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/orders");
+              router.push("/dashboard/orders", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -135,7 +135,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/shipping");
+              router.push("/dashboard/shipping", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full  ${
@@ -147,7 +147,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/custom-orders");
+              router.push("/dashboard/custom-orders", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -159,7 +159,7 @@ const SideBar = ({ showMenu, setShowMenu }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/admins");
+              router.push("/dashboard/admins", { scroll: true});
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full  ${
@@ -172,6 +172,10 @@ const SideBar = ({ showMenu, setShowMenu }) => {
         </div>
         <div className="flex flex-col items-center gap-2 w-full self-end">
           <button
+            onClick={() => {
+              setShowMenu(false);
+              setOpenSearch(true);
+            }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:text-[#808080] dark:hover:text-bg rounded-[4px] gap-2 font-meduim w-full transition-colors duration-75 md:hidden`}
           >
             <IoSearch />
