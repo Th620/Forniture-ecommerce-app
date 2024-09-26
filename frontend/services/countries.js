@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 export const getCountries = async () => {
   try {
     const { data } = await axios.get(
-      `http://localhost:8080/api/store/countries`
+      `process.env.PROXY/api/store/countries`
     );
 
     return data;
@@ -21,7 +21,7 @@ export const getCountries = async () => {
 export const deleteCountry = async ({ id }) => {
   try {
     const { data } = await axios.delete(
-      `http://localhost:8080/api/store/countries/delete/${id}`
+      `process.env.PROXY/api/store/countries/delete/${id}`
     );
 
     return data;
@@ -37,7 +37,7 @@ export const deleteCountry = async ({ id }) => {
 export const editCountry = async ({ id, country }) => {
   try {
     const { data } = await axios.put(
-      `http://localhost:8080/api/store/countries/edit/${id}`,
+      `process.env.PROXY/api/store/countries/edit/${id}`,
       { country }
     );
 
@@ -54,7 +54,7 @@ export const editCountry = async ({ id, country }) => {
 export const addCountry = async ({ country }) => {
   try {
     const { data } = await axios.post(
-      `http://localhost:8080/api/store/countries/add`,
+      `process.env.PROXY/api/store/countries/add`,
       { country }
     );
 
@@ -71,7 +71,7 @@ export const addCountry = async ({ country }) => {
 export const getCountry = async ({ id }) => {
   try {
     const { data } = await axios.get(
-      `http://localhost:8080/api/store/countries/${id}`
+      `process.env.PROXY/api/store/countries/${id}`
     );
 
     return data;
@@ -87,7 +87,7 @@ export const getCountry = async ({ id }) => {
 export const editState = async ({ id, state, shippingFees }) => {
   try {
     const { data } = await axios.put(
-      `http://localhost:8080/api/store//countries/states/edit/${id}`,
+      `process.env.PROXY/api/store//countries/states/edit/${id}`,
       { state, shippingFees }
     );
 
@@ -104,7 +104,7 @@ export const editState = async ({ id, state, shippingFees }) => {
 export const deleteState = async ({ id }) => {
   try {
     const { data } = await axios.delete(
-      `http://localhost:8080/api/store/countries/states/delete/${id}`
+      `process.env.PROXY/api/store/countries/states/delete/${id}`
     );
 
     return data;
@@ -120,7 +120,7 @@ export const deleteState = async ({ id }) => {
 export const addState = async ({ countryId, state, shippingFees }) => {
   try {
     const { data } = await axios.post(
-      `http://localhost:8080/api/store/countries/${countryId}/add`,
+      `process.env.PROXY/api/store/countries/${countryId}/add`,
       { state, shippingFees }
     );
 

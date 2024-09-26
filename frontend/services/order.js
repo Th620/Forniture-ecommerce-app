@@ -12,7 +12,7 @@ export const getOrders = async ({
 }) => {
   try {
     const { data, headers } = await axios.get(
-      "http://localhost:8080/api/orders",
+      "process.env.PROXY/api/orders",
       {
         params: { country, status, page, period, user: u, state },
       }
@@ -31,7 +31,7 @@ export const getOrders = async ({
 export const getOrdersToShip = async ({ page, shippingDate }) => {
   try {
     const { data, headers } = await axios.get(
-      "http://localhost:8080/api/orders/shipping/to-ship",
+      "process.env.PROXY/api/orders/shipping/to-ship",
       {
         params: { shippingDate, page },
       }
@@ -49,7 +49,7 @@ export const getOrdersToShip = async ({ page, shippingDate }) => {
 
 export const getOrder = async ({ id }) => {
   try {
-    const { data } = await axios.get(`http://localhost:8080/api/orders/${id}`);
+    const { data } = await axios.get(`process.env.PROXY/api/orders/${id}`);
 
     return data;
   } catch (error) {
@@ -64,7 +64,7 @@ export const getOrder = async ({ id }) => {
 export const getUserOrders = async ({ status = "", page }) => {
   try {
     const { data, headers } = await axios.get(
-      `http://localhost:8080/api/orders/user`,
+      `process.env.PROXY/api/orders/user`,
       {
         params: { status, page },
       }
@@ -83,7 +83,7 @@ export const getUserOrders = async ({ status = "", page }) => {
 export const confirmOrder = async ({ id }) => {
   try {
     const { data } = await axios.put(
-      `http://localhost:8080/api/orders/confirm/${id}`
+      `process.env.PROXY/api/orders/confirm/${id}`
     );
 
     return data;
@@ -99,7 +99,7 @@ export const confirmOrder = async ({ id }) => {
 export const cancelOrder = async ({ id }) => {
   try {
     const { data } = await axios.put(
-      `http://localhost:8080/api/orders/cancel/${id}`
+      `process.env.PROXY/api/orders/cancel/${id}`
     );
 
     return data;
@@ -115,7 +115,7 @@ export const cancelOrder = async ({ id }) => {
 export const deliverOrder = async ({ id }) => {
   try {
     const { data } = await axios.put(
-      `http://localhost:8080/api/orders/delivery/${id}`
+      `process.env.PROXY/api/orders/delivery/${id}`
     );
 
     return data;
@@ -131,7 +131,7 @@ export const deliverOrder = async ({ id }) => {
 export const deleteOrder = async ({ id }) => {
   try {
     const { data } = await axios.delete(
-      `http://localhost:8080/api/orders/delete/${id}`
+      `process.env.PROXY/api/orders/delete/${id}`
     );
 
     return data;
@@ -147,7 +147,7 @@ export const deleteOrder = async ({ id }) => {
 export const setShippingDate = async ({ id, shippingDate }) => {
   try {
     const { data } = await axios.put(
-      `http://localhost:8080/api/orders/shippingDate/${id}`,
+      `process.env.PROXY/api/orders/shippingDate/${id}`,
       { shippingDate }
     );
 
@@ -163,7 +163,7 @@ export const setShippingDate = async ({ id, shippingDate }) => {
 
 export const getCartTotalPrice = async ({ items = [] }) => {
   try {
-    const { data } = await axios.post(`http://localhost:8080/api/orders/cart`, {
+    const { data } = await axios.post(`process.env.PROXY/api/orders/cart`, {
       items,
     });
 
@@ -180,7 +180,7 @@ export const getCartTotalPrice = async ({ items = [] }) => {
 export const productSoldAndProfits = async () => {
   try {
     const { data } = await axios.get(
-      `http://localhost:8080/api/orders/dashboard/info`
+      `process.env.PROXY/api/orders/dashboard/info`
     );
 
     return data;
@@ -196,7 +196,7 @@ export const productSoldAndProfits = async () => {
 export const getEarnings = async () => {
   try {
     const { data } = await axios.get(
-      `http://localhost:8080/api/orders/dashboard/earnings`
+      `process.env.PROXY/api/orders/dashboard/earnings`
     );
 
     return data;
@@ -211,7 +211,7 @@ export const getEarnings = async () => {
 
 export const newOrder = async ({ products, city, country, state, address }) => {
   try {
-    const { data } = await axios.post(`http://localhost:8080/api/orders/new`, {
+    const { data } = await axios.post(`process.env.PROXY/api/orders/new`, {
       products,
       city,
       country,
