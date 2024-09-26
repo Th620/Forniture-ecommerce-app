@@ -23,8 +23,6 @@ export default function SignIn() {
     e.preventDefault();
     setIsLoading(true);
 
-    console.log(isEmail(email));
-
     if (!isEmail(email)) {
       setError({ email: true, Error: "please enter a valid email" });
       setIsLoading(false);
@@ -59,11 +57,14 @@ export default function SignIn() {
         dispatch(setUserInfo(data));
         localStorage.setItem(
           "account",
-          JSON.stringify({ data, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 })
+          JSON.stringify({
+            data,
+            expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          })
         );
       }
 
-      router.push("/", { scroll: true});
+      router.push("/", { scroll: true });
     } catch (error) {
       setEmail("");
       setPassword("");
@@ -144,7 +145,7 @@ export default function SignIn() {
           </button>
         </form>
         <p className="col-span-4 text-center text-sm">
-          You don't have an account?{" "}
+          You don&apos;t have an account?{" "}
           <Link
             href={"/account/sign-up"}
             className="text-navy font-semibold capitalize"

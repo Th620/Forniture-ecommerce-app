@@ -1,12 +1,10 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { filter } from "@/constants";
 import { getUser } from "@/services/user";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { GoArrowRight } from "react-icons/go";
-import { MdOutlineErrorOutline } from "react-icons/md";
+import { MdErrorOutline, MdOutlineErrorOutline } from "react-icons/md";
 
 export default function User() {
   const [user, setUser] = useState(null);
