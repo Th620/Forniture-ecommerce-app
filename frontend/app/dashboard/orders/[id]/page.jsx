@@ -25,8 +25,6 @@ export default function Order() {
   const [openShippingDatePopUp, setOpenShippingDatePopUp] = useState(false);
   const [date, setDate] = useState(null);
 
-  console.log(order);
-
   const handleGetOrder = async () => {
     try {
       const data = await getOrder({ id });
@@ -244,13 +242,17 @@ export default function Order() {
                   <p>
                     Country:{" "}
                     <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
-                      {order?.shipping?.country?.country}
+                      {order?.shipping?.country?.country
+                        ? order?.shipping?.country?.country
+                        : "Not found"}
                     </span>
                   </p>
                   <p>
                     State:{" "}
                     <span className="pl-1 text-[black] text-opacity-45 dark:text-white dark:text-opacity-55">
-                      {order?.shipping?.state?.state}
+                      {order?.shipping?.state?.state
+                        ? order?.shipping?.state?.state
+                        : "Not found"}
                     </span>
                   </p>
                   <p>

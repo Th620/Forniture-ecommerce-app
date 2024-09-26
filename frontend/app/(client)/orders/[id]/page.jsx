@@ -194,13 +194,17 @@ export default function Order() {
                   <p>
                     Country:{" "}
                     <span className="pl-1 text-[black] text-opacity-45">
-                      {order?.shipping?.country}
+                      {order?.shipping?.country
+                        ? order?.shipping?.country
+                        : "Not found"}
                     </span>
                   </p>
                   <p>
                     State:{" "}
                     <span className="pl-1 text-[black] text-opacity-45">
-                      {order?.shipping?.state}
+                      {order?.shipping?.state
+                        ? order?.shipping?.state
+                        : "Not found"}
                     </span>
                   </p>
                   <p>
