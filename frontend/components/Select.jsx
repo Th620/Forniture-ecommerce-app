@@ -23,7 +23,7 @@ const Select = ({
           setOpenSelect((prev) => !prev);
           addFn()
         }}
-        className={`${btnClassName} overflow-ellipsis text-nowrap overflow-hidden flex justify-between h-8 btn items-center px-4 bg-white dark:bg-darkBg text-sm py-1 capitalize font-medium w-full`}
+        className={`${btnClassName} overflow-ellipsis text-nowrap overflow-hidden flex justify-between h-10 btn items-center px-4 bg-white dark:bg-darkBg text-sm py-1 capitalize font-medium w-full`}
       >
         <p className="overflow-ellipsis">{select ? select : label}</p>
         {openSelect ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}

@@ -70,14 +70,14 @@ const CartContainer = ({ setOpenCart }) => {
       <div className="text-sm">
         <button
           type="button"
-          onClick={() => router.push("/cart")}
+          onClick={() => router.push("/cart", { scroll: true})}
           className="w-full py-2 text-white font-lato text-center bg-yellow uppercase mt-4"
         >
           view cart
         </button>
         <button
           type="button"
-          onClick={() => router.push("/checkout")}
+          onClick={() => router.push("/checkout", { scroll: true})}
           className="w-full py-2 text-white font-lato text-center bg-navy hover:bg-navyHover transition-colors duration-150 uppercase my-2"
         >
           Checkout

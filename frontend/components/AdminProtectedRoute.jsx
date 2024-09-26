@@ -9,7 +9,7 @@ const AdminProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     if (!isLoading && (!user || !user.admin)) {
-      router.push("/");
+      router.push("/", { scroll: true});
     }
   }, [user, router, isLoading]);
 

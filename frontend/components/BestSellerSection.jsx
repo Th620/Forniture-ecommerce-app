@@ -104,8 +104,7 @@ const BestSellerSection = () => {
       if (data) {
         setProducts(data);
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handleGetCategories = async () => {
@@ -170,7 +169,8 @@ const BestSellerSection = () => {
         <div className="flex text-lg">
           <button
             type="button"
-            className={`${index === 0 ? "text-gray" : "text-black"}`}
+            disabled={index === 0}
+            className={`disabled:text-gray text-black`}
             onClick={() => {
               if (index > 0) {
                 setIndex((prev) => prev - 1);
@@ -181,8 +181,8 @@ const BestSellerSection = () => {
           </button>
           <button
             type="button"
-            className={`${
-              index === products.length - 4 ? "text-gray" : "text-black"
+            disabled={products.length <= 4 || index === products.length - 4}
+            className={`disabled:text-gray text-black
             }`}
             onClick={() => {
               if (index < products.length - 4) {

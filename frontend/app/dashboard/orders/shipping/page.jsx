@@ -37,6 +37,8 @@ export default function OrderToShip() {
           setTotalPageCount(
             JSON.parse(response.headers.get("x-totalpagecount"))
           );
+        } else {
+          setTotalPageCount(0);
         }
       }
       setIsLoading(false);
@@ -175,7 +177,8 @@ export default function OrderToShip() {
                       {
                         page,
                       }
-                    )}`
+                    )}`,
+                    { scroll: true}
                   );
                   await handleGetShipping(page, filter);
                 }}

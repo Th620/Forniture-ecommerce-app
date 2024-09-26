@@ -221,7 +221,7 @@ export default function NewProduct() {
         console.log(response);
         setDone(true);
         setTimeout(() => {
-          router.push("/dashboard/products");
+          router.push("/dashboard/products", { scroll: true});
         }, 3000);
       }
       setTitle("");

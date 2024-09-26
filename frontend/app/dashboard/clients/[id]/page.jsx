@@ -33,7 +33,7 @@ export default function User() {
       if (err.status === 401) {
         setError("Unauthorized");
         setTimeout(() => {
-          router.push("/account/sign-in");
+          router.push("/account/sign-in", { scroll: true});
         }, 2000);
       } else {
         setError(err.message);
@@ -139,7 +139,7 @@ export default function User() {
                 <button
                   type="submit"
                   onClick={() => {
-                    router.push(`/dashboard/orders?u=${user?._id}`);
+                    router.push(`/dashboard/orders?u=${user?._id}`, { scroll: true});
                   }}
                   className="capitalize w-full md:w-1/3 lg:w-1/4 xl:w-1/5 pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white"
                 >

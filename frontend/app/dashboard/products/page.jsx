@@ -45,8 +45,8 @@ export default function Products() {
     size,
     sort,
     category,
-    searchKeyword,
     page,
+    search,
   }) => {
     try {
       setIsLoading(true);
@@ -55,17 +55,22 @@ export default function Products() {
         size,
         sort,
         category,
-        searchKeyword,
+        searchKeyword: search,
         pageSize: 5,
         page,
       });
 
       if (data) {
-        if (JSON.parse(headers?.get("x-totalpagecount"))) {
+        if (
+          headers?.get("x-totalpagecount") &&
+          JSON.parse(headers?.get("x-totalpagecount"))
+        ) {
           setTotalPageCount(JSON.parse(headers.get("x-totalpagecount")));
+        } else {
         }
         setProducts([...data]);
       } else {
+        setTotalPageCount(0);
       }
       setIsLoading(false);
       return data;
@@ -145,7 +150,9 @@ export default function Products() {
             </button>
             <button
               type="button"
-              onClick={() => router.push("/dashboard/products/new")}
+              onClick={() =>
+                router.push("/dashboard/products/new", { scroll: true})
+              }
               className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-yellow px-4 py-2 rounded-md text-white cursor-pointer"
             >
               <MdOutlineAdd className="size-4" />
@@ -161,7 +168,7 @@ export default function Products() {
             <div className="px-5 w-full">
               <table className="w-full text-start table">
                 <thead className="w-full">
-                  <tr className="border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40">
+                  <tr className="border-b-2  border-opacity-20 border-[#8C8C8C] dark:border-opacity-40 capitalize">
                     <th className="font-medium text-start text-sm text-[#8C8C8C] py-2">
                       Product
                     </th>
@@ -274,7 +281,8 @@ export default function Products() {
                             type="button"
                             onClick={() => {
                               router.push(
-                                `/dashboard/products/edit/${product?.slug}`
+                                `/dashboard/products/edit/${product?.slug}`,
+                                { scroll: true}
                               );
                             }}
                             className="px-1"
@@ -297,7 +305,7 @@ export default function Products() {
                     <td colSpan={6} className="table-cell">
                       <div className="w-full flex justify-center">
                         <Pagination
-                        className={'mt-8 mb-3'}
+                          className={"mt-8 mb-3"}
                           currentPage={currentPage}
                           totalPageCount={totalPageCount}
                           onPageChange={async (page) => {
@@ -320,7 +328,7 @@ export default function Products() {
                 </tbody>
               </table>
               {(!products || products?.length === 0) && (
-                <div className="w-full py-10 bg-white dark:bg-darkBody text-black dark:text-white flex justify-center items-center">
+                <div className="w-full py-10 bg-bg text-opacity-50 dark:text-opacity-50 dark:bg-darkBody text-black dark:text-white flex justify-center items-center">
                   {"No Products"}
                 </div>
               )}

@@ -44,6 +44,8 @@ export default function Meetings() {
           setTotalPageCount(
             JSON.parse(response.headers.get("x-totalpagecount"))
           );
+        }else{
+          setTotalPageCount(0)
         }
       }
       setIsLoading(false);
@@ -193,7 +195,8 @@ export default function Meetings() {
                       {
                         page,
                       }
-                    )}`
+                    )}`,
+                    { scroll: true}
                   );
                   await handleGetMeetings(page, filter);
                 }}

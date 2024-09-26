@@ -62,8 +62,8 @@ const getCustomOrders = async (req, res, next) => {
 
     const total = await CustomOrder.find(where).countDocuments();
 
-    if (total) {
-      var pages = Math.ceil(total / pageSize);
+    var pages = 0;if (total) {
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 
@@ -308,8 +308,8 @@ const getMeeting = async (req, res, next) => {
       accept: true,
     }).countDocuments();
 
-    if (total) {
-      var pages = Math.ceil(total / pageSize);
+    var pages = 0;if (total) {
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 

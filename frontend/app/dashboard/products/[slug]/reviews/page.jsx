@@ -12,7 +12,11 @@ import {
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaRegSquareCheck, FaSquareCheck } from "react-icons/fa6";
-import { MdDelete, MdOutlineErrorOutline } from "react-icons/md";
+import {
+  MdDelete,
+  MdErrorOutline,
+  MdOutlineErrorOutline,
+} from "react-icons/md";
 
 export default function Reviews() {
   const router = useRouter();
@@ -43,6 +47,8 @@ export default function Reviews() {
           setTotalPageCount(
             JSON.parse(response?.headers?.get("x-totalpagecount"))
           );
+        } else {
+          setTotalPageCount(0);
         }
       }
       setIsLoading(false);
@@ -65,7 +71,9 @@ export default function Reviews() {
 
   const handleDeleteReview = async (id) => {
     try {
-      await deleteReview({ id });
+      if (confirm("Are you sure you want to delete this review?")) {
+        await deleteReview({ id });
+      }
     } catch (error) {
       setError(error.message);
       setTimeout(() => setError(""), 3000);
@@ -95,7 +103,7 @@ export default function Reviews() {
                 <h3 className="capitalize font-semibold my-5 text-2xl self-start">
                   {`${productTitle}'s  reviews`}
                 </h3>
-                {true && !error?.reviews && (
+                {error && !error?.reviews && (
                   <div className="ml-auto w-1/3">
                     <div className="w-full bg-red-200 dark:bg-opacity-30 dark:bg-red-900 text-red-500 py-3 rounded-sm px-4 flex items-center text-xs gap-2">
                       <MdErrorOutline className="size-4" />
@@ -194,7 +202,8 @@ export default function Reviews() {
                       {
                         page,
                       }
-                    )}`
+                    )}`,
+                    { scroll: true}
                   );
                   await handleGetReviews(page);
                 }}

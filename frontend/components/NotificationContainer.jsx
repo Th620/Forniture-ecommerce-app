@@ -29,7 +29,7 @@ const NotificationsContainer = ({
                 router.push(
                   `/dashboard/custom-orders/meetings?d=${
                     new Date().toISOString().split("T")[0]
-                  }`
+                  }`, { scroll: true}
                 );
                 return;
               }
@@ -38,11 +38,11 @@ const NotificationsContainer = ({
                   `/dashboard/orders/shipping?d=${
                     new Date().toISOString().split("T")[0]
                   }`
-                );
+                  , { scroll: true});
                 return;
               }
               if (notification?.state === "orders") {
-                router.push(`/dashboard/orders?period=today`);
+                router.push(`/dashboard/orders?period=today`, { scroll: true});
                 return;
               }
             }}

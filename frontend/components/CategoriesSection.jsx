@@ -59,7 +59,7 @@ const CategoriesSection = () => {
       <h2 className="text-center text-[32px] font-semibold">Categories</h2>
       <button
         type="button"
-        onClick={() => router.push("/categories")}
+        onClick={() => router.push("/categories", { scroll: true})}
         className="md:self-end capitalize md:text-xs text-gray md:underline md:font-medium md:p-0 md:border-none font-semibold border border-gray self-center px-8 rounded-sm py-2 max-md:order-last mt-14"
       >
         show all
@@ -70,7 +70,7 @@ const CategoriesSection = () => {
             category={category}
             key={category?._id}
             onClick={() =>
-              router.push(`/products?category=${category?.name?.toLowerCase()}`)
+              router.push(`/products?category=${category?.name?.toLowerCase()}`, { scroll: true})
             }
             className={"col-span-12 sm:col-span-6 md:col-span-3 "}
           />

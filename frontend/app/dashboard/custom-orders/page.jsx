@@ -40,6 +40,8 @@ export default function CustomOrders() {
           setTotalPageCount(
             JSON.parse(response.headers.get("x-totalpagecount"))
           );
+        } else {
+          setTotalPageCount(0);
         }
       }
       setIsLoading(false);
@@ -73,7 +75,9 @@ export default function CustomOrders() {
                 <button
                   type="button"
                   onClick={() => {
-                    router.push("/dashboard/custom-orders/meetings");
+                    router.push("/dashboard/custom-orders/meetings", {
+                      scroll: false,
+                    });
                   }}
                   className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-white transition-colors duration-150 dark:bg-darkBg dark:hover:bg-[#252528] px-4 py-2 rounded-md text-black dark:text-white border border-gray border-opacity-30 dark:border-opacity-5 cursor-pointer"
                 >
@@ -215,7 +219,8 @@ export default function CustomOrders() {
                       {
                         page,
                       }
-                    )}`
+                    )}`,
+                    { scroll: true}
                   );
                   await handleGetMessages(page, filter);
                 }}

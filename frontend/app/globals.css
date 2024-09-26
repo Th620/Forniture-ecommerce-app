@@ -39,6 +39,14 @@ input[type="number"] {
   height: 100vh;
 }
 
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="search"]::-moz-search-cancel-button {
+  display: none;
+}
 
 /* .stock {
   width: calc(100% - theme(spacing.10));

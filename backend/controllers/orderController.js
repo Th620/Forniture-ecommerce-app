@@ -390,8 +390,8 @@ const getUserOrders = async (req, res, next) => {
       ...where,
     }).countDocuments();
 
-    if (total) {
-      var pages = Math.ceil(total / pageSize);
+    var pages = 0;if (total) {
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 
@@ -494,8 +494,8 @@ const getOrders = async (req, res, next) => {
 
     const total = await Order.find(where).countDocuments();
 
-    if (total) {
-      var pages = Math.ceil(total / pageSize);
+    var pages = 0;if (total) {
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 
@@ -1475,8 +1475,8 @@ const getOrdersToShip = async (req, res, next) => {
       shippingDate: { $ne: null, $exists: true, ...where },
     }).countDocuments();
 
-    if (total) {
-      var pages = Math.ceil(total / pageSize);
+    var pages = 0;if (total) {
+      pages = Math.ceil(total / pageSize);
     }
     const skip = (page - 1) * pageSize;
 

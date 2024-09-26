@@ -81,7 +81,7 @@ export default function EditCategory() {
         console.log(response);
         setDone(true);
         setTimeout(() => {
-          router.push("/dashboard/categories");
+          router.push("/dashboard/categories", { scroll: true});
         }, 3000);
       }
       setName("");

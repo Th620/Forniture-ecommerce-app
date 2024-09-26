@@ -102,6 +102,8 @@ export default function Orders() {
 
         if (JSON.parse(headers.get("X-TotalPagecount"))) {
           setTotalPageCount(JSON.parse(headers.get("X-TotalPagecount")));
+        } else {
+          setTotalPageCount(0);
         }
       }
       setIsLoading(false);
@@ -119,7 +121,7 @@ export default function Orders() {
       queries.status = status;
     }
 
-    router.push(`?${new URLSearchParams(queries)}`);
+    router.push(`?${new URLSearchParams(queries)}`, { scroll: true});
     setOpenFilter(false);
 
     await handleGetOrders(queries);
@@ -175,7 +177,9 @@ export default function Orders() {
                 <button
                   type="button"
                   onClick={() => {
-                    router.push("/dashboard/orders/shipping");
+                    router.push("/dashboard/orders/shipping", {
+                      scroll: false,
+                    });
                   }}
                   className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-white transition-colors duration-150 dark:bg-darkBg dark:hover:bg-[#252528] px-4 py-2 rounded-md text-black dark:text-white border border-gray border-opacity-30 dark:border-opacity-5 cursor-pointer"
                 >
@@ -397,7 +401,8 @@ export default function Orders() {
                         ...searchParamsValues,
                         page,
                       }
-                    )}`
+                    )}`,
+                    { scroll: true}
                   );
                   await handleGetOrders({
                     ...searchParamsValues,

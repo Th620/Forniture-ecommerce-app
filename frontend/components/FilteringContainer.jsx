@@ -76,7 +76,8 @@ const FilteringContainer = ({
               delete searchParamsvalues.size;
             }
             router.replace(
-              `/products?${new URLSearchParams(searchParamsvalues)}`
+              `/products?${new URLSearchParams(searchParamsvalues)}`,
+              { scroll: true}
             );
             try {
               const fetchProducts = await handleGetProducts({
@@ -123,7 +124,8 @@ const FilteringContainer = ({
               delete searchParamsvalues.color;
             }
             router.replace(
-              `/products?${new URLSearchParams(searchParamsvalues)}`
+              `/products?${new URLSearchParams(searchParamsvalues)}`,
+              { scroll: true}
             );
             try {
               const fetchProducts = await handleGetProducts({
@@ -171,7 +173,8 @@ const FilteringContainer = ({
               delete searchParamsvalues.sort;
             }
             router.replace(
-              `/products?${new URLSearchParams(searchParamsvalues)}`
+              `/products?${new URLSearchParams(searchParamsvalues)}`,
+              { scroll: true}
             );
             try {
               const fetchProducts = await handleGetProducts({
@@ -231,7 +234,8 @@ const FilteringContainer = ({
                 }
                 setOpenCategorySelect(false);
                 router.replace(
-                  `/products?${new URLSearchParams(searchParamsvalues)}`
+                  `/products?${new URLSearchParams(searchParamsvalues)}`,
+                  { scroll: true}
                 );
                 try {
                   const fetchProducts = await handleGetProducts({

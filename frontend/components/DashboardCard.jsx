@@ -20,7 +20,7 @@ const DashboardCard = ({
     <div
       onClick={() => {
         if (link) {
-          router.push(link);
+          router.push(link, { scroll: true});
         }
       }}
       className={`${className} bg-white hover:bg-[#F7F8FA] dark:bg-darkBg dark:hover:bg-[#252528] transition-colors duration-150 rounded-md py-3 px-3 flex flex-col border border-gray border-opacity-30 dark:border-opacity-5 cursor-pointer`}

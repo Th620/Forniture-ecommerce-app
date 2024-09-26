@@ -32,7 +32,7 @@ const navLinks = [
 const navBtns = [
   {
     id: "search",
-    link: "search",
+    link: "",
     icon: <IoIosSearch />,
   },
   {
@@ -41,8 +41,8 @@ const navBtns = [
     icon: <FiUser />,
   },
   {
-    id: "bag",
-    link: "bag",
+    id: "cart",
+    link: "cart",
     icon: <IoBagOutline />,
   },
 ];
@@ -61,124 +61,5 @@ const footerSections = [
   },
 ];
 
-const categories = [
-  { id: "all categories", title: "all categories" },
-  {
-    id: "sofas",
-    title: "sofas",
-  },
-  {
-    id: "chairs",
-    title: "chairs",
-  },
-  {
-    id: "untensils",
-    title: "untensils",
-  },
-  {
-    id: "lamps",
-    title: "lamps",
-  },
-];
-
-const products = [
-  {
-    id: 1,
-    title: "chair",
-    price: 45.5,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 2,
-    title: "chair",
-    price: 45.99,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 3,
-    title: "chair",
-    price: 45.0,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 4,
-    title: "chair",
-    price: 45.0,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 5,
-    title: "chair",
-    price: 45.5,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 6,
-    title: "chair",
-    price: 45.99,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 7,
-    title: "chair",
-    price: 45.0,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-  {
-    id: 8,
-    title: "chair",
-    price: 45.0,
-    keywords: [],
-    productInfo: "",
-    stock: 10,
-    category: "",
-    image: "",
-  },
-];
-
-const filter = {
-  size: ["all", "small", "meduim", "large"],
-  color: ["all", "white", "black", "beige", "blue", "yellow"],
-  sort: ["no sort", "price low to hight", "price hight to low"],
-};
-
-// const categories = ["all categories", "sofas", "chairs", "untensils", "lamps"];
-
 export { Logo, LogoDark };
-export {
-  navLinks,
-  navBtns,
-  footerSections,
-  categories,
-  products,
-  filter,
-  BASE_URL,
-};
+export { navLinks, navBtns, footerSections, BASE_URL };

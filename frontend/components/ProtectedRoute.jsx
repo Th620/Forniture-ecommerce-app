@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/account/sign-in");
+      router.push("/account/sign-in", { scroll: true});
     }
   }, [user, router, isLoading]);
 

@@ -13,7 +13,7 @@ const Hero = () => {
         </h1>
         <button
           type="button"
-          onClick={() => router.push("/products")}
+          onClick={() => router.push("/products", { scroll: true})}
           className="mt-7 px-8 pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white"
         >
           Shop Now

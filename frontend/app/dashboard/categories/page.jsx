@@ -81,7 +81,7 @@ export default function Categories() {
                 )}
                 <button
                   type="button"
-                  onClick={() => router.push("/dashboard/categories/new")}
+                  onClick={() => router.push("/dashboard/categories/new", { scroll: true})}
                   className="flex justify-center items-center gap-2 capitalize text-sm font-medium bg-yellow px-4 py-2 rounded-md text-white cursor-pointer"
                 >
                   <MdOutlineAdd className="size-4" />

@@ -184,7 +184,9 @@ const ProductRows = ({
               <button
                 type="button"
                 onClick={() => {
-                  router.push(`/dashboard/products/edit/${product?.slug}`);
+                  router.push(`/dashboard/products/edit/${product?.slug}`, {
+                    scroll: false,
+                  });
                 }}
                 className="px-1"
               >
@@ -214,7 +216,8 @@ const ProductRows = ({
                   `/dashboard/products?${new URLSearchParams({
                     ...searchParamsvalues,
                     page,
-                  })}`
+                  })}`,
+                  { scroll: true}
                 );
               }}
             />

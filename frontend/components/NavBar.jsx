@@ -58,76 +58,73 @@ const NavBar = ({}) => {
         <Link href={"/"}>
           <Image src={Logo} width={65} height={39} alt="logo" />
         </Link>
-        {!openMenu && (
-          <>
-            <ul className="hidden lg:flex text-sm font-semibold justify-center items-center gap-x-6">
-              {navLinks.map((navLink) => (
-                <Link
-                  href={{ pathname: `/${navLink.link}` }}
-                  key={navLink.id}
-                  replace
-                >
-                  <li
-                    className={`hover:text-navy ${
-                      `/${navLink.link}` === pathName
-                        ? "font-semibold text-navy"
-                        : "text-black font-medium"
-                    }`}
-                  >
-                    {navLink.title}
-                  </li>
-                </Link>
-              ))}
-            </ul>
-            <ul className="hidden lg:flex justify-center items-center gap-x-5">
-              <li className="h-[20px]">
-                <button
-                  type="button"
-                  onClick={() => setOpenSearch(true)}
-                  className="text-xl h-[20px]"
-                >
-                  <IoIosSearch />
-                </button>
-              </li>
+
+        <>
+          <ul className="hidden lg:flex text-sm font-semibold justify-center items-center gap-x-6">
+            {navLinks.map((navLink) => (
               <Link
-                href={{
-                  pathname: `/${
-                    !user?.userInfo ? "account/sign-in" : "profile"
-                  }`,
-                }}
+                href={{ pathname: `/${navLink.link}` }}
+                key={navLink.id}
+                replace
               >
-                <li className="">
-                  {user?.userInfo?.firstName ? (
-                    <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] border-[1.5px] border-black font-lato">
-                      {user.userInfo.firstName[0]}
-                    </div>
-                  ) : (
-                    <FiUser />
-                  )}
+                <li
+                  className={`hover:text-navy ${
+                    `/${navLink.link}` === pathName
+                      ? "font-semibold text-navy"
+                      : "text-black font-medium"
+                  }`}
+                >
+                  {navLink.title}
                 </li>
               </Link>
-
-              <li className="relative w-fit">
-                {cart?.totalQuantity > 0 && (
-                  <span className="absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full bg-red-700 text-white">
-                    {cart.totalQuantity}
-                  </span>
-                )}
-                <Link href={"/cart"}>
-                  <IoBagOutline
-                    className="text-xl cursor-pointer"
-                    onMouseOver={() => {
-                      setOpenCart(true);
-                    }}
-                  />
-                </Link>
-                {openCart && cart?.items?.length > 0 && (
-                  <CartContainer setOpenCart={setOpenCart} />
+            ))}
+          </ul>
+          <ul className="hidden lg:flex justify-center items-center gap-x-5">
+            <li className="h-[20px]">
+              <button
+                type="button"
+                onClick={() => setOpenSearch(true)}
+                className="text-xl h-[20px]"
+              >
+                <IoIosSearch />
+              </button>
+            </li>
+            <Link
+              href={{
+                pathname: `/${!user?.userInfo ? "account/sign-in" : "profile"}`,
+              }}
+            >
+              <li className="">
+                {user?.userInfo?.firstName ? (
+                  <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] border-[1.5px] border-black font-lato">
+                    {user.userInfo.firstName[0]}
+                  </div>
+                ) : (
+                  <FiUser />
                 )}
               </li>
-            </ul>
-          </>
-        )}
+            </Link>
+
+            <li className="relative w-fit">
+              {cart?.totalQuantity > 0 && (
+                <span className="absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full bg-red-700 text-white">
+                  {cart.totalQuantity}
+                </span>
+              )}
+              <Link href={"/cart"}>
+                <IoBagOutline
+                  className="text-xl cursor-pointer"
+                  onMouseOver={() => {
+                    setOpenCart(true);
+                  }}
+                />
+              </Link>
+              {openCart && cart?.items?.length > 0 && (
+                <CartContainer setOpenCart={setOpenCart} />
+              )}
+            </li>
+          </ul>
+        </>
       </div>
       <button
         onClick={() => {
@@ -137,7 +134,13 @@ const NavBar = ({}) => {
       >
         <FiMenu className="block lg:hidden max-lg:text-2xl" />
       </button>
-      {openMenu && <Menu setOpenMenu={setOpenMenu} />}
+      {openMenu && (
+        <Menu
+          setOpenMenu={setOpenMenu}
+          setOpenSearch={setOpenSearch}
+          user={user}
+        />
+      )}
     </nav>
   );
 };

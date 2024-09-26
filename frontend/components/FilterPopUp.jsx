@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Select from "./Select";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getCategories } from "@/services/category";
 import { getProducts } from "@/services/products";
 import { MdErrorOutline } from "react-icons/md";
@@ -29,6 +29,8 @@ const FilterPopUp = ({
   const router = useRouter();
 
   let queries = {};
+
+  const searchParams = useSearchParams();
 
   const handleGetCategories = async () => {
     try {
@@ -116,8 +118,14 @@ const FilterPopUp = ({
     if (category && category.toLowerCase() !== "all") {
       queries.category = category;
     }
-    router.push(`?${new URLSearchParams(queries)}`);
-    await handler(queries);
+    router.push(
+      `?${new URLSearchParams({
+        ...queries,
+        search: searchParams.get("search"),
+      })}`,
+      { scroll: true}
+    );
+    await handler({ ...queries, search: searchParams.get("search") });
     setOpenFilter(false);
   };
 

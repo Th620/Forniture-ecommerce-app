@@ -106,7 +106,7 @@ const FilteringBar = ({ setIsLoading, setError }) => {
               sort &&
               sort.toLowerCase() !== "no sort" &&
               `&sort=${sort.replace(/\s/g, "+")}`
-            }`
+            }`, { scroll: true}
           );
         }}
       />
@@ -133,7 +133,7 @@ const FilteringBar = ({ setIsLoading, setError }) => {
               sort &&
               sort.toLowerCase() !== "no sort" &&
               `&sort=${sort.replace(/\s/g, "+")}`
-            }`
+            }`, { scroll: true}
           );
         }}
       />
@@ -156,7 +156,7 @@ const FilteringBar = ({ setIsLoading, setError }) => {
                 : ""
             }${sortRef !== "all" && `sort=${sortRef.replace(/\s/g, "+")}`}${
               color && color.toLowerCase() !== "all" && `&color=${color}`
-            }${size && size.toLowerCase() !== "all" && `&size=${size}`}`
+            }${size && size.toLowerCase() !== "all" && `&size=${size}`}`, { scroll: true}
           );
         }}
       />

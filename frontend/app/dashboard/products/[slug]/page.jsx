@@ -76,7 +76,7 @@ export default function Product() {
       {isLoading ? (
         <Loading className={"dash-load max-md:p-0"} />
       ) : (
-        <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
+        <main className="min-h-screen w-full overflow-hidden bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">
           <div className="flex flex-col md:grid md:grid-cols-18 gap-4 grid-flow-col-dense p-5">
             <h3 className="font-semibold text-xl sm:text-3xl capitalize md:hidden">
               {product?.title}
@@ -298,7 +298,9 @@ export default function Product() {
                 <button
                   type="button"
                   onClick={() =>
-                    router.push(`/dashboard/products/edit/${product?.slug}`)
+                    router.push(`/dashboard/products/edit/${product?.slug}`, {
+                      scroll: false,
+                    })
                   }
                   className="capitalize rounded-full px-10 py-2 text-white bg-navy hover:bg-navyHover w-fit my-14 font-medium"
                 >
@@ -307,7 +309,9 @@ export default function Product() {
                 <button
                   type="button"
                   onClick={() =>
-                    router.push(`/dashboard/products/${slug}/reviews`)
+                    router.push(`/dashboard/products/${slug}/reviews`, {
+                      scroll: false,
+                    })
                   }
                   className="capitalize rounded-full px-10 py-2 text-white bg-navy hover:bg-navyHover w-fit my-14 font-medium"
                 >
@@ -317,7 +321,7 @@ export default function Product() {
                   type="button"
                   onClick={async () => {
                     await handleDeleteProduct(product?._id);
-                    router.push("/dashboard/products");
+                    router.push("/dashboard/products", { scroll: true});
                   }}
                   className="capitalize rounded-full px-10 py-2 text-white bg-gray  hover:bg-grayHover w-fit my-14 font-medium"
                 >
