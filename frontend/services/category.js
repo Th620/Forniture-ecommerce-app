@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 export const addCategory = async (formData) => {
   try {
     const { data } = await axios.post(
-      `${process.env.PROXY}/api/store/categories/add`,
+      `${process.env.NEXT_PUBLIC_PROXY}/api/store/categories/add`,
 
       formData,
       {
@@ -28,7 +28,7 @@ export const addCategory = async (formData) => {
 export const getCategory = async ({ slug }) => {
   try {
     const { data } = await axios.get(
-      `${process.env.PROXY}/api/store/categories/${slug}`
+      `${process.env.NEXT_PUBLIC_PROXY}/api/store/categories/${slug}`
     );
 
     return data;
@@ -44,7 +44,7 @@ export const getCategory = async ({ slug }) => {
 export const editCategory = async ({ slug, formData }) => {
   try {
     const { data } = await axios.put(
-      `${process.env.PROXY}/api/store/categories/edit/${slug}`,
+      `${process.env.NEXT_PUBLIC_PROXY}/api/store/categories/edit/${slug}`,
       formData,
       {
         headers: {
@@ -66,7 +66,7 @@ export const editCategory = async ({ slug, formData }) => {
 export const deleteCategory = async ({ id }) => {
   try {
     const { data } = await axios.delete(
-      `${process.env.PROXY}/api/store/categories/delete/${id}`
+      `${process.env.NEXT_PUBLIC_PROXY}/api/store/categories/delete/${id}`
     );
 
     return data;
@@ -82,7 +82,7 @@ export const deleteCategory = async ({ id }) => {
 export const getCategories = async () => {
   try {
     const { data } = await axios.get(
-      `${process.env.PROXY}/api/store/categories`
+      `${process.env.NEXT_PUBLIC_PROXY}/api/store/categories`
     );
 
     return data;
