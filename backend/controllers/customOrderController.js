@@ -3,7 +3,7 @@ const CustomOrder = require("../models/CustomOrder");
 const User = require("../models/User");
 const { verify } = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const { generateEmailTemplate } = require("../../frontend/utils/emailTemplate");
+const { generateEmailTemplate } = require("../utils/emailTemplate");
 
 const addCustomOrder = async (req, res, next) => {
   try {
