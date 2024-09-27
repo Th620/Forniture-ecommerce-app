@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 export const addMessage = async ({ content, name, email, phone }) => {
   try {
     const { data } = await axios.post(
-      "process.env.PROXY/api/custom-orders",
+      `${process.env.PROXY}/api/custom-orders`,
       {
         content,
         name,
@@ -27,7 +27,7 @@ export const addMessage = async ({ content, name, email, phone }) => {
 export const getMessages = async ({ d, page }) => {
   try {
     const { data, headers } = await axios.get(
-      "process.env.PROXY/api/custom-orders",
+      `${process.env.PROXY}/api/custom-orders`,
       {
         params: { d, page },
       }
@@ -48,7 +48,7 @@ export const approveCustomOrder = async ({ id, meetingDate }) => {
     console.log(meetingDate);
 
     const data = await axios.put(
-      `process.env.PROXY/api/custom-orders/approve/${id}`,
+      `${process.env.PROXY}/api/custom-orders/approve/${id}`,
       { meetingDate }
     );
 
@@ -65,7 +65,7 @@ export const approveCustomOrder = async ({ id, meetingDate }) => {
 export const rejectCustomOrder = async ({ id }) => {
   try {
     const data = await axios.put(
-      `process.env.PROXY/api/custom-orders/reject/${id}`
+      `${process.env.PROXY}/api/custom-orders/reject/${id}`
     );
 
     return data;
@@ -81,7 +81,7 @@ export const rejectCustomOrder = async ({ id }) => {
 export const rescheduleCustomOrder = async ({ id, meetingDate }) => {
   try {
     const data = await axios.put(
-      `process.env.PROXY/api/custom-orders/reschedule/${id}`,
+      `${process.env.PROXY}/api/custom-orders/reschedule/${id}`,
       { meetingDate }
     );
 
@@ -98,7 +98,7 @@ export const rescheduleCustomOrder = async ({ id, meetingDate }) => {
 export const getMeetings = async ({ d }) => {
   try {
     const data = await axios.get(
-      `process.env.PROXY/api/custom-orders/meetings`,
+      `${process.env.PROXY}/api/custom-orders/meetings`,
       { params: { d } }
     );
 

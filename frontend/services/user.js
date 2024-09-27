@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 export const register = async ({ email, password, firstName, lastName }) => {
   try {
     const { data } = await axios.post(
-      "process.env.PROXY/api/users/register",
+      `${process.env.PROXY}/api/users/register`,
       {
         firstName,
         lastName,
@@ -26,7 +26,7 @@ export const register = async ({ email, password, firstName, lastName }) => {
 
 export const login = async ({ email, password }) => {
   try {
-    const { data } = await axios.post("process.env.PROXY/api/users/login", {
+    const { data } = await axios.post(`${process.env.PROXY}/api/users/login`, {
       email,
       password,
     });
@@ -43,7 +43,7 @@ export const login = async ({ email, password }) => {
 
 export const logout = async () => {
   try {
-    const { data } = await axios.post("process.env.PROXY/api/users/logout");
+    const { data } = await axios.post(`$F{process.env.PROXY}/api/users/logout`);
 
     return data;
   } catch (error) {
@@ -57,7 +57,7 @@ export const logout = async () => {
 
 export const getProfile = async () => {
   try {
-    const { data } = await axios.get("process.env.PROXY/api/users/profile");
+    const { data } = await axios.get(`${process.env.PROXY}/api/users/profile`);
 
     return data;
   } catch (error) {
@@ -90,7 +90,7 @@ export const updateProfile = async ({
 }) => {
   try {
     const { data } = await axios.put(
-      "process.env.PROXY/api/users/updateProfile",
+      `${process.env.PROXY}/api/users/updateProfile`,
       { firstName, lastName, email, phone, country, state, city, address }
     );
 
@@ -106,7 +106,7 @@ export const updateProfile = async ({
 
 export const forgotPassword = async ({ email }) => {
   try {
-    await axios.post("process.env.PROXY/api/users/forgot-password", {
+    await axios.post(`${process.env.PROXY}/api/users/forgot-password`, {
       email,
     });
   } catch (error) {
@@ -121,7 +121,7 @@ export const forgotPassword = async ({ email }) => {
 export const resetPassword = async ({ id, token, password }) => {
   try {
     await axios.post(
-      `process.env.PROXY/api/users/reset-password/${id}/${token}`,
+      `${process.env.PROXY}/api/users/reset-password/${id}/${token}`,
       {
         password,
       }
@@ -137,7 +137,7 @@ export const resetPassword = async ({ id, token, password }) => {
 
 export const getUsers = async ({ role }) => {
   try {
-    const { data } = await axios.get("process.env.PROXY/api/users", {
+    const { data } = await axios.get(`${process.env.PROXY}/api/users`, {
       params: { role },
     });
 
@@ -154,7 +154,7 @@ export const getUsers = async ({ role }) => {
 export const updateUserRole = async ({ id }) => {
   try {
     const { data } = await axios.put(
-      `process.env.PROXY/api/users/updateUser/${id}`
+      `${process.env.PROXY}/api/users/updateUser/${id}`
     );
 
     return data;
@@ -170,7 +170,7 @@ export const updateUserRole = async ({ id }) => {
 export const deleteUser = async ({ id }) => {
   try {
     const { data } = await axios.delete(
-      `process.env.PROXY/api/users/delete/${id}`
+      `${process.env.PROXY}/api/users/delete/${id}`
     );
 
     return data;
@@ -185,7 +185,7 @@ export const deleteUser = async ({ id }) => {
 
 export const getUser = async ({ id }) => {
   try {
-    const { data } = await axios.get(`process.env.PROXY/api/users/${id}`);
+    const { data } = await axios.get(`${process.env.PROXY}/api/users/${id}`);
 
     return data;
   } catch (error) {

@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 export const createProduct = async (formData) => {
   try {
     const { data } = await axios.post(
-      "process.env.PROXY/api/products/create",
+      `${process.env.PROXY}/api/products/create`,
 
       formData,
       {
@@ -36,7 +36,7 @@ export const getProducts = async ({
 }) => {
   try {
     const { data, headers } = await axios.get(
-      `process.env.PROXY/api/products`,
+      `${process.env.PROXY}/api/products`,
       {
         params: {
           color,
@@ -69,7 +69,7 @@ export const getProducts = async ({
 export const getProduct = async ({ slug }) => {
   try {
     const { data } = await axios.get(
-      `process.env.PROXY/api/products/${slug}`,
+      `${process.env.PROXY}/api/products/${slug}`,
       {}
     );
 
@@ -86,7 +86,7 @@ export const getProduct = async ({ slug }) => {
 export const getBestSellers = async ({ category }) => {
   try {
     const { data } = await axios.get(
-      `process.env.PROXY/api/products/store/bestsellers`,
+      `${process.env.PROXY}/api/products/store/bestsellers`,
       { params: { category } }
     );
 
@@ -103,7 +103,7 @@ export const getBestSellers = async ({ category }) => {
 export const editProduct = async ({ slug, formData }) => {
   try {
     const { data } = await axios.put(
-      `process.env.PROXY/api/products/edit/${slug}`,
+      `${process.env.PROXY}/api/products/edit/${slug}`,
       formData,
       {
         headers: {
@@ -125,7 +125,7 @@ export const editProduct = async ({ slug, formData }) => {
 export const deleteProduct = async ({ id }) => {
   try {
     const { data } = await axios.delete(
-      `process.env.PROXY/api/products/delete/${id}`
+      `${process.env.PROXY}/api/products/delete/${id}`
     );
 
     return data;
@@ -141,7 +141,7 @@ export const deleteProduct = async ({ id }) => {
 export const addReview = async ({ slug, content }) => {
   try {
     const { data } = await axios.post(
-      `process.env.PROXY/api/products/${slug}/review`,
+      `${process.env.PROXY}/api/products/${slug}/review`,
       { content }
     );
 
@@ -158,7 +158,7 @@ export const addReview = async ({ slug, content }) => {
 export const getSuggestions = async ({ slug }) => {
   try {
     const { data } = await axios.get(
-      `process.env.PROXY/api/products/${slug}/suggest`
+      `${process.env.PROXY}/api/products/${slug}/suggest`
     );
 
     return data;

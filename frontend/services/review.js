@@ -5,7 +5,7 @@ axios.defaults.withCredentials = true;
 export const getProductReviews = async ({ slug, page }) => {
   try {
     const { data, headers } = await axios.get(
-      `process.env.PROXY/api/products/${slug}/reviews`,
+      `${process.env.PROXY}/api/products/${slug}/reviews`,
       { params: { page } }
     );
 
@@ -21,7 +21,7 @@ export const getProductReviews = async ({ slug, page }) => {
 
 export const checkReview = async ({ id }) => {
   try {
-    const data = await axios.put(`process.env.PROXY/api/reviews/check/${id}`);
+    const data = await axios.put(`${process.env.PROXY}/api/reviews/check/${id}`);
 
     return data;
   } catch (error) {
@@ -35,7 +35,7 @@ export const checkReview = async ({ id }) => {
 
 export const deleteReview = async ({ id }) => {
     try {
-      const data = await axios.delete(`process.env.PROXY/api/reviews/delete/${id}`);
+      const data = await axios.delete(`${process.env.PROXY}/api/reviews/delete/${id}`);
   
       return data;
     } catch (error) {

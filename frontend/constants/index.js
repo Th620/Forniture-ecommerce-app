@@ -4,7 +4,7 @@ import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 
-const BASE_URL = "process.env.PROXY/uploads/";
+const BASE_URL = `${process.env.BASE_URL}/uploads/`;
 
 const navLinks = [
   {
