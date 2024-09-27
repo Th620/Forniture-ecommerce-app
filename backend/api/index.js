@@ -5,19 +5,21 @@ const cors = require("cors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 
-const connectDB = require("./db/db");
+const connectDB = require("../db/db");
 const {
   errorResposerHandler,
   invalidPathHandler,
-} = require("./middelware/errorHandlers");
+} = require("../middelware/errorHandlers");
 
 const app = express();
+
+const PORT = process.env.PORT || 8080;
 
 dotenv.config();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://forniture-ecommerce-app-fsgh.vercel.app",
     credentials: true,
     exposedHeaders: [
       "X-TotalPagecount",
@@ -43,15 +45,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Routers
-const userRoute = require("./routes/userRoute");
-const productRoute = require("./routes/productRoute");
-const orderRoute = require("./routes/orderRoute");
-const reviewRoute = require("./routes/reviewRoute");
-const storeRoute = require("./routes/storeRoute");
-const messageRoute = require("./routes/customOrderRoute");
+const userRoute = require("../routes/userRoute");
+const productRoute = require("../routes/productRoute");
+const orderRoute = require("../routes/orderRoute");
+const reviewRoute = require("../routes/reviewRoute");
+const storeRoute = require("../routes/storeRoute");
+const messageRoute = require("../routes/customOrderRoute");
 
 //connectDB
 connectDB();
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 //Routes
 app.use("/api/users", userRoute);
@@ -65,11 +69,11 @@ app.use("/api/custom-orders", messageRoute);
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 // //errorHandlers
+
+
 app.use(invalidPathHandler);
 app.use(errorResposerHandler);
 
-const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server ready on port ${PORT}.`));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;
