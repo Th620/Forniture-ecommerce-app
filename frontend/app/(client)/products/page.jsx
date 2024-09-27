@@ -74,7 +74,7 @@ export default function Products() {
         setCategories(result);
       }
     };
-  }, [currentPage, handleGetProducts]);
+  }, [currentPage]);
 
   const getAvailableColorsAdSizes = async () => {
     try {

@@ -29,9 +29,8 @@ export const cartSlice = createSlice({
         state.totalQuantity += action.payload.quantity;
       }
       state.totalPrice += action.payload.price * action.payload.quantity;
-      if (window !== undefined) {
-       global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
-      }
+
+      global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
     },
     removeItem: (state, action) => {
       const existItem = state.items.find(
@@ -50,9 +49,7 @@ export const cartSlice = createSlice({
             item.size !== action.payload.size
         );
       }
-    if (window !== undefined) {
-       global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
-    }
+      global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
     },
     increaseQuantity: (state, action) => {
       const existItem = state.items.find(
@@ -65,9 +62,8 @@ export const cartSlice = createSlice({
         existItem.quantity++;
         state.totalQuantity++;
         state.totalPrice += existItem.price;
-      if (window !== undefined) {
-         global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
-      }
+
+        global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
       }
     },
     decreaseQuantity: (state, action) => {
@@ -81,18 +77,16 @@ export const cartSlice = createSlice({
         existItem.quantity--;
         state.totalQuantity--;
         state.totalPrice -= existItem.price;
-      if (window !== undefined) {
-         global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
-      }
+
+        global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
       }
     },
     clearCart: (state, action) => {
       state.items = [];
       state.totalPrice = 0;
       state.totalQuantity = 0;
-     if (window !== undefined) {
+
       global?.window?.localStorage?.removeItem("cart");
-     }
     },
   },
 });

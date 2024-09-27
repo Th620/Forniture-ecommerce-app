@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 const Hero = () => {
   const router = useRouter();
 
-  console.log(process.env.NEXT_PUBLIC_PROXY);
-
   return (
     <section className="w-full h-screen md:grid md:grid-cols-12 flex justify-center items-center overflow-hidden px-10 lg:px-75 xl:px-150 bg-left-bottom max-md:bg-blend-soft-light bg-blueBg bg-small-hero md:bg-hero-bg bg-cover">
       <div className="md:col-span-5 md:col-start-8 md:content-center flex flex-col justify-center items-center xl:items-start">

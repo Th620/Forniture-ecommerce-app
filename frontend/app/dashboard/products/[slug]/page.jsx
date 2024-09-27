@@ -2,7 +2,7 @@
 
 import Loading from "@/app/loading";
 import SizeButton from "@/components/SizeButton";
-import { BASE_URL } from "@/constants";
+
 import { deleteProduct, getProduct } from "@/services/products";
 import Image from "next/image";
 import Link from "next/link";
@@ -80,7 +80,7 @@ export default function Product() {
             <div className="md:col-span-8 md:col-start-1 w-full flex flex-col gap-y-4 md:order-first">
               <div className="relative w-full aspect-square bg-white dark:bg-black">
                 <Image
-                  src={BASE_URL + selectedImg}
+                  src={process.env.NEXT_PUBLIC_BASE_URL + selectedImg}
                   layout="fill"
                   objectFit="cover"
                   alt={product?.title}
@@ -96,7 +96,7 @@ export default function Product() {
                     }`}
                   >
                     <Image
-                      src={BASE_URL + image}
+                      src={process.env.NEXT_PUBLIC_BASE_URL + image}
                       layout="fill"
                       objectFit="cover"
                       alt={product?.title}

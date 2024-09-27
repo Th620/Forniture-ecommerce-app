@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [ordersPercentage, setOrdersPercentage] = useState(0);
   const [customers, setCustomers] = useState(0);
   const [customersPercentage, setCustomersPercenrage] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleGetProductSoldAndProfits = async () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { BASE_URL } from "@/constants";
+
 import { cancelOrder, getOrder } from "@/services/order";
 import Image from "next/image";
 import Link from "next/link";
@@ -160,7 +160,7 @@ export default function Order() {
                           <Image
                             src={
                               product?.product?.images
-                                ? BASE_URL + product.product.images[0]
+                                ? process.env.NEXT_PUBLIC_BASE_URL + product.product.images[0]
                                 : "/not-found.png"
                             }
                             layout="fill"

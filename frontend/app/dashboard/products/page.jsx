@@ -4,7 +4,7 @@ import Loading from "@/app/loading";
 import FilterPopUp from "@/components/FilterPopUp";
 import Pagination from "@/components/Pagination";
 import SalePricePopUp from "@/components/SalePricePopUp";
-import { BASE_URL } from "@/constants";
+
 import { deleteProduct, getProducts } from "@/services/products";
 import Image from "next/image";
 import Link from "next/link";
@@ -203,7 +203,7 @@ export default function Products() {
                               <Image
                                 src={
                                   product?.images[0]
-                                    ? BASE_URL + product?.images[0]
+                                    ? process.env.NEXT_PUBLIC_BASE_URL + product?.images[0]
                                     : "/not-found.png"
                                 }
                                 layout="fill"

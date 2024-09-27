@@ -2,7 +2,7 @@
 
 import Loading from "@/app/loading";
 import ShippingDatePopUp from "@/components/ShippingDatePopUp";
-import { BASE_URL } from "@/constants";
+
 import {
   cancelOrder,
   confirmOrder,
@@ -208,7 +208,7 @@ export default function Order() {
                           <Image
                             src={
                               product?.product?.images
-                                ? BASE_URL + product.product.images[0]
+                                ? process.env.NEXT_PUBLIC_BASE_URL + product.product.images[0]
                                 : "/not-found.png"
                             }
                             layout="fill"

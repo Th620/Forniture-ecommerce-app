@@ -70,7 +70,6 @@ export default function SignUp() {
 
       if (data) {
         dispatch(setUserInfo(data));
-        if (window !== undefined) {
          global?.window?.localStorage?.setItem(
             "account",
             JSON.stringify({
@@ -78,7 +77,7 @@ export default function SignUp() {
               expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
             })
           );
-        }
+        
       }
 
       router.push("/", { scroll: true });

@@ -55,15 +55,14 @@ export default function SignIn() {
 
       if (data) {
         dispatch(setUserInfo(data));
-        if (window !== undefined) {
-         global?.window?.localStorage?.setItem(
-            "account",
-            JSON.stringify({
-              data,
-              expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
-            })
-          );
-        }
+
+        global?.window?.localStorage?.setItem(
+          "account",
+          JSON.stringify({
+            data,
+            expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          })
+        );
       }
 
       router.push("/", { scroll: true });

@@ -1,6 +1,6 @@
 "use client";
 
-import { BASE_URL } from "@/constants";
+
 import { getProducts } from "@/services/products";
 import Image from "next/image";
 import Link from "next/link";
@@ -97,7 +97,7 @@ const SearchClient = ({ setOpenSearch }) => {
                   <Image
                     src={
                       product?.images[0]
-                        ? BASE_URL + product.images[0]
+                        ? process.env.NEXT_PUBLIC_BASE_URL + product.images[0]
                         : "/not-found.png"
                     }
                     layout="fill"

@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { BASE_URL } from "@/constants";
+
 import { deleteCategory } from "@/services/category";
 import { getCategories } from "@/services/category";
 import Image from "next/image";
@@ -125,7 +125,7 @@ export default function Categories() {
                                 <Image
                                   src={
                                     category?.image
-                                      ? BASE_URL + category?.image
+                                      ? process.env.NEXT_PUBLIC_BASE_URL + category?.image
                                       : "/not-found.png"
                                   }
                                   layout="fill"

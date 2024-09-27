@@ -1,6 +1,6 @@
 "use client";
 
-import { BASE_URL } from "@/constants";
+
 import { removeItem } from "@/lib/features/cart/cartSlice";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,7 +32,7 @@ const CartContainer = ({ setOpenCart }) => {
               <Link href={`/products/${item?.slug}`}>
                 <div className="relative aspect-[1/1.2] w-[4vw] bg-bg mr-2">
                   <Image
-                    src={item?.image ? BASE_URL + item.image : "/not-found.png"}
+                    src={item?.image ? process.env.NEXT_PUBLIC_BASE_URL + item.image : "/not-found.png"}
                     layout="fill"
                     objectFit="cover"
                     alt={item?.title}

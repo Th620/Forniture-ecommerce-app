@@ -19,9 +19,8 @@ export const userSlice = createSlice({
     },
     resetUserInfo: (state, action) => {
       state.userInfo = null;
-      if (window !== undefined) {
-        global?.window?.localStorage?.removeItem("account");
-      }
+
+      global?.window?.localStorage?.removeItem("account");
     },
   },
 });

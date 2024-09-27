@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { addReview, getProduct, getSuggestions } from "@/services/products";
-import { BASE_URL } from "@/constants";
+
 import Link from "next/link";
 import { addItem } from "@/lib/features/cart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -169,7 +169,7 @@ export default function Product() {
             <div className="md:col-span-8 md:col-start-1 w-full flex flex-col gap-y-4 md:order-first">
               <div className="relative w-full aspect-square bg-bg">
                 <Image
-                  src={BASE_URL + selectedImg}
+                  src={process.env.NEXT_PUBLIC_BASE_URL + selectedImg}
                   layout="fill"
                   objectFit="cover"
                   alt="img"
@@ -185,7 +185,7 @@ export default function Product() {
                     }`}
                   >
                     <Image
-                      src={BASE_URL + image}
+                      src={process.env.NEXT_PUBLIC_BASE_URL + image}
                       layout="fill"
                       objectFit="cover"
                       alt={product?.title}

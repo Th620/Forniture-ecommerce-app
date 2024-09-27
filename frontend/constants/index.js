@@ -4,8 +4,6 @@ import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 
-const BASE_URL = `${process.env.BASE_URL}/uploads/`;
-
 const navLinks = [
   {
     id: "home",
@@ -62,4 +60,4 @@ const footerSections = [
 ];
 
 export { Logo, LogoDark };
-export { navLinks, navBtns, footerSections, BASE_URL };
+export { navLinks, navBtns, footerSections };

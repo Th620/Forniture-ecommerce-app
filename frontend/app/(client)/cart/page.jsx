@@ -1,7 +1,7 @@
 "use client";
 
 import PricingBox from "@/components/PricingBox";
-import { BASE_URL } from "@/constants";
+
 import {
   decreaseQuantity,
   increaseQuantity,
@@ -114,7 +114,7 @@ export default function Cart() {
                         <Image
                           src={
                             item?.image
-                              ? BASE_URL + item.image
+                              ? process.env.NEXT_PUBLIC_BASE_URL + item.image
                               : "/not-found.png"
                           }
                           layout="fill"
