@@ -56,7 +56,7 @@ export default function CustomOrders() {
     return async () => {
       await handleGetMessages(currentPage, filter);
     };
-  }, []);
+  }, [currentPage, filter]);
 
   return (
     <>
@@ -215,12 +215,10 @@ export default function CustomOrders() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `/dashboard/custom-orders?${new URLSearchParams(
-                      {
-                        page,
-                      }
-                    )}`,
-                    { scroll: true}
+                    `/dashboard/custom-orders?${new URLSearchParams({
+                      page,
+                    })}`,
+                    { scroll: true }
                   );
                   await handleGetMessages(page, filter);
                 }}

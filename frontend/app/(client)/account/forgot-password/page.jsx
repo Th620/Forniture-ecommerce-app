@@ -1,6 +1,6 @@
 "use client";
 
-import { forgotPassword } from "@/services/user";
+import { forgotPassword, getProfile } from "@/services/user";
 import React, { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
@@ -12,13 +12,14 @@ export default function ForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  let user = useSelector((state) => state.user);
+  // let user = useSelector((state) => state.user);
 
   const handleForgotPassword = async (e) => {
     try {
       e.preventDefault();
       setIsLoading(true);
-      if (user.userInfo) {
+      const profile = getProfile();
+      if (profile) {
         throw new Error("You're already logged in");
       }
 

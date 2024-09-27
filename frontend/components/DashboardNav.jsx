@@ -185,7 +185,7 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
         {theme === "dark" ? (
           <button
             onClick={() => {
-              localStorage.setItem("theme", "light");
+             global?.window?.localStorage?.setItem("theme", "light");
               setTheme("light");
             }}
             className="size-[30px] bg-input dark:bg-opacity-10 dark:hover:bg-opacity-15 transition-all duration-75 hover-bg-bg rounded-full text-[#8C8C8C] flex justify-center items-center"
@@ -195,7 +195,7 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
         ) : (
           <button
             onClick={() => {
-              localStorage.setItem("theme", "dark");
+             global?.window?.localStorage?.setItem("theme", "dark");
               setTheme("dark");
             }}
             className="size-[30px] bg-input dark:bg-opacity-10 dark:hover:bg-opacity-15 transition-all duration-75 hover-bg-bg rounded-full text-[#8C8C8C] flex justify-center items-center"

@@ -2,7 +2,7 @@
 
 import SizeButton from "@/components/SizeButton";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { addReview, getProduct, getSuggestions } from "@/services/products";
 import { BASE_URL } from "@/constants";
@@ -72,7 +72,7 @@ export default function Product() {
 
   const cart = useSelector((state) => state.cart);
 
-  const handleGetProduct = async (slug) => {
+  const handleGetProduct = useCallback(async () => {
     try {
       const product = await getProduct({ slug });
       if (product) {
@@ -100,9 +100,9 @@ export default function Product() {
       setError(error.message);
       setTimeout(() => setError(""), 3000);
     }
-  };
+  }, [searchParams, slug]);
 
-  const handelYouMayAlsoLike = async () => {
+  const handelYouMayAlsoLike = useCallback(async () => {
     try {
       const data = await getSuggestions({ slug });
       if (data) {
@@ -115,7 +115,7 @@ export default function Product() {
         setError(null);
       }, 3000);
     }
-  };
+  }, [slug]);
 
   const handleAddReview = async (e) => {
     e.preventDefault();
@@ -149,7 +149,7 @@ export default function Product() {
         setIsLoading(false);
       } catch (error) {}
     };
-  }, []);
+  }, [handelYouMayAlsoLike, handleGetProduct, slug]);
 
   const { setOpenCart } = useStateContext();
 

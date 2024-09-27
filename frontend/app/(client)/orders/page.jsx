@@ -17,8 +17,6 @@ export default function Orders() {
 
   const searchParams = useSearchParams();
 
-  const searchParamsValues = Object.fromEntries([...searchParams]);
-
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams.get("page")) || 1
   );
@@ -44,9 +42,10 @@ export default function Orders() {
 
   useEffect(() => {
     return async () => {
+      const searchParamsValues = Object.fromEntries([...searchParams]);
       await handleGetOrders(searchParamsValues);
     };
-  }, []);
+  }, [searchParams]);
 
   return (
     <>
@@ -149,7 +148,7 @@ export default function Orders() {
                   ...searchParamsValues,
                   page,
                 })}`,
-                { scroll: true}
+                { scroll: true }
               );
               await handleGetOrders({
                 ...searchParamsValues,

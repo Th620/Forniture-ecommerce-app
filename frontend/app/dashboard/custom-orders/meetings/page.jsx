@@ -44,8 +44,8 @@ export default function Meetings() {
           setTotalPageCount(
             JSON.parse(response.headers.get("x-totalpagecount"))
           );
-        }else{
-          setTotalPageCount(0)
+        } else {
+          setTotalPageCount(0);
         }
       }
       setIsLoading(false);
@@ -60,7 +60,7 @@ export default function Meetings() {
     return async () => {
       await handleGetMeetings(currentPage, filter);
     };
-  }, []);
+  }, [currentPage, filter]);
 
   return (
     <>
@@ -191,12 +191,10 @@ export default function Meetings() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `/dashboard/custom-orders/meetings?${new URLSearchParams(
-                      {
-                        page,
-                      }
-                    )}`,
-                    { scroll: true}
+                    `/dashboard/custom-orders/meetings?${new URLSearchParams({
+                      page,
+                    })}`,
+                    { scroll: true }
                   );
                   await handleGetMeetings(page, filter);
                 }}

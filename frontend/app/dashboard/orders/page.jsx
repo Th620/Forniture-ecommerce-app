@@ -131,7 +131,7 @@ export default function Orders() {
     return async () => {
       await handleGetOrders(searchParamsValues);
     };
-  }, [isLoading]);
+  }, [isLoading, searchParamsValues]);
 
   return (
     <>
@@ -398,12 +398,10 @@ export default function Orders() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `/dashboard/orders?${new URLSearchParams(
-                      {
-                        ...searchParamsValues,
-                        page,
-                      }
-                    )}`,
+                    `/dashboard/orders?${new URLSearchParams({
+                      ...searchParamsValues,
+                      page,
+                    })}`,
                     { scroll: true }
                   );
                   await handleGetOrders({

@@ -39,9 +39,9 @@ const FilteringContainer = ({
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    global?.window?.addEventListener("scroll", handleScroll);
 
-    return () => window.addEventListener("scroll", handleScroll);
+    return () => global?.window?.addEventListener("scroll", handleScroll);
   }, []);
   return (
     <div

@@ -1,7 +1,8 @@
 "use client";
 
-import Loading from "@/app/loading";
+const Loading = dynamic(() => import("@/app/loading"), { ssr: false });
 import { deleteUser, getUsers, updateUserRole } from "@/services/user";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -89,7 +90,11 @@ export default function Clients() {
                 )}
                 <button
                   type="button"
-                  onClick={() => router.push("/dashboard/clients?role=client", { scroll: true})}
+                  onClick={() =>
+                    router.push("/dashboard/clients?role=client", {
+                      scroll: true,
+                    })
+                  }
                   className="flex justify-center items-center w-fit self-end gap-2 capitalize text-sm font-medium bg-yellow px-4 py-2 rounded-md text-white cursor-pointer"
                 >
                   <MdOutlineAdd className="size-4" />

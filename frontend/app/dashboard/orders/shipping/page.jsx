@@ -72,7 +72,7 @@ export default function OrderToShip() {
     return async () => {
       await handleGetShipping(currentPage, filter);
     };
-  }, []);
+  }, [currentPage, filter]);
 
   return (
     <>

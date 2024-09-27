@@ -3,7 +3,7 @@
 import Loading from "@/app/loading";
 import { getUser } from "@/services/user";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdErrorOutline, MdOutlineErrorOutline } from "react-icons/md";
 
 export default function User() {
@@ -15,7 +15,7 @@ export default function User() {
 
   const { id } = useParams();
 
-  const handleGetUser = async ({ id }) => {
+  const handleGetUser = useCallback(async ({ id }) => {
     try {
       setIsLoading(true);
       const data = await getUser({ id });
@@ -31,19 +31,19 @@ export default function User() {
       if (err.status === 401) {
         setError("Unauthorized");
         setTimeout(() => {
-          router.push("/account/sign-in", { scroll: true});
+          router.push("/account/sign-in", { scroll: true });
         }, 2000);
       } else {
         setError(err.message);
       }
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     return async () => {
       await handleGetUser({ id });
     };
-  }, []);
+  }, [handleGetUser, id]);
 
   return (
     <>
@@ -137,7 +137,9 @@ export default function User() {
                 <button
                   type="submit"
                   onClick={() => {
-                    router.push(`/dashboard/orders?u=${user?._id}`, { scroll: true});
+                    router.push(`/dashboard/orders?u=${user?._id}`, {
+                      scroll: true,
+                    });
                   }}
                   className="capitalize w-full md:w-1/3 lg:w-1/4 xl:w-1/5 pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white"
                 >

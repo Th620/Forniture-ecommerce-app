@@ -1,6 +1,5 @@
 "use client";
 
-import Loading from "@/app/loading";
 import PricingBox from "@/components/PricingBox";
 import { BASE_URL } from "@/constants";
 import {
@@ -12,7 +11,7 @@ import { getProduct } from "@/services/products";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { GoArrowLeft } from "react-icons/go";
 import { MdErrorOutline } from "react-icons/md";
@@ -24,7 +23,7 @@ export default function Cart() {
   const router = useRouter();
   const [error, setError] = useState(null);
 
-  const handleCheckCart = async () => {
+  const handleCheckCart = useCallback(async () => {
     try {
       if (cart.items.length > 0) {
         for (const item of cart.items) {
@@ -62,13 +61,13 @@ export default function Cart() {
       }, 4000);
       return error;
     }
-  };
+  }, [cart.items]);
 
   useEffect(() => {
     return async () => {
       await handleCheckCart();
     };
-  }, [cart]);
+  }, [cart, handleCheckCart]);
 
   return (
     <main className="flex flex-col justify-start px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-[100px] min-h-screen mb-14">
@@ -114,7 +113,9 @@ export default function Cart() {
                       <div className="relative aspect-[1/1.2] w-[6vw] bg-bg">
                         <Image
                           src={
-                            item?.image ? BASE_URL + item.image : "/not-found.png"
+                            item?.image
+                              ? BASE_URL + item.image
+                              : "/not-found.png"
                           }
                           layout="fill"
                           objectFit="cover"
@@ -231,9 +232,7 @@ export default function Cart() {
                   <div className="items-center gap-x-4 gap-y-2 flex-wrap w-full pt-7 flex">
                     <button
                       type="button"
-                      onClick={() =>
-                        router.push("/products", { scroll: true})
-                      }
+                      onClick={() => router.push("/products", { scroll: true })}
                       className="capitalize pt-2 pb-[11px] font-medium text-black inline-flex justify-center items-center gap-x-2 transition-all duration-500 hover:gap-x-3"
                     >
                       <GoArrowLeft className="text-lg" />
@@ -251,7 +250,7 @@ export default function Cart() {
           subtotal={cart?.totalPrice}
           onClick={async () => {
             const response = await handleCheckCart();
-            if (!response) router.push("/checkout", { scroll: true});
+            if (!response) router.push("/checkout", { scroll: true });
           }}
           btn={true}
           disabled={cart?.items?.length === 0}

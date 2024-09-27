@@ -56,20 +56,15 @@ export default function Product() {
     }
   };
 
-  // handleGetProduct(slug);
-  console.log(product);
-
   useEffect(() => {
     return async () => {
       try {
-        console.log(slug);
         await handleGetProduct(slug);
       } catch (error) {
-        console.log(error);
         setError(error.message);
       }
     };
-  }, []);
+  }, [slug]);
 
   return (
     <>

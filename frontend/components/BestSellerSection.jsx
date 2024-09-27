@@ -7,89 +7,6 @@ import ProductCard from "./ProductCard";
 import { getBestSellers } from "@/services/products";
 import { getCategories } from "@/services/category";
 
-// const products = [
-//   {
-//     id: 1,
-//     title: "chair",
-//     price: 45.5,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 2,
-//     title: "chair",
-//     price: 45.99,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 3,
-//     title: "chair",
-//     price: 45.0,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 4,
-//     title: "chair",
-//     price: 45.0,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 1,
-//     title: "chair",
-//     price: 45.5,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 2,
-//     title: "chair",
-//     price: 45.99,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 3,
-//     title: "chair",
-//     price: 45.0,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-//   {
-//     id: 4,
-//     title: "chair",
-//     price: 45.0,
-//     keywords: [],
-//     productInfo: "",
-//     stock: 10,
-//     category: "",
-//     image: "",
-//   },
-// ];
-
 const BestSellerSection = () => {
   const [index, setIndex] = useState(0);
   const [active, setActive] = useState("all categories");
@@ -126,7 +43,7 @@ const BestSellerSection = () => {
       await handleGetBestSellers(active);
       await handleGetCategories();
     };
-  }, []);
+  }, [active]);
 
   return (
     <section className="flex flex-col justify-center px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14">

@@ -38,7 +38,7 @@ const DashboardSearch = ({ setOpenSearch }) => {
         setOpenSearch(false);
       }
     });
-  }, []);
+  }, [setOpenSearch]);
 
   useEffect(() => {
     return () => {

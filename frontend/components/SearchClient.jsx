@@ -38,7 +38,7 @@ const SearchClient = ({ setOpenSearch }) => {
         setOpenSearch(false);
       }
     });
-  }, []);
+  }, [setOpenSearch]);
 
   useEffect(() => {
     return () => {

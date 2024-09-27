@@ -12,7 +12,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdOutlineErrorOutline } from "react-icons/md";
 
 export default function Order() {
@@ -25,7 +25,7 @@ export default function Order() {
   const [openShippingDatePopUp, setOpenShippingDatePopUp] = useState(false);
   const [date, setDate] = useState(null);
 
-  const handleGetOrder = async () => {
+  const handleGetOrder = useCallback(async () => {
     try {
       const data = await getOrder({ id });
       if (data) {
@@ -36,7 +36,7 @@ export default function Order() {
       setIsLoading(false);
       setError(error.message);
     }
-  };
+  }, [id]);
 
   const handleCancelOrder = async () => {
     try {
@@ -79,7 +79,7 @@ export default function Order() {
     return async () => {
       await handleGetOrder();
     };
-  }, [isLoading]);
+  }, [isLoading, handleGetOrder]);
 
   return (
     <main className="min-h-screen w-full bg-bg dark:bg-darkBody font-montserrat pt-[60px] md:pl-[20%] text-black dark:text-white">

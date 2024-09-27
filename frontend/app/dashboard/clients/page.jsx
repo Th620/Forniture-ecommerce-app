@@ -4,7 +4,7 @@ import Loading from "@/app/loading";
 import { deleteUser, getUsers, updateUserRole } from "@/services/user";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   MdDelete,
   MdErrorOutline,
@@ -18,9 +18,9 @@ export default function Clients() {
   const [isLoading, setIsLoading] = useState({});
 
   const searchParams = useSearchParams();
-  const searchParamsValues = Object.fromEntries(searchParams);
 
-  const handleGetUsers = async () => {
+  const handleGetUsers = useCallback(async () => {
+    const searchParamsValues = Object.fromEntries(searchParams);
     try {
       setIsLoading(true);
       const users = await getUsers(searchParamsValues);
@@ -33,7 +33,7 @@ export default function Clients() {
       setIsLoading(false);
       setError({ users: true, Error: error.message });
     }
-  };
+  }, [searchParams]);
 
   const handleUpdateUserRole = async ({ id }) => {
     try {
@@ -67,7 +67,7 @@ export default function Clients() {
         setError(error.message);
       }
     };
-  }, []);
+  }, [handleGetUsers]);
 
   return (
     <>

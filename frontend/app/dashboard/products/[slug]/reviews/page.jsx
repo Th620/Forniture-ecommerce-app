@@ -10,7 +10,7 @@ import {
 } from "@/services/review";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaRegSquareCheck, FaSquareCheck } from "react-icons/fa6";
 import {
   MdDelete,
@@ -34,31 +34,32 @@ export default function Reviews() {
   );
   const [totalPageCount, setTotalPageCount] = useState(0);
 
-  const handleGetReviews = async (page) => {
-    try {
-      const response = await getProductReviews({
-        slug,
-        page,
-      });
-      if (response.data) {
-        setProductTitle(response.data?.product);
-        setReviews(response.data?.reviews);
-        if (JSON.parse(response?.headers?.get("x-totalpagecount"))) {
-          setTotalPageCount(
-            JSON.parse(response?.headers?.get("x-totalpagecount"))
-          );
-        } else {
-          setTotalPageCount(0);
+  const handleGetReviews = useCallback(
+    async (page) => {
+      try {
+        const response = await getProductReviews({
+          slug,
+          page,
+        });
+        if (response.data) {
+          setProductTitle(response.data?.product);
+          setReviews(response.data?.reviews);
+          if (JSON.parse(response?.headers?.get("x-totalpagecount"))) {
+            setTotalPageCount(
+              JSON.parse(response?.headers?.get("x-totalpagecount"))
+            );
+          } else {
+            setTotalPageCount(0);
+          }
         }
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        setError({ reviews: true, Error: error.message });
       }
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-
-      setError({ reviews: true, Error: error.message });
-    }
-  };
+    },
+    [slug]
+  );
 
   const handleCheckReview = async (id) => {
     try {
@@ -84,7 +85,7 @@ export default function Reviews() {
     return async () => {
       await handleGetReviews(currentPage);
     };
-  }, []);
+  }, [currentPage, handleGetReviews]);
 
   return (
     <>
@@ -198,12 +199,10 @@ export default function Reviews() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `/dashboard/products/${slug}/reviews?${new URLSearchParams(
-                      {
-                        page,
-                      }
-                    )}`,
-                    { scroll: true}
+                    `/dashboard/products/${slug}/reviews?${new URLSearchParams({
+                      page,
+                    })}`,
+                    { scroll: true }
                   );
                   await handleGetReviews(page);
                 }}

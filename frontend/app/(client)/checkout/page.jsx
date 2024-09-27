@@ -7,7 +7,7 @@ import { getCountries } from "@/services/countries";
 import { getCartTotalPrice, newOrder } from "@/services/order";
 import { getProfile, updateProfile } from "@/services/user";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   MdErrorOutline,
   MdKeyboardArrowDown,
@@ -52,7 +52,7 @@ export default function Checkout() {
     });
   }, []);
 
-  const getProfileData = async () => {
+  const getProfileData = useCallback(async () => {
     try {
       const data = await getProfile();
       if (data) {
@@ -73,7 +73,7 @@ export default function Checkout() {
       if (err.status === 401) {
         setError({ Error: "Unauthorized" });
         setTimeout(() => {
-          router.push("/account/sign-in", { scroll: true});
+          router.push("/account/sign-in", { scroll: true });
         }, 2000);
       } else {
         setError({ Error: err.message });
@@ -82,7 +82,7 @@ export default function Checkout() {
         }, 3000);
       }
     }
-  };
+  }, [router]);
 
   const handleupdateProfile = async (e) => {
     e.preventDefault();
@@ -133,7 +133,7 @@ export default function Checkout() {
       });
       if (data) {
         dispatch(setUserInfo(data));
-        localStorage.setItem(
+        global?.window?.localStorage?.setItem(
           "account",
           JSON.stringify({
             ...JSON.parse(localStorage.getItem("account")),
@@ -187,7 +187,7 @@ export default function Checkout() {
           throw new Error("Unexpected error occured. Please try again");
 
         dispatch(setUserInfo(data));
-        localStorage.setItem(
+        global?.window?.localStorage?.setItem(
           "account",
           JSON.stringify({
             ...JSON.parse(localStorage.getItem("account")),
@@ -278,7 +278,7 @@ export default function Checkout() {
     }
   };
 
-  const handlegetCartTotalPrice = async () => {
+  const handlegetCartTotalPrice = useCallback(async () => {
     try {
       const data = await getCartTotalPrice({ items: cart?.items });
       if (data) {
@@ -292,7 +292,7 @@ export default function Checkout() {
         setError(null);
       }, 3000);
     }
-  };
+  }, [cart?.items]);
 
   useEffect(() => {
     return async () => {
@@ -300,7 +300,7 @@ export default function Checkout() {
       await handleGetCountries();
       await handlegetCartTotalPrice();
     };
-  }, [cart]);
+  }, [cart, getProfileData, handlegetCartTotalPrice]);
 
   return (
     <main className="flex flex-col justify-start px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen">
@@ -353,7 +353,7 @@ export default function Checkout() {
               type={"button"}
               onClick={() => {
                 if (order._id) {
-                  router.push(`/orders/${order._id}`, { scroll: true});
+                  router.push(`/orders/${order._id}`, { scroll: true });
                 }
               }}
               className="capitalize pt-2 pb-[11px] bg-navy hover:bg-navyHover transition-colors duration-75 text-white w-1/2 mt-4 self-center"

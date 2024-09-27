@@ -1,7 +1,7 @@
 "use client";
 
 import { MdKeyboardArrowDown, MdOutlineErrorOutline } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FilterPopUp from "@/components/FilterPopUp";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getCategories } from "@/services/category";
@@ -74,7 +74,7 @@ export default function Products() {
         setCategories(result);
       }
     };
-  }, []);
+  }, [currentPage, handleGetProducts]);
 
   const getAvailableColorsAdSizes = async () => {
     try {
@@ -116,47 +116,43 @@ export default function Products() {
 
   const [products, setProducts] = useState([]);
 
-  const handleGetProducts = async ({
-    color,
-    size,
-    sort,
-    category,
-    search,
-    page,
-  }) => {
-    try {
-      const { data, headers } = await getProducts({
-        color,
-        size,
-        sort,
-        category,
-        searchKeyword: search,
-        pageSize: 16,
-        page,
-      });
+  const handleGetProducts = useCallback(
+    async ({ color, size, sort, category, search, page }) => {
+      try {
+        const { data, headers } = await getProducts({
+          color,
+          size,
+          sort,
+          category,
+          searchKeyword: search,
+          pageSize: 16,
+          page,
+        });
 
-      if (data) {
-        if (data.length === 0) {
+        if (data) {
+          if (data.length === 0) {
+            setNoProducts(true);
+          }
+          if (JSON.parse(headers.get("x-totalpagecount"))) {
+            setTotalPageCount(JSON.parse(headers.get("x-totalpagecount")));
+          } else {
+            setTotalPageCount(0);
+          }
+          setProducts([...data]);
+        } else {
           setNoProducts(true);
         }
-        if (JSON.parse(headers.get("x-totalpagecount"))) {
-          setTotalPageCount(JSON.parse(headers.get("x-totalpagecount")));
-        } else {
-          setTotalPageCount(0);
-        }
-        setProducts([...data]);
-      } else {
-        setNoProducts(true);
-      }
 
-      setIsLoading(false);
-      return products;
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-      setError(error.message);
-    }
-  };
+        setIsLoading(false);
+        return products;
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+        setError(error.message);
+      }
+    },
+    [products]
+  );
 
   useEffect(() => {
     const f = async () => {
@@ -171,7 +167,7 @@ export default function Products() {
       });
     };
     f();
-  }, [searchParams]);
+  }, [searchParams, currentPage, handleGetProducts]);
 
   return (
     <>
@@ -212,7 +208,7 @@ export default function Products() {
                       }
                       router.replace(
                         `/products?${new URLSearchParams(searchParamsvalues)}`,
-                        { scroll: true}
+                        { scroll: true }
                       );
                       try {
                         await handleGetProducts({
@@ -253,7 +249,7 @@ export default function Products() {
                       }
                       router.replace(
                         `/products?${new URLSearchParams(searchParamsvalues)}`,
-                        { scroll: true}
+                        { scroll: true }
                       );
                       try {
                         await handleGetProducts({
@@ -300,7 +296,7 @@ export default function Products() {
                       }
                       router.replace(
                         `/products?${new URLSearchParams(searchParamsvalues)}`,
-                        { scroll: true}
+                        { scroll: true }
                       );
                       try {
                         await handleGetProducts({
@@ -357,7 +353,7 @@ export default function Products() {
                             `/products?${new URLSearchParams(
                               searchParamsvalues
                             )}`,
-                            { scroll: true}
+                            { scroll: true }
                           );
                           try {
                             await handleGetProducts({
@@ -415,7 +411,7 @@ export default function Products() {
                           ...searchParamsvalues,
                           page,
                         })}`,
-                        { scroll: true}
+                        { scroll: true }
                       );
                       await handleGetProducts({
                         ...searchParamsvalues,

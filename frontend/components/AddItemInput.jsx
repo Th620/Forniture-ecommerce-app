@@ -19,7 +19,6 @@ const AddItemInput = ({
   value,
   handleChange,
   placeholder,
-  inputClassName,
   group,
   error,
   setGroup,

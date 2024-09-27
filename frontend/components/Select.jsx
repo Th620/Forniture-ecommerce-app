@@ -1,3 +1,5 @@
+"use client";
+
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 const Select = ({
@@ -21,7 +23,7 @@ const Select = ({
         type="button"
         onClick={() => {
           setOpenSelect((prev) => !prev);
-          addFn()
+          addFn();
         }}
         className={`${btnClassName} overflow-ellipsis text-nowrap overflow-hidden flex justify-between h-10 btn items-center px-4 bg-white dark:bg-darkBg text-sm py-1 capitalize font-medium w-full`}
       >

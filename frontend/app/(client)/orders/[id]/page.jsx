@@ -6,7 +6,7 @@ import { cancelOrder, getOrder } from "@/services/order";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdOutlineErrorOutline } from "react-icons/md";
 
 export default function Order() {
@@ -17,7 +17,7 @@ export default function Order() {
   const [order, setOrder] = useState(null);
   const [canceled, setCanceled] = useState(false);
 
-  const handleGetOrder = async () => {
+  const handleGetOrder = useCallback(async () => {
     try {
       const data = await getOrder({ id });
       if (data) {
@@ -28,7 +28,7 @@ export default function Order() {
       setIsLoading(false);
       setError({ order: true, Error: error.message });
     }
-  };
+  }, [id]);
 
   const handleCancelOrder = async () => {
     try {
@@ -52,7 +52,7 @@ export default function Order() {
     return async () => {
       await handleGetOrder();
     };
-  }, [canceled, id]);
+  }, [canceled, handleGetOrder]);
 
   return (
     <main className="flex flex-col justify-start items-center gap-y-14 px-10 md:px-75 lg:px-150 font-montserrat text-black bg-white pb-14 mt-150 min-h-screen mb-14 relative">

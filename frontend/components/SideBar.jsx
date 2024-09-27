@@ -58,9 +58,9 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           >
             <Image
               src={
-                localStorage.theme === "dark" ||
+               global?.window?.localStorage?.theme === "dark" ||
                 (!("theme" in localStorage) &&
-                  window.matchMedia("(prefers-color-scheme: dark)").matches)
+                  global?.window?.matchMedia("(prefers-color-scheme: dark)").matches)
                   ? LogoDark
                   : Logo
               }

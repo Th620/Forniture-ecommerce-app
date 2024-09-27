@@ -117,7 +117,7 @@ export default function NewProduct() {
         setCategories(result);
       }
     };
-  }, []);
+  }, [slug]);
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {

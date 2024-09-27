@@ -28,7 +28,7 @@ const NavBar = ({}) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
+      const scrollTop = global?.window?.scrollY;
       if (scrollTop >= 150) {
         setScrolled(true);
       } else {
@@ -36,9 +36,9 @@ const NavBar = ({}) => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    global?.window?.addEventListener("scroll", handleScroll);
 
-    return () => window.addEventListener("scroll", handleScroll);
+    return () => global?.window?.addEventListener("scroll", handleScroll);
   }, []);
 
   return (

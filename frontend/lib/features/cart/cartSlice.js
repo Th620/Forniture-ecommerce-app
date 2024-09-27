@@ -2,7 +2,7 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = localStorage.getItem("cart")
+const initialState = global?.window?.localStorage?.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))
   : {
       items: [],
@@ -29,7 +29,9 @@ export const cartSlice = createSlice({
         state.totalQuantity += action.payload.quantity;
       }
       state.totalPrice += action.payload.price * action.payload.quantity;
-      localStorage.setItem("cart", JSON.stringify(state));
+      if (window !== undefined) {
+       global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
+      }
     },
     removeItem: (state, action) => {
       const existItem = state.items.find(
@@ -48,7 +50,9 @@ export const cartSlice = createSlice({
             item.size !== action.payload.size
         );
       }
-      localStorage.setItem("cart", JSON.stringify(state));
+    if (window !== undefined) {
+       global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
+    }
     },
     increaseQuantity: (state, action) => {
       const existItem = state.items.find(
@@ -61,7 +65,9 @@ export const cartSlice = createSlice({
         existItem.quantity++;
         state.totalQuantity++;
         state.totalPrice += existItem.price;
-        localStorage.setItem("cart", JSON.stringify(state));
+      if (window !== undefined) {
+         global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
+      }
       }
     },
     decreaseQuantity: (state, action) => {
@@ -75,14 +81,18 @@ export const cartSlice = createSlice({
         existItem.quantity--;
         state.totalQuantity--;
         state.totalPrice -= existItem.price;
-        localStorage.setItem("cart", JSON.stringify(state));
+      if (window !== undefined) {
+         global?.window?.localStorage?.setItem("cart", JSON.stringify(state));
+      }
       }
     },
     clearCart: (state, action) => {
       state.items = [];
       state.totalPrice = 0;
       state.totalQuantity = 0;
-      localStorage.removeItem("cart");
+     if (window !== undefined) {
+      global?.window?.localStorage?.removeItem("cart");
+     }
     },
   },
 });

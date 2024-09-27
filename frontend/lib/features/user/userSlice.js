@@ -1,8 +1,10 @@
+"use client";
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userInfo:
-    localStorage.getItem("account") &&
+    global?.window?.localStorage?.getItem("account") &&
     JSON.parse(localStorage.getItem("account")).expiresAt > Date.now()
       ? JSON.parse(localStorage.getItem("account")).data
       : null,
@@ -17,7 +19,9 @@ export const userSlice = createSlice({
     },
     resetUserInfo: (state, action) => {
       state.userInfo = null;
-      localStorage.removeItem("account");
+      if (window !== undefined) {
+        global?.window?.localStorage?.removeItem("account");
+      }
     },
   },
 });

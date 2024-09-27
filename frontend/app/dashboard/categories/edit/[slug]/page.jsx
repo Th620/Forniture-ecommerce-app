@@ -43,7 +43,7 @@ export default function EditCategory() {
     return async () => {
       await handleGetCategory(slug);
     };
-  }, []);
+  }, [slug]);
 
   const handleEditCategory = async (e) => {
     e.preventDefault();
@@ -81,7 +81,7 @@ export default function EditCategory() {
         console.log(response);
         setDone(true);
         setTimeout(() => {
-          router.push("/dashboard/categories", { scroll: true});
+          router.push("/dashboard/categories", { scroll: true });
         }, 3000);
       }
       setName("");

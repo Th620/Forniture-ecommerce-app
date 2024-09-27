@@ -64,7 +64,7 @@ export default function States() {
     return async () => {
       await handleGetCountry(countryId);
     };
-  }, [isLoading]);
+  }, [isLoading, countryId]);
 
   return (
     <>

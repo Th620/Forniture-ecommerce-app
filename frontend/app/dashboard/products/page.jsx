@@ -82,9 +82,10 @@ export default function Products() {
 
   useEffect(() => {
     return async () => {
+      const searchParamsvalues = Object.fromEntries([...searchParams]);
       await handleGetProducts(searchParamsvalues);
     };
-  }, []);
+  }, [searchParams]);
 
   const handleDeleteProduct = async (id) => {
     try {

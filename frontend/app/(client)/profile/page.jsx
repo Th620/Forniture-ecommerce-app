@@ -8,7 +8,7 @@ import { resetUserInfo, setUserInfo } from "@/lib/features/user/userSlice";
 import { getCountries } from "@/services/countries";
 import { getProfile, logout, updateProfile } from "@/services/user";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { MdErrorOutline, MdKeyboardArrowDown } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -109,7 +109,7 @@ export default function Profile() {
           setDone("");
         }, 3000);
         dispatch(setUserInfo(data));
-        localStorage.setItem(
+        global?.window?.localStorage?.setItem(
           "account",
           JSON.stringify({
             ...JSON.parse(localStorage.getItem("account")),
@@ -127,7 +127,7 @@ export default function Profile() {
     }
   };
 
-  const getProfileData = async () => {
+  const getProfileData = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await getProfile();
@@ -148,13 +148,13 @@ export default function Profile() {
       if (err.status === 401) {
         setError("Unauthorized");
         setTimeout(() => {
-          router.push("/account/sign-in", { scroll: true});
+          router.push("/account/sign-in", { scroll: true });
         }, 2000);
       } else {
         setError({ handlers: true, Error: err?.message });
       }
     }
-  };
+  }, [router]);
 
   const handleLogout = async () => {
     try {
@@ -170,8 +170,8 @@ export default function Profile() {
       setPhone("");
       dispatch(resetUserInfo());
       dispatch(clearCart());
-      localStorage.removeItem("cart");
-      router.push("/account/sign-in", { scroll: true});
+      global?.window?.localStorage?.removeItem("cart");
+      router.push("/account/sign-in", { scroll: true });
     } catch (error) {
       setIsLoading(false);
       setError({ handlers: true, Error: error?.message });
@@ -183,7 +183,7 @@ export default function Profile() {
       await getProfileData();
       await handleGetCountries();
     };
-  }, []);
+  }, [getProfileData]);
 
   return (
     <AuthProvider>
@@ -411,7 +411,7 @@ export default function Profile() {
               </button> */}
               <button
                 type="button"
-                onClick={() => router.push("/orders", { scroll: true})}
+                onClick={() => router.push("/orders", { scroll: true })}
                 className="capitalize flex justify-center items-center gap-2 transition-all hover:gap-3 duration-500 w-full md:w-1/3 lg:w-1/4 xl:w-1/5 pt-[11px] pb-3 font-medium bg-gray hover:bg-grayHover text-sm text-white"
               >
                 My Orders

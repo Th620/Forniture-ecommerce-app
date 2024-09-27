@@ -14,9 +14,9 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     if (
-      localStorage.theme === "dark" ||
+      global?.window?.localStorage?.theme === "dark" ||
       (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
+        global?.window?.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
       setTheme("dark");
     } else {
@@ -32,11 +32,12 @@ export default function DashboardLayout({ children }) {
         <Suspense fallback={<Loading />}>
           <div
             className={`relative ${
-              localStorage.theme === "dark" ||
-              (!("theme" in localStorage) &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches)
-                ? "dark"
-                : ""
+              theme === "dark" ? "dark" : ""
+              //  global?.window?.localStorage?.theme === "dark" ||
+              //   (!("theme" in localStorage) &&
+              //     global?.window?.matchMedia("(prefers-color-scheme: dark)").matches)
+              //     ? "dark"
+              //     : ""
             }`}
           >
             <SideBar
@@ -49,7 +50,7 @@ export default function DashboardLayout({ children }) {
               theme={theme}
               setTheme={setTheme}
             />
-            {children}{" "}
+            {children}
             {openSearch && <DashboardSearch setOpenSearch={setopenSearch} />}
           </div>
         </Suspense>
