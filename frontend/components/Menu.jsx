@@ -6,7 +6,7 @@ import { FiUser } from "react-icons/fi";
 import { IoIosSearch } from "react-icons/io";
 import { IoBagOutline } from "react-icons/io5";
 
-const Menu = ({ setOpenMenu, setOpenSearch, user }) => {
+const Menu = ({ setOpenMenu, setOpenSearch, firstName }) => {
   return (
     <div className="flex justify-center items-center flex-col gap-y-14 lg:hidden fixed top-0 left-0 w-full h-screen bg-white text-black transition-all duration-200 z-50">
       <ul className="flex flex-col justify-center items-center gap-y-6">
@@ -40,7 +40,7 @@ const Menu = ({ setOpenMenu, setOpenSearch, user }) => {
           </button>
         </li>
         <Link
-          href={{ pathname: `/${user ? "profile" : "account/sign-in"}` }}
+          href={{ pathname: `/${firstName ? "profile" : "account/sign-in"}` }}
           onClick={() => setOpenMenu(false)}
         >
           <li className="text-2xl">

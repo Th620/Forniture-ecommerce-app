@@ -171,7 +171,7 @@ const NavBar = ({}) => {
         <Menu
           setOpenMenu={setOpenMenu}
           setOpenSearch={setOpenSearch}
-          user={user}
+          firstName={firstName}
         />
       )}
     </nav>
