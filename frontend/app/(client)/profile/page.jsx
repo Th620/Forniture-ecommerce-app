@@ -187,7 +187,7 @@ export default function Profile() {
       await getProfileData();
       await handleGetCountries();
     };
-  }, [getProfileData]);
+  }, []);
 
   return (
     <AuthProvider>
