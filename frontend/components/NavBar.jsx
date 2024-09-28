@@ -131,7 +131,7 @@ const NavBar = ({}) => {
                     {firstName[0]}
                   </div>
                 ) : (
-                  <div className="w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] font-lato">
+                  <div className="w-5 h-5 uppercase flex justify-center items-center font-meduim font-lato">
                     <FiUser />
                   </div>
                 )}

@@ -19,6 +19,7 @@ dotenv.config();
 
 app.use(
   cors({
+    origin: "https://forniture-ecommerce-app-1dbi.vercel.app",
     credentials: true,
     exposedHeaders: [
       "X-TotalPagecount",
