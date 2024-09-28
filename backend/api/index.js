@@ -19,7 +19,6 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: "https://forniture-ecommerce-app-1dbi.vercel.app",
     credentials: true,
     exposedHeaders: [
       "X-TotalPagecount",
@@ -69,7 +68,6 @@ app.use("/api/custom-orders", messageRoute);
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 // //errorHandlers
-
 
 app.use(invalidPathHandler);
 app.use(errorResposerHandler);

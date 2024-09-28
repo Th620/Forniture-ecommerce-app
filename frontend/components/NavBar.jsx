@@ -3,7 +3,7 @@
 import { Logo, navLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FiMenu, FiUser } from "react-icons/fi";
 import Menu from "./Menu";
 import { usePathname } from "next/navigation";
@@ -13,13 +13,35 @@ import { useSelector } from "react-redux";
 import { useStateContext } from "@/context/StateContext";
 import CartContainer from "./CartContainer";
 import SearchClient from "./SearchClient";
+import { getProfile } from "@/services/user";
 
 const NavBar = ({}) => {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const [firstName, setFirstName] = useState("");
 
   const cart = useSelector((state) => state.cart);
-  const user = useSelector((state) => state.user);
+
+  const getProfileData = useCallback(async () => {
+    try {
+      const data = await getProfile();
+      console.log(data);
+
+      if (data) {
+        setFirstName(data.firstName);
+      }
+    } catch (error) {
+      const err = JSON.parse(error?.message);
+      if (err.status === 401) {
+        setError("Unauthorized");
+        setTimeout(() => {
+          router.push("/account/sign-in", { scroll: true });
+        }, 2000);
+      } else {
+        setError({ handlers: true, Error: err?.message });
+      }
+    }
+  }, []);
 
   const pathName = usePathname();
 
@@ -39,6 +61,12 @@ const NavBar = ({}) => {
     global?.window?.addEventListener("scroll", handleScroll);
 
     return () => global?.window?.addEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    return async () => {
+      await getProfileData();
+    };
   }, []);
 
   return (
@@ -62,21 +90,22 @@ const NavBar = ({}) => {
         <>
           <ul className="hidden lg:flex text-sm font-semibold justify-center items-center gap-x-6">
             {navLinks.map((navLink) => (
-              <Link
-                href={{ pathname: `/${navLink.link}` }}
+              <li
                 key={navLink.id}
-                replace
+                className={`hover:text-navy ${
+                  `/${navLink.link}` === pathName
+                    ? "font-semibold text-navy"
+                    : "text-black font-medium"
+                }`}
               >
-                <li
-                  className={`hover:text-navy ${
-                    `/${navLink.link}` === pathName
-                      ? "font-semibold text-navy"
-                      : "text-black font-medium"
-                  }`}
+                <Link
+                  href={{ pathname: `/${navLink.link}` }}
+                  replace
+                  className="inline-block h-full w-full"
                 >
                   {navLink.title}
-                </li>
-              </Link>
+                </Link>
+              </li>
             ))}
           </ul>
           <ul className="hidden lg:flex justify-center items-center gap-x-5">
@@ -89,21 +118,25 @@ const NavBar = ({}) => {
                 <IoIosSearch />
               </button>
             </li>
-            <Link
-              href={{
-                pathname: `/${!user?.userInfo ? "account/sign-in" : "profile"}`,
-              }}
-            >
-              <li className="">
-                {user?.userInfo?.firstName ? (
+
+            <li className="w-5 h-5 overflow-hidden">
+              <Link
+                href={{
+                  pathname: `/${!firstName ? "account/sign-in" : "profile"}`,
+                }}
+                className=""
+              >
+                {firstName ? (
                   <div className="rounded-full w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] border-[1.5px] border-black font-lato">
-                    {user.userInfo.firstName[0]}
+                    {firstName[0]}
                   </div>
                 ) : (
-                  <FiUser />
+                  <div className="w-5 h-5 uppercase flex justify-center items-center  font-meduim text-[10px] font-lato">
+                    <FiUser />
+                  </div>
                 )}
-              </li>
-            </Link>
+              </Link>
+            </li>
 
             <li className="relative w-fit">
               {cart?.totalQuantity > 0 && (

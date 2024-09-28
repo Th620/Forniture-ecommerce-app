@@ -184,8 +184,6 @@ export default function Profile() {
     }
   };
 
-  getProfileData();
-
   useEffect(() => {
     console.log("done");
 
