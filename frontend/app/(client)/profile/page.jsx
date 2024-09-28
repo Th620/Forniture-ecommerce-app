@@ -33,6 +33,8 @@ export default function Profile() {
 
   const dispatch = useDispatch();
 
+  console.log(firstName);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -131,6 +133,8 @@ export default function Profile() {
     try {
       setIsLoading(true);
       const data = await getProfile();
+      console.log(data);
+
       if (data) {
         setFirstName(data.firstName);
         setLastName(data.lastName);
