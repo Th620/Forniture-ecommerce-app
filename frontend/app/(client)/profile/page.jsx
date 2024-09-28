@@ -131,6 +131,8 @@ export default function Profile() {
 
   const getProfileData = useCallback(async () => {
     try {
+      console.log("done");
+
       setIsLoading(true);
       const data = await getProfile();
       console.log(data);
@@ -181,6 +183,8 @@ export default function Profile() {
       setError({ handlers: true, Error: error?.message });
     }
   };
+
+  getProfileData();
 
   useEffect(() => {
     console.log("done");
