@@ -183,6 +183,8 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    console.log("done");
+
     return async () => {
       await getProfileData();
       await handleGetCountries();
