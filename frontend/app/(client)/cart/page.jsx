@@ -112,9 +112,9 @@ export default function Cart() {
                     >
                       <div className="relative aspect-[1/1.2] w-[6vw] bg-bg">
                         <Image
-                          src={
+                          src={process.env.NEXT_PUBLIC_BASE_URL +
                             item?.image
-                              ? process.env.NEXT_PUBLIC_BASE_URL + item.image
+                              ?  item.image
                               : "/not-found.png"
                           }
                           layout="fill"

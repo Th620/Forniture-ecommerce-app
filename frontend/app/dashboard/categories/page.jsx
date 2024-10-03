@@ -123,9 +123,9 @@ export default function Categories() {
                             >
                               <div className="relative aspect-[1/1.2] sm:min-h-[10vh] min-h-[7vh] text-xs bg-white dark:bg-black">
                                 <Image
-                                  src={
+                                  src={process.env.NEXT_PUBLIC_BASE_URL +
                                     category?.image
-                                      ? process.env.NEXT_PUBLIC_BASE_URL + category?.image
+                                      ?  category?.image
                                       : "/not-found.png"
                                   }
                                   layout="fill"

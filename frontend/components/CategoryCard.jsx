@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import React from "react";
 
@@ -10,7 +9,11 @@ const CategoryCard = ({ className, category, onClick }) => {
     >
       <div className="relative overflow-hidden w-full aspect-[1/1.4] bg-bg flex justify-center items-center">
         <Image
-          src={category?.image ? process.env.NEXT_PUBLIC_BASE_URL + category.image : "/lmap.png"}
+          src={
+            category?.image
+              ? process.env.NEXT_PUBLIC_BASE_URL + category.image
+              : "/lmap.png"
+          }
           objectFit="cover"
           fill
           alt={category?.name}

@@ -139,11 +139,16 @@ const NavBar = ({}) => {
             </li>
 
             <li className="relative w-fit">
-              {cart?.totalQuantity > 0 && (
-                <span className="absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full bg-red-700 text-white">
-                  {cart.totalQuantity}
-                </span>
-              )}
+              <span
+                className={`absolute -right-1 -top-0.5 h-3 w-3 text-[8px] font-semibold flex justify-center items-center rounded-full ${
+                  cart?.totalQuantity > 0
+                    ? "bg-red-700 text-white"
+                    : "bg-transparent"
+                } `}
+              >
+                {cart.totalQuantity}
+              </span>
+
               <Link href={"/cart"}>
                 <IoBagOutline
                   className="text-xl cursor-pointer"

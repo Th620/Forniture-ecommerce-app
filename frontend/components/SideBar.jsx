@@ -32,7 +32,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
     try {
       await logout();
       dispatch(resetUserInfo());
-      router.push("/", { scroll: true});
+      router.push("/", { scroll: true });
     } catch (error) {
       setError(error.message);
     }
@@ -58,9 +58,10 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           >
             <Image
               src={
-               global?.window?.localStorage?.theme === "dark" ||
+                global?.window?.localStorage?.theme === "dark" ||
                 (!("theme" in localStorage) &&
-                  global?.window?.matchMedia("(prefers-color-scheme: dark)").matches)
+                  global?.window?.matchMedia("(prefers-color-scheme: dark)")
+                    .matches)
                   ? LogoDark
                   : Logo
               }
@@ -75,7 +76,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
         <div className="flex flex-col items-center gap-2 w-full">
           <button
             onClick={() => {
-              router.push("/dashboard", { scroll: true});
+              router.push("/dashboard", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-medium w-full ${
@@ -87,7 +88,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/clients", { scroll: true});
+              router.push("/dashboard/clients", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -99,7 +100,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/products", { scroll: true});
+              router.push("/dashboard/products", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -111,7 +112,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/categories", { scroll: true});
+              router.push("/dashboard/categories", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -123,7 +124,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/orders", { scroll: true});
+              router.push("/dashboard/orders", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -135,7 +136,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/shipping", { scroll: true});
+              router.push("/dashboard/shipping", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full  ${
@@ -147,7 +148,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/custom-orders", { scroll: true});
+              router.push("/dashboard/custom-orders", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full ${
@@ -159,7 +160,7 @@ const SideBar = ({ showMenu, setShowMenu, setOpenSearch }) => {
           </button>
           <button
             onClick={() => {
-              router.push("/dashboard/admins", { scroll: true});
+              router.push("/dashboard/admins", { scroll: true });
               setShowMenu(false);
             }}
             className={`text-[#8C8C8C] capitalize flex pl-10 xl:pl-8 lg:pl-4 md:pl-2 items-center py-3 hover:bg-navy transition-colors duration-100 hover:text-white rounded-[4px] gap-2 font-meduim w-full  ${

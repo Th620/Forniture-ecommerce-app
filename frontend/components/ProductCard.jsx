@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -24,11 +23,15 @@ const ProductCard = ({
       <Link href={`/products/${product?.slug}`} className="flex flex-col">
         <div className="relative overflow-hidden w-full aspect-[1/1.4] bg-bg flex justify-center items-center">
           <Image
-            src={product?.images ? process.env.NEXT_PUBLIC_BASE_URL + product?.images[0] : "/not-found.png"}
+            src={
+              product?.images
+                ? process.env.NEXT_PUBLIC_BASE_URL + product?.images[0]
+                : "/not-found.png"
+            }
             objectFit="cover"
             layout="fill"
             alt={product?.title}
-          />{" "}
+          />
           {soldOut && (
             <div className="w-full h-full bg-black bg-opacity-10 absolute top-0 left-0"></div>
           )}

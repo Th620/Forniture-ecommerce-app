@@ -169,7 +169,10 @@ export default function Product() {
             <div className="md:col-span-8 md:col-start-1 w-full flex flex-col gap-y-4 md:order-first">
               <div className="relative w-full aspect-square bg-bg">
                 <Image
-                  src={process.env.NEXT_PUBLIC_BASE_URL + selectedImg}
+                  src={
+                    process.env.NEXT_PUBLIC_BASE_URL + selectedImg ||
+                    "/not-found.png"
+                  }
                   layout="fill"
                   objectFit="cover"
                   alt="img"

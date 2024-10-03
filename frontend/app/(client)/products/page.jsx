@@ -167,7 +167,7 @@ export default function Products() {
       });
     };
     f();
-  }, [searchParams, currentPage, handleGetProducts]);
+  }, []);
 
   return (
     <>

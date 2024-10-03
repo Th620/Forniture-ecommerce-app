@@ -719,12 +719,15 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
       }
     }, 0);
 
-    const profitsPercentage = 100 - (lastMonthProfits * 100) / profits;
+    const profitsPercentage =
+      profits > 0 ? 100 - (lastMonthProfits * 100) / profits : -100;
     const productSlodPercentage =
-      100 - (productSoldLastMonth * 100) / productSold;
+      productSold > 0 ? 100 - (productSoldLastMonth * 100) / productSold : -100;
 
     const ordersPercentage =
-      100 - (LastMonthOrders.length * 100) / orders.length;
+      orders.length > 0
+        ? 100 - (LastMonthOrders.length * 100) / orders.length
+        : -100;
 
     const customers = await User.find().populate([
       { path: "orders", select: ["createdAt"] },
@@ -751,7 +754,9 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
     });
 
     const customerPercentage =
-      100 - (customersLastMounth.length * 100) / customersThisMounth.length;
+      customersThisMounth.length > 0
+        ? 100 - (customersLastMounth.length * 100) / customersThisMounth.length
+        : -100;
 
     res.json({
       profits,

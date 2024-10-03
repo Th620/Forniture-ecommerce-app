@@ -201,9 +201,9 @@ export default function Products() {
                           >
                             <div className="relative aspect-[1/1.2] sm:min-h-[10vh] min-h-[7vh] text-xs bg-white dark:bg-black">
                               <Image
-                                src={
+                                src={process.env.NEXT_PUBLIC_BASE_URL +
                                   product?.images[0]
-                                    ? process.env.NEXT_PUBLIC_BASE_URL + product?.images[0]
+                                    ?  product?.images[0]
                                     : "/not-found.png"
                                 }
                                 layout="fill"

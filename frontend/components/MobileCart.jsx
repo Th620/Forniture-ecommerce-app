@@ -35,7 +35,7 @@ const MobileCart = ({ openCart, setOpenCart }) => {
             <Link href={`/products/${item?.slug}`}>
               <div className="relative aspect-[1/1.2] w-[20vw] bg-bg mr-2">
                 <Image
-                  src={item?.image ? process.env.NEXT_PUBLIC_BASE_URL + item.image : "/not-found.png"}
+                  src={process.env.NEXT_PUBLIC_BASE_URL +item?.image ?  item.image : "/not-found.png"}
                   layout="fill"
                   objectFit="cover"
                   alt={item?.title}

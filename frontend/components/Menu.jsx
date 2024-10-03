@@ -1,3 +1,5 @@
+"use client"
+
 import { navBtns, navLinks } from "@/constants";
 import Link from "next/link";
 import React from "react";

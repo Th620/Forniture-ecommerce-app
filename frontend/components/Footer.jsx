@@ -40,7 +40,7 @@ const Footer = () => {
         </Link>
       </div>
       <Link href={"/"} className="sm:col-span-2 col-span-6">
-        <Image src={Logo} width={65} height={39} alt="logo" />
+        <Image src={process.env.NEXT_PUBLIC_BASE_URL +Logo} width={65} height={39} alt="logo" />
       </Link>
       {footerSections.map((item) => (
         <ul key={item.id} className="sm:col-span-2 col-span-6">

@@ -96,9 +96,9 @@ const DashboardSearch = ({ setOpenSearch }) => {
               <div className="flex items-stretch py-2 search">
                 <div className="relative aspect-[1/1.2] md:w-[4vw] w-[10vw] bg-bg mr-2 search">
                   <Image
-                    src={
+                    src={process.env.NEXT_PUBLIC_BASE_URL +
                       product?.images[0]
-                        ? process.env.NEXT_PUBLIC_BASE_URL + product.images[0]
+                        ?  product.images[0]
                         : "/not-found.png"
                     }
                     layout="fill"

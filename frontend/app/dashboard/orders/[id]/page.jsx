@@ -206,9 +206,9 @@ export default function Order() {
                       <Link href={`/products/${product?.product?.slug}`}>
                         <div className="relative aspect-[1/1.2] w-[52px] bg-bg mr-2">
                           <Image
-                            src={
+                            src={process.env.NEXT_PUBLIC_BASE_URL +
                               product?.product?.images
-                                ? process.env.NEXT_PUBLIC_BASE_URL + product.product.images[0]
+                                ?  product.product.images[0]
                                 : "/not-found.png"
                             }
                             layout="fill"
