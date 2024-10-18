@@ -141,7 +141,7 @@ const DashboardNav = ({ setShowMenu, theme, setTheme }) => {
         setnotifications([...data]);
       }
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <nav className="md:w-4/5 z-50 w-full fixed top-0 right-0 h-[60px] border-b-[0.5px] border-gray border-opacity-40 flex items-center justify-between px-6 font-montserrat text-black dark:text-white bg-white dark:bg-darkBg">

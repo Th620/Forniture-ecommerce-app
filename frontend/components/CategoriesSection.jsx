@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CategoryCard from "./CategoryCard";
 import { useRouter } from "next/navigation";
 import { getCategories } from "@/services/category";
+import { MdOutlineErrorOutline } from "react-icons/md";
 
 const CategoriesSection = () => {
   const [categories, setCategories] = useState([]);

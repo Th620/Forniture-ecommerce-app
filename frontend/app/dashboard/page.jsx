@@ -63,14 +63,14 @@ export default function Dashboard() {
                 className={"md:col-span-3 sm:col-span-6 col-span-12"}
                 boxTitel={"product sold"}
                 value={productSold}
-                percentage={productsSoldPercentage}
+                percentage={Math.round(productsSoldPercentage * 10) / 10}
                 period={"mounth"}
               />
               <DashboardCard
                 className={"md:col-span-3 sm:col-span-6 col-span-12"}
                 boxTitel={"total profit"}
                 value={profits}
-                percentage={profitsPercentage}
+                percentage={Math.round(profitsPercentage * 10) / 10}
                 period={"mounth"}
                 sign="DZD"
               />

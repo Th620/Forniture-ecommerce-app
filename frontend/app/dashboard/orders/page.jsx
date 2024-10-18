@@ -122,6 +122,7 @@ export default function Orders() {
     }
 
     router.push(`?${new URLSearchParams(queries)}`, { scroll: true });
+    setCurrentPage(1);
     setOpenFilter(false);
 
     await handleGetOrders(queries);
@@ -398,12 +399,10 @@ export default function Orders() {
                 onPageChange={async (page) => {
                   setCurrentPage(page);
                   router.replace(
-                    `/dashboard/orders?${new URLSearchParams(
-                      {
-                        ...searchParamsValues,
-                        page,
-                      }
-                    )}`,
+                    `/dashboard/orders?${new URLSearchParams({
+                      ...searchParamsValues,
+                      page,
+                    })}`,
                     { scroll: true }
                   );
                   await handleGetOrders({

@@ -719,12 +719,20 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
       }
     }, 0);
 
-    const profitsPercentage = 100 - (lastMonthProfits * 100) / profits;
+    const profitsPercentage =
+      lastMonthProfits > 0
+        ? ((profits - lastMonthProfits) / lastMonthProfits) * 100
+        : 100;
     const productSlodPercentage =
-      100 - (productSoldLastMonth * 100) / productSold;
+      productSoldLastMonth > 0
+        ? ((productSold - productSoldLastMonth) / productSoldLastMonth) * 100
+        : 100;
 
     const ordersPercentage =
-      100 - (LastMonthOrders.length * 100) / orders.length;
+      LastMonthOrders.length > 0
+        ? ((orders.length - LastMonthOrders.length) / LastMonthOrders.length) *
+          100
+        : 100;
 
     const customers = await User.find().populate([
       { path: "orders", select: ["createdAt"] },
@@ -751,7 +759,11 @@ const getSoldProductNumberAndProfits = async (req, res, next) => {
     });
 
     const customerPercentage =
-      100 - (customersLastMounth.length * 100) / customersThisMounth.length;
+      customersLastMounth.length > 0
+        ? ((customersThisMounth.length - customersLastMounth.length) /
+            customersLastMounth.length) *
+          100
+        : 100;
 
     res.json({
       profits,
@@ -1484,6 +1496,7 @@ const getOrdersToShip = async (req, res, next) => {
 
     const total = await Order.find({
       shippingDate: { $ne: null, $exists: true, ...where },
+      status: { $in: ["pending", "confirmed"] },
     }).countDocuments();
 
     var pages = 0;
@@ -1505,6 +1518,7 @@ const getOrdersToShip = async (req, res, next) => {
 
     const orders = await Order.find({
       shippingDate: { $ne: null, $exists: true, ...where },
+      status: { $in: ["pending", "confirmed"] },
     })
       .skip(skip)
       .limit(pageSize)
