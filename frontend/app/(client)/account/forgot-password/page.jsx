@@ -1,6 +1,7 @@
 "use client";
 
 import { forgotPassword } from "@/services/user";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
@@ -13,6 +14,8 @@ export default function ForgotPassword() {
   const [done, setDone] = useState(false);
 
   let user = useSelector((state) => state.user);
+
+  const router = useRouter();
 
   const handleForgotPassword = async (e) => {
     try {
@@ -88,6 +91,7 @@ export default function ForgotPassword() {
               </button>
               <button
                 type="button"
+                onClick={() => router.back()}
                 className=" py-2 px-14 text-navy font-lato font-medium"
               >
                 Cancel

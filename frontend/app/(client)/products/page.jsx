@@ -37,9 +37,9 @@ export default function Products() {
   const [color, setColor] = useState(searchParams.get("color") || "");
   const [sort, setSort] = useState(
     searchParams.get("sort") === "-1"
-      ? "price low to hight"
-      : searchParams.get("sort") === "1"
       ? "price hight to low"
+      : searchParams.get("sort") === "1"
+      ? "price low to hight"
       : ""
   );
   const [sizes, setSizes] = useState([]);
@@ -294,7 +294,7 @@ export default function Products() {
                       setOpenSortSelect(false);
                       if (option !== "no sort") {
                         searchParamsvalues.sort =
-                          option === "price low to hight" ? "-1" : "1";
+                          option === "price low to hight" ? "1" : "-1";
                       } else {
                         delete searchParamsvalues.sort;
                       }
