@@ -20,7 +20,7 @@ const DashboardCard = ({
     <div
       onClick={() => {
         if (link) {
-          router.push(link, { scroll: true});
+          router.push(link, { scroll: true });
         }
       }}
       className={`${className} bg-white hover:bg-[#F7F8FA] dark:bg-darkBg dark:hover:bg-[#252528] transition-colors duration-150 rounded-md py-3 px-3 flex flex-col border border-gray border-opacity-30 dark:border-opacity-5 cursor-pointer`}
@@ -47,7 +47,10 @@ const DashboardCard = ({
                 : "text-green-400"
             }`}
           >
-            {percentage}%
+            {percentage - Math.floor(percentage) > 0
+              ? percentage.toFixed(2)
+              : percentage}
+            %
           </span>
           from last {period}
         </p>
